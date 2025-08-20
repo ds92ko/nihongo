@@ -1,43 +1,78 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Tabs } from 'expo-router';
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.textSecondary,
+        tabBarStyle: {
+          height: 80,
+          backgroundColor: Colors.white
+        }
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarLabel: ({ color }) => (
+            <Text
+              variant="tiny"
+              color={color}
+            >
+              홈
+            </Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="home"
+              size={24}
+              color={color}
+            />
+          )
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="hiragana"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarLabel: ({ color }) => (
+            <Text
+              variant="tiny"
+              color={color}
+            >
+              히라가나
+            </Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="syllabary-hiragana"
+              size={24}
+              color={color}
+            />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="katakana"
+        options={{
+          tabBarLabel: ({ color }) => (
+            <Text
+              variant="tiny"
+              color={color}
+            >
+              가타카나
+            </Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="syllabary-katakana"
+              size={24}
+              color={color}
+            />
+          )
         }}
       />
     </Tabs>

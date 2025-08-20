@@ -1,26 +1,37 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
+  primary: '#FF8A80',
+  primary10: '#fff1ef',
+  primary20: '#ffe3e0',
+  primary30: '#ffd5d2',
+  primary40: '#ffc7c4',
+  primary50: '#ffb9b6',
+  primary60: '#ffabab',
+  primary70: '#ff9d9d',
+  primary80: '#ff8f8f',
+  primary90: '#ff8181',
+
+  secondary: '#FFD54F',
+  accent: '#4FC3F7',
+
+  success: '#81C784',
+  error: '#E57373',
+  warning: '#FFB74D',
+  info: '#9575CD',
+
+  background: '#FFF8E1',
+  textPrimary: '#4E342E',
+  textSecondary: '#7E5E4D',
+
+  white: '#FFFFFF',
+  neutralLight: '#F5F5F5',
+  neutral: '#BDBDBD',
+  neutralDark: '#616161',
+
+  highlight: '#FFEA00',
+  sparkle: '#FF80AB',
+  mint: '#A7FFEB',
+  peach: '#FFCCBC',
+
+  shadow: 'rgba(0,0,0,0.2)',
+  overlay: 'rgba(0,0,0,0.5)'
 };
