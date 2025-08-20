@@ -1,3 +1,4 @@
+import KanaSvg from '@/components/KanaSvg';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
@@ -94,13 +95,12 @@ export default function KanaScreen() {
         >
           {visibleHint && (
             <View style={styles.hint}>
-              <Text
-                weight={500}
-                color="neutralLight"
-                style={styles.hintText}
-              >
-                {character}
-              </Text>
+              {[...character].map((char, index) => (
+                <KanaSvg
+                  key={index}
+                  character={char}
+                />
+              ))}
             </View>
           )}
           <View
@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     position: 'absolute',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
