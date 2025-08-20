@@ -24,7 +24,7 @@ export const Colors = {
 
   white: '#FFFFFF',
   neutralLight: '#F5F5F5',
-  neutral: '#BDBDBD',
+  neutral: '#C9C9C9',
   neutralDark: '#616161',
 
   highlight: '#FFEA00',
