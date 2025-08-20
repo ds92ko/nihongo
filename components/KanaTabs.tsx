@@ -1,31 +1,23 @@
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
+import { KANA_TABS } from '@/constants/KanaTabs';
+import { KanaType } from '@/types/kana';
+import { Link } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-interface Row {
-  label: string;
-  kana: string[];
-}
-
-interface Tab {
-  key: string;
-  title: string;
-  rows: Row[];
-}
-
 interface Props {
-  tabs: Tab[];
+  type: KanaType;
 }
 
-const KanaTabs = ({ tabs }: Props) => {
+const KanaTabs = ({ type }: Props) => {
   const [activeTab, setActiveTab] = useState('basic');
-  const currentRows = tabs.find(t => t.key === activeTab)?.rows ?? [];
+  const currentRows = KANA_TABS[type].find(t => t.key === activeTab)?.rows ?? [];
 
   return (
     <View style={styles.container}>
       <View style={styles.tabBar}>
-        {tabs.map(tab => (
+        {KANA_TABS[type].map(tab => (
           <Pressable
             key={tab.key}
             onPress={() => setActiveTab(tab.key)}
@@ -37,7 +29,7 @@ const KanaTabs = ({ tabs }: Props) => {
             ]}
           >
             <Text
-              weight={500}
+              weight={activeTab === tab.key ? 700 : 500}
               variant="body2"
               color={activeTab === tab.key ? 'primary' : 'textPrimary'}
             >
@@ -62,9 +54,10 @@ const KanaTabs = ({ tabs }: Props) => {
               </Text>
             </View>
             {item.kana.map((kana, j) => (
-              <View
+              <Link
                 key={j}
                 style={[styles.cell, !kana && styles.emptyCell]}
+                href={{ pathname: `/${type}/[character]`, params: { character: kana } }}
               >
                 <Text
                   weight={500}
@@ -72,7 +65,7 @@ const KanaTabs = ({ tabs }: Props) => {
                 >
                   {kana}
                 </Text>
-              </View>
+              </Link>
             ))}
           </View>
         )}
@@ -120,6 +113,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
+    textAlign: 'center',
     backgroundColor: Colors.primary10
   },
   emptyCell: {
