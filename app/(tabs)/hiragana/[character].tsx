@@ -1,12 +1,12 @@
+import KanaList from '@/components/KanaList';
 import KanaSvg from '@/components/KanaSvg';
-import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import React, { useRef, useState } from 'react';
-import { FlatList, PanResponder, Pressable, StyleSheet, View } from 'react-native';
+import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 type Point = { x: number; y: number };
@@ -60,40 +60,10 @@ export default function KanaScreen() {
     <View style={styles.container}>
       <View style={styles.rowContent}>
         {row && (
-          <FlatList
+          <KanaList
             data={[row]}
-            keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.row}>
-                <View style={styles.labelCell}>
-                  <Text
-                    weight={700}
-                    variant="caption"
-                  >
-                    {item.label}
-                  </Text>
-                </View>
-                {item.kana.map((kana, j) => (
-                  <Link
-                    key={j}
-                    style={[
-                      styles.cell,
-                      !kana && styles.emptyCell,
-                      kana === character && styles.activeCell
-                    ]}
-                    href={{ pathname: `/hiragana/[character]`, params: { character: kana } }}
-                  >
-                    <Text
-                      weight={kana === character ? 700 : 500}
-                      variant="body2"
-                      color={kana === character ? 'textPrimary' : 'textSecondary'}
-                    >
-                      {kana}
-                    </Text>
-                  </Link>
-                ))}
-              </View>
-            )}
+            type="hiragana"
+            character={character}
           />
         )}
       </View>
@@ -218,32 +188,6 @@ const styles = StyleSheet.create({
   },
   rowContent: {
     gap: 8
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  labelCell: {
-    width: 50,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  cell: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    textAlign: 'center',
-    backgroundColor: Colors.primary10
-  },
-  activeCell: {
-    backgroundColor: Colors.primary30
-  },
-  emptyCell: {
-    backgroundColor: Colors.white
   },
   canvasContainer: {
     flex: 1,

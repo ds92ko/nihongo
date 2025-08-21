@@ -6,7 +6,7 @@ export type KanaToRomaji = {
   };
 };
 
-interface Row {
+export interface KanaRow {
   label: string;
   kana: string[];
 }
@@ -14,7 +14,7 @@ interface Row {
 interface Tab {
   key: string;
   title: string;
-  rows: Row[];
+  rows: KanaRow[];
 }
 
 export type KanaTabs = {

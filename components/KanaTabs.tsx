@@ -1,10 +1,10 @@
+import KanaList from '@/components/KanaList';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { KanaType } from '@/types/kana';
-import { Link } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 interface Props {
   type: KanaType;
@@ -38,37 +38,10 @@ const KanaTabs = ({ type }: Props) => {
           </Pressable>
         ))}
       </View>
-      <FlatList
+      <KanaList
         data={currentRows}
-        scrollEnabled={true}
-        keyExtractor={(_, i) => i.toString()}
+        type={type}
         contentContainerStyle={styles.tabPanel}
-        renderItem={({ item }) => (
-          <View style={styles.row}>
-            <View style={styles.labelCell}>
-              <Text
-                weight={700}
-                variant="caption"
-              >
-                {item.label}
-              </Text>
-            </View>
-            {item.kana.map((kana, j) => (
-              <Link
-                key={j}
-                style={[styles.cell, !kana && styles.emptyCell]}
-                href={{ pathname: `/${type}/[character]`, params: { character: kana } }}
-              >
-                <Text
-                  weight={500}
-                  variant="body2"
-                >
-                  {kana}
-                </Text>
-              </Link>
-            ))}
-          </View>
-        )}
       />
     </View>
   );
@@ -95,29 +68,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: Colors.white,
     gap: 8
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  labelCell: {
-    width: 50,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  cell: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    textAlign: 'center',
-    backgroundColor: Colors.primary10
-  },
-  emptyCell: {
-    backgroundColor: Colors.white
   }
 });
 
