@@ -14,6 +14,7 @@ export default function KanaScreen() {
   const { character }: { character: string } = useLocalSearchParams();
   const row = KANA_TABS.hiragana.flatMap(tab => tab.rows).find(row => row.kana.includes(character));
   const [visibleHint, setVisibleHint] = useState(true);
+  const [restartTrigger, setRestartTrigger] = useState(0);
   const [paths, setPaths] = useState<Point[][]>([]);
 
   const panResponder = useRef(
@@ -43,6 +44,11 @@ export default function KanaScreen() {
     })
   ).current;
 
+  const handleRestart = () => {
+    setVisibleHint(true);
+    setRestartTrigger(prev => prev + 1);
+    setPaths([]);
+  };
   const handleToggleHint = () => setVisibleHint(prev => !prev);
   const handleUndo = () => setPaths(prev => prev.slice(0, -1));
   const handleClear = () => setPaths([]);
@@ -93,16 +99,19 @@ export default function KanaScreen() {
           style={styles.canvasContent}
           {...panResponder.panHandlers}
         >
-          {visibleHint && (
-            <View style={styles.hint}>
-              {[...character].map((char, index) => (
-                <KanaSvg
-                  key={index}
-                  character={char}
-                />
-              ))}
-            </View>
-          )}
+          <View
+            style={[
+              styles.hint,
+              {
+                opacity: visibleHint ? 1 : 0
+              }
+            ]}
+          >
+            <KanaSvg
+              character={character}
+              restartTrigger={restartTrigger}
+            />
+          </View>
           <View
             style={styles.canvas}
             pointerEvents="box-none"
@@ -130,6 +139,16 @@ export default function KanaScreen() {
           </View>
         </View>
         <View style={styles.buttons}>
+          <Pressable
+            style={styles.button}
+            onPress={handleRestart}
+          >
+            <Ionicons
+              name="play-outline"
+              size={20}
+              color={Colors.textPrimary}
+            />
+          </Pressable>
           <Pressable
             style={styles.button}
             onPress={handleToggleHint}
@@ -223,11 +242,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     zIndex: 10
-  },
-  hintText: {
-    fontSize: 150,
-    lineHeight: 150,
-    letterSpacing: -10
   },
   canvas: {
     position: 'relative',
