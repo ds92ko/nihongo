@@ -3,8 +3,9 @@ import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link, useLocalSearchParams } from 'expo-router';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FlatList, PanResponder, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -13,6 +14,7 @@ type Point = { x: number; y: number };
 export default function KanaScreen() {
   const { character }: { character: string } = useLocalSearchParams();
   const row = KANA_TABS.hiragana.flatMap(tab => tab.rows).find(row => row.kana.includes(character));
+  const [visibleGrid, setVisibleGrid] = useState(true);
   const [visibleHint, setVisibleHint] = useState(true);
   const [restartTrigger, setRestartTrigger] = useState(0);
   const [paths, setPaths] = useState<Point[][]>([]);
@@ -44,12 +46,13 @@ export default function KanaScreen() {
     })
   ).current;
 
+  const handleToggleGrid = () => setVisibleGrid(prev => !prev);
+  const handleToggleHint = () => setVisibleHint(prev => !prev);
   const handleRestart = () => {
     setVisibleHint(true);
     setRestartTrigger(prev => prev + 1);
     setPaths([]);
   };
-  const handleToggleHint = () => setVisibleHint(prev => !prev);
   const handleUndo = () => setPaths(prev => prev.slice(0, -1));
   const handleClear = () => setPaths([]);
 
@@ -96,6 +99,17 @@ export default function KanaScreen() {
       </View>
       <View style={styles.canvasContainer}>
         <View
+          style={[
+            styles.cross,
+            {
+              opacity: visibleGrid ? 1 : 0
+            }
+          ]}
+        >
+          <View style={styles.crossLineHorizontal} />
+          <View style={styles.crossLineVertical} />
+        </View>
+        <View
           style={styles.canvasContent}
           {...panResponder.panHandlers}
         >
@@ -141,10 +155,10 @@ export default function KanaScreen() {
         <View style={styles.buttons}>
           <Pressable
             style={styles.button}
-            onPress={handleRestart}
+            onPress={handleToggleGrid}
           >
-            <Ionicons
-              name="play-outline"
+            <MaterialIcons
+              name={visibleGrid ? 'grid-off' : 'grid-on'}
               size={20}
               color={Colors.textPrimary}
             />
@@ -155,6 +169,16 @@ export default function KanaScreen() {
           >
             <Ionicons
               name={visibleHint ? 'eye-off-outline' : 'eye-outline'}
+              size={20}
+              color={Colors.textPrimary}
+            />
+          </Pressable>
+          <Pressable
+            style={styles.button}
+            onPress={handleRestart}
+          >
+            <Ionicons
+              name="play-outline"
               size={20}
               color={Colors.textPrimary}
             />
@@ -227,10 +251,35 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.neutral
   },
+  cross: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10
+  },
+  crossLineHorizontal: {
+    position: 'absolute',
+    width: '100%',
+    height: 0,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: Colors.neutral
+  },
+  crossLineVertical: {
+    position: 'absolute',
+    width: 0,
+    height: '100%',
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: Colors.neutral
+  },
   canvasContent: {
     flex: 1,
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    zIndex: 20
   },
   hint: {
     position: 'absolute',
