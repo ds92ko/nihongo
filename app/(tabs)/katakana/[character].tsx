@@ -1,13 +1,27 @@
+import KanaCanvas from '@/components/KanaCanvas';
+import KanaList from '@/components/KanaList';
 import { Colors } from '@/constants/Colors';
+import { KANA_TABS } from '@/constants/KanaTabs';
 import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 export default function KanaScreen() {
-  const { character } = useLocalSearchParams();
+  const { character }: { character: string } = useLocalSearchParams();
+  const row = KANA_TABS.katakana.flatMap(tab => tab.rows).find(row => row.kana.includes(character));
 
   return (
     <View style={styles.container}>
-      <Text>Details of Kana {character} </Text>
+      <View style={styles.rowContent}>
+        {row && (
+          <KanaList
+            data={[row]}
+            type="katakana"
+            character={character}
+          />
+        )}
+      </View>
+      <KanaCanvas character={character} />
     </View>
   );
 }
@@ -15,6 +29,11 @@ export default function KanaScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white
+    backgroundColor: Colors.white,
+    padding: 16,
+    gap: 16
+  },
+  rowContent: {
+    gap: 8
   }
 });
