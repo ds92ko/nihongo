@@ -3,6 +3,7 @@ import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import useKanaAudio from '@/hooks/useKanaAudio';
+import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
@@ -12,6 +13,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 const KanaHeader = ({ route }: NativeStackHeaderProps) => {
   const { kanaType } = useKanaContext();
   const { playKanaAudio } = useKanaAudio();
+  const { playPopAudio } = usePopAudio();
   const { kana } = route.params as { kana: string };
   const currentTab = KANA_TABS[kanaType].find(tab => tab.rows.find(row => row.kana.includes(kana)));
   const currentRowIndex = currentTab?.rows.findIndex(row => row.kana.includes(kana))!;
@@ -25,6 +27,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
           dismissTo
           style={styles.button}
           href={'/chart'}
+          onPress={playPopAudio}
         >
           <MaterialIcons
             name="keyboard-arrow-left"

@@ -1,6 +1,7 @@
 import KanaSvg from '@/components/KanaSvg';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
+import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -18,6 +19,7 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
   const { isVisibleGrid, isPlayingAudio } = useKanaContext();
   const { setIsVisibleGrid } = useKanaActions();
   const { playKanaAudio } = useKanaAudio();
+  const { playPopAudio } = usePopAudio();
 
   const [restartTrigger, setRestartTrigger] = useState(0);
   const [paths, setPaths] = useState<Point[][]>([]);
@@ -49,7 +51,10 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     })
   ).current;
 
-  const handleToggleGrid = () => setIsVisibleGrid();
+  const handleToggleGrid = () => {
+    playPopAudio();
+    setIsVisibleGrid();
+  };
   const handlePlay = () => playKanaAudio(kana);
 
   const handleRestart = () => {
@@ -58,7 +63,10 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     handlePlay();
   };
 
-  const handleClear = () => setPaths([]);
+  const handleClear = () => {
+    playPopAudio();
+    setPaths([]);
+  };
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,7 @@
 import KanaToggle from '@/components/KanaToggle';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
+import usePopAudio from '@/hooks/usePopAudio';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { NavigationState, Route, SceneRendererProps, TabDescriptor } from 'react-native-tab-view';
 
@@ -11,6 +12,7 @@ interface ChartTabBarProps<T extends Route> extends SceneRendererProps {
 
 const ChartTabBar = <T extends Route>({ navigationState, jumpTo }: ChartTabBarProps<T>) => {
   const { index } = navigationState;
+  const { playPopAudio } = usePopAudio();
 
   return (
     <View style={styles.container}>
@@ -18,7 +20,10 @@ const ChartTabBar = <T extends Route>({ navigationState, jumpTo }: ChartTabBarPr
         {navigationState.routes.map((route, idx) => (
           <Pressable
             key={route.key}
-            onPress={() => jumpTo(route.key)}
+            onPress={() => {
+              jumpTo(route.key);
+              playPopAudio();
+            }}
             style={[
               styles.tab,
               {

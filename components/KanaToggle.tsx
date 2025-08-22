@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/Colors';
+import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Pressable, StyleSheet } from 'react-native';
@@ -6,11 +7,15 @@ import { Pressable, StyleSheet } from 'react-native';
 const KanaToggle = () => {
   const { kanaType } = useKanaContext();
   const { setKanaType } = useKanaActions();
+  const { playPopAudio } = usePopAudio();
 
   return (
     <Pressable
       style={styles.toggleButton}
-      onPress={() => setKanaType()}
+      onPress={() => {
+        playPopAudio();
+        setKanaType();
+      }}
     >
       <MaterialCommunityIcons
         style={[
