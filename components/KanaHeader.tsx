@@ -4,7 +4,6 @@ import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
-import { KanaTabType } from '@/types/kana';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
@@ -13,8 +12,8 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 const KanaHeader = ({ route }: NativeStackHeaderProps) => {
   const { kanaType } = useKanaContext();
   const { playKanaAudio } = useKanaAudio();
-  const { chart, kana } = route.params as { chart: KanaTabType; kana: string };
-  const currentTab = KANA_TABS[kanaType].find(({ key }) => key === chart);
+  const { kana } = route.params as { kana: string };
+  const currentTab = KANA_TABS[kanaType].find(tab => tab.rows.find(row => row.kana.includes(kana)));
   const currentRowIndex = currentTab?.rows.findIndex(row => row.kana.includes(kana))!;
   const prevRow = currentTab?.rows?.[currentRowIndex - 1];
   const nextRow = currentTab?.rows?.[currentRowIndex + 1];
@@ -25,7 +24,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
         <Link
           dismissTo
           style={styles.button}
-          href={{ pathname: '/[chart]', params: { chart } }}
+          href={'/chart'}
         >
           <MaterialIcons
             name="keyboard-arrow-left"
@@ -54,8 +53,8 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
               { backgroundColor: prevRow ? Colors.white : Colors.neutralLight }
             ]}
             href={{
-              pathname: '/[chart]/[kana]',
-              params: { chart, kana: prevRow?.kana[0] || kana }
+              pathname: '/chart/[kana]',
+              params: { kana: prevRow?.kana[0] || kana }
             }}
             onPress={() => {
               playKanaAudio(prevRow?.kana[0] || kana);
@@ -73,8 +72,8 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
               { backgroundColor: nextRow ? Colors.white : Colors.neutralLight }
             ]}
             href={{
-              pathname: '/[chart]/[kana]',
-              params: { chart, kana: nextRow?.kana[0] || kana }
+              pathname: '/chart/[kana]',
+              params: { kana: nextRow?.kana[0] || kana }
             }}
             onPress={() => {
               playKanaAudio(nextRow?.kana[0] || kana);

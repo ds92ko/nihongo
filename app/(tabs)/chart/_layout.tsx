@@ -1,4 +1,3 @@
-import KanaChartHeader from '@/components/KanaChartHeader';
 import KanaHeader from '@/components/KanaHeader';
 import { Stack } from 'expo-router';
 
@@ -12,7 +11,7 @@ export default function ChartLayout() {
       <Stack.Screen
         name="index"
         options={{
-          header: () => <KanaChartHeader />
+          headerShown: false
         }}
       />
       <Stack.Screen

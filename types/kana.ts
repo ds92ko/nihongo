@@ -1,5 +1,5 @@
 export type KanaType = 'hiragana' | 'katakana';
-export type KanaTabType = 'basic' | 'dakuon' | 'youon';
+export type KanaSoundType = 'seion' | 'dakuon' | 'youon';
 
 export type KanaToRomaji = {
   [key in KanaType]: {
@@ -13,7 +13,7 @@ export interface KanaRow {
 }
 
 interface Tab {
-  key: KanaTabType;
+  key: KanaSoundType;
   title: string;
   rows: KanaRow[];
 }

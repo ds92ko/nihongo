@@ -1,17 +1,16 @@
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import { KanaRow, KanaTabType } from '@/types/kana';
+import { KanaRow } from '@/types/kana';
 import { Link } from 'expo-router';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 interface KanaListProps {
   data: KanaRow[];
-  chart: KanaTabType;
   kana?: string;
 }
 
-const KanaList = ({ data, chart, kana }: KanaListProps) => {
+const KanaList = ({ data, kana }: KanaListProps) => {
   const { playKanaAudio } = useKanaAudio();
 
   return (
@@ -34,7 +33,7 @@ const KanaList = ({ data, chart, kana }: KanaListProps) => {
             <Link
               key={j}
               style={[styles.cell, !k && styles.emptyCell, k === kana && styles.activeCell]}
-              href={{ pathname: '/[chart]/[kana]', params: { chart, kana: k } }}
+              href={{ pathname: '/chart/[kana]', params: { kana: k } }}
               onPress={() => playKanaAudio(k)}
             >
               <Text

@@ -1,9 +1,12 @@
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
+import { useChartTabActions } from '@/stores/useChartTabStore';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
+  const { setTabIndex, setAnimationEnabled } = useChartTabActions();
+
   return (
     <Tabs
       screenOptions={{
@@ -38,14 +41,8 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="[chart]"
+        name="chart"
         options={{
-          href: {
-            pathname: '/[chart]',
-            params: {
-              chart: 'basic'
-            }
-          },
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"
@@ -62,6 +59,16 @@ export default function TabLayout() {
             />
           )
         }}
+        listeners={({ navigation }) => ({
+          tabPress: () => {
+            setAnimationEnabled(false);
+            setTabIndex(0);
+            navigation.navigate('chart');
+          },
+          focus: () => {
+            setAnimationEnabled(true);
+          }
+        })}
       />
     </Tabs>
   );

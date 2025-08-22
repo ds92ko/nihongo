@@ -3,7 +3,7 @@ import { KanaTabs } from '@/types/kana';
 export const KANA_TABS: KanaTabs = {
   hiragana: [
     {
-      key: 'basic',
+      key: 'seion',
       title: '청음',
       rows: [
         { label: 'あ행', kana: ['あ', 'い', 'う', 'え', 'お'] },
@@ -50,7 +50,7 @@ export const KANA_TABS: KanaTabs = {
   ],
   katakana: [
     {
-      key: 'basic',
+      key: 'seion',
       title: '청음',
       rows: [
         { label: 'ア행', kana: ['ア', 'イ', 'ウ', 'エ', 'オ'] },
