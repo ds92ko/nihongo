@@ -1,6 +1,8 @@
 import KanaSvg from '@/components/KanaSvg';
 import { Colors } from '@/constants/Colors';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import useKanaAudio from '@/hooks/useKanaAudio';
+import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
@@ -9,12 +11,14 @@ import Svg, { Path } from 'react-native-svg';
 type Point = { x: number; y: number };
 
 interface KanaCanvasProps {
-  character: string;
+  kana: string;
 }
 
-const KanaCanvas = ({ character }: KanaCanvasProps) => {
-  const [visibleGrid, setVisibleGrid] = useState(true);
-  const [visibleHint, setVisibleHint] = useState(true);
+const KanaCanvas = ({ kana }: KanaCanvasProps) => {
+  const { isVisibleGrid, isPlayingAudio } = useKanaContext();
+  const { setIsVisibleGrid } = useKanaActions();
+  const { playKanaAudio } = useKanaAudio();
+
   const [restartTrigger, setRestartTrigger] = useState(0);
   const [paths, setPaths] = useState<Point[][]>([]);
 
@@ -45,49 +49,41 @@ const KanaCanvas = ({ character }: KanaCanvasProps) => {
     })
   ).current;
 
-  const handleToggleGrid = () => setVisibleGrid(prev => !prev);
-  const handleToggleHint = () => setVisibleHint(prev => !prev);
+  const handleToggleGrid = () => setIsVisibleGrid();
+  const handlePlay = () => playKanaAudio(kana);
+
   const handleRestart = () => {
-    setVisibleHint(true);
     setRestartTrigger(prev => prev + 1);
     setPaths([]);
+    handlePlay();
   };
-  const handleUndo = () => setPaths(prev => prev.slice(0, -1));
+
   const handleClear = () => setPaths([]);
 
   return (
-    <View style={styles.canvasContainer}>
-      <View
-        style={[
-          styles.cross,
-          {
-            opacity: visibleGrid ? 1 : 0
-          }
-        ]}
-      >
-        <View style={styles.crossLineHorizontal} />
-        <View style={styles.crossLineVertical} />
-      </View>
-      <View
-        style={styles.canvasContent}
-        {...panResponder.panHandlers}
-      >
+    <View style={styles.container}>
+      <View style={styles.canvasContainer}>
         <View
           style={[
-            styles.hint,
+            styles.cross,
             {
-              opacity: visibleHint ? 1 : 0
+              opacity: isVisibleGrid ? 1 : 0
             }
           ]}
         >
+          <View style={styles.crossLineHorizontal} />
+          <View style={styles.crossLineVertical} />
+        </View>
+        <View style={styles.hint}>
           <KanaSvg
-            character={character}
+            kana={kana}
             restartTrigger={restartTrigger}
           />
         </View>
         <View
           style={styles.canvas}
           pointerEvents="box-none"
+          {...panResponder.panHandlers}
         >
           <Svg
             width="100%"
@@ -117,49 +113,42 @@ const KanaCanvas = ({ character }: KanaCanvasProps) => {
           onPress={handleToggleGrid}
         >
           <MaterialIcons
-            name={visibleGrid ? 'grid-off' : 'grid-on'}
+            name={isVisibleGrid ? 'grid-off' : 'grid-on'}
             size={20}
             color={Colors.textPrimary}
           />
         </Pressable>
         <Pressable
-          style={styles.button}
-          onPress={handleToggleHint}
+          style={[styles.button, isPlayingAudio && styles.disabledButton]}
+          onPress={handlePlay}
+          disabled={isPlayingAudio}
         >
-          <Ionicons
-            name={visibleHint ? 'eye-off-outline' : 'eye-outline'}
+          <MaterialIcons
+            name={isPlayingAudio ? 'headset-off' : 'headset'}
             size={20}
-            color={Colors.textPrimary}
+            color={isPlayingAudio ? Colors.textSecondary : Colors.textPrimary}
           />
         </Pressable>
         <Pressable
-          style={styles.button}
+          style={[styles.button, isPlayingAudio && styles.disabledButton]}
           onPress={handleRestart}
+          disabled={isPlayingAudio}
         >
-          <Ionicons
-            name="play-outline"
+          <MaterialIcons
+            name={isPlayingAudio ? 'play-disabled' : 'play-arrow'}
             size={20}
-            color={Colors.textPrimary}
+            color={isPlayingAudio ? Colors.textSecondary : Colors.textPrimary}
           />
         </Pressable>
         <Pressable
-          style={styles.button}
-          onPress={handleUndo}
-        >
-          <Ionicons
-            name="return-up-back"
-            size={20}
-            color={Colors.textPrimary}
-          />
-        </Pressable>
-        <Pressable
-          style={styles.button}
+          style={[styles.button, !paths.length && styles.disabledButton]}
           onPress={handleClear}
+          disabled={!paths.length}
         >
-          <Ionicons
-            name="trash-outline"
+          <MaterialCommunityIcons
+            name={paths.length ? 'delete-outline' : 'delete-off-outline'}
             size={20}
-            color={Colors.textPrimary}
+            color={paths.length ? Colors.textPrimary : Colors.textSecondary}
           />
         </Pressable>
       </View>
@@ -168,6 +157,11 @@ const KanaCanvas = ({ character }: KanaCanvasProps) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    gap: 16
+  },
   canvasContainer: {
     flex: 1,
     borderRadius: 8,
@@ -198,12 +192,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.neutral
   },
-  canvasContent: {
-    flex: 1,
-    position: 'relative',
-    overflow: 'hidden',
-    zIndex: 20
-  },
   hint: {
     position: 'absolute',
     flexDirection: 'row',
@@ -213,23 +201,19 @@ const styles = StyleSheet.create({
     inset: 0,
     width: '100%',
     height: '100%',
-    zIndex: 10
+    zIndex: 20
   },
   canvas: {
     position: 'relative',
     width: '100%',
     height: '100%',
     backgroundColor: 'transparent',
-    zIndex: 20
+    zIndex: 30
   },
   buttons: {
-    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    bottom: 8,
-    right: 8,
-    gap: 8,
-    zIndex: 30
+    gap: 8
   },
   button: {
     alignItems: 'center',
@@ -238,6 +222,9 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: '50%',
     backgroundColor: Colors.primary30
+  },
+  disabledButton: {
+    backgroundColor: Colors.primary10
   }
 });
 

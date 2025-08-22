@@ -2,13 +2,16 @@ import KanaCanvas from '@/components/KanaCanvas';
 import KanaList from '@/components/KanaList';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
+import { useKanaContext } from '@/stores/useKanaStore';
+import { KanaTabType } from '@/types/kana';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export default function KanaScreen() {
-  const { character }: { character: string } = useLocalSearchParams();
-  const row = KANA_TABS.hiragana.flatMap(tab => tab.rows).find(row => row.kana.includes(character));
+  const { kanaType } = useKanaContext();
+  const { chart, kana } = useLocalSearchParams<{ chart: KanaTabType; kana: string }>();
+  const row = KANA_TABS[kanaType].flatMap(tab => tab.rows).find(row => row.kana.includes(kana));
 
   return (
     <View style={styles.container}>
@@ -16,12 +19,12 @@ export default function KanaScreen() {
         {row && (
           <KanaList
             data={[row]}
-            type="hiragana"
-            character={character}
+            chart={chart}
+            kana={kana}
           />
         )}
       </View>
-      <KanaCanvas character={character} />
+      <KanaCanvas kana={kana} />
     </View>
   );
 }

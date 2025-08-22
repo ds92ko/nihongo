@@ -2,11 +2,11 @@ import { Colors } from '@/constants/Colors';
 import { Typography } from '@/constants/Typography';
 import { StyleSheet, Text, TextProps } from 'react-native';
 
-interface Props extends TextProps {
+interface LogoProps extends TextProps {
   variant?: 'white' | 'black';
 }
 
-const Logo = ({ variant = 'black', style, ...props }: Props) => {
+const Logo = ({ variant = 'black', style, ...props }: LogoProps) => {
   return (
     <Text
       {...props}

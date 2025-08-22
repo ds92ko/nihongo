@@ -20,7 +20,7 @@ interface KanaPathProps {
 }
 
 interface KanaSvgProps {
-  character: string;
+  kana: string;
   restartTrigger?: number;
 }
 
@@ -66,10 +66,10 @@ const KanaPath = ({
   );
 };
 
-const KanaSvg = ({ character, restartTrigger = 0 }: KanaSvgProps) => {
+const KanaSvg = ({ kana, restartTrigger = 0 }: KanaSvgProps) => {
   const opacity = useSharedValue(1);
 
-  const chars = [...character];
+  const chars = [...kana];
   const charPaths = chars.map(char => kanaMap[char] || []);
   const charDelays = charPaths.map((_paths, index) => {
     const prevPaths = charPaths.slice(0, index).flat();

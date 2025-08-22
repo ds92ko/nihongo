@@ -1,7 +1,8 @@
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Entypo from '@expo/vector-icons/Entypo';
 import { Tabs } from 'expo-router';
+
 export default function TabLayout() {
   return (
     <Tabs
@@ -27,7 +28,7 @@ export default function TabLayout() {
             </Text>
           ),
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
+            <Entypo
               name="home"
               size={24}
               color={color}
@@ -36,39 +37,25 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="hiragana"
+        name="[chart]"
         options={{
+          href: {
+            pathname: '/[chart]',
+            params: {
+              chart: 'basic'
+            }
+          },
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"
               color={color}
             >
-              히라가나
+              카나 익히기
             </Text>
           ),
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="syllabary-hiragana"
-              size={24}
-              color={color}
-            />
-          )
-        }}
-      />
-      <Tabs.Screen
-        name="katakana"
-        options={{
-          tabBarLabel: ({ color }) => (
-            <Text
-              variant="tiny"
-              color={color}
-            >
-              가타카나
-            </Text>
-          ),
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons
-              name="syllabary-katakana"
+            <Entypo
+              name="pencil"
               size={24}
               color={color}
             />

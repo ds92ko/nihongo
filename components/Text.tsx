@@ -1,11 +1,11 @@
 import { Colors } from '@/constants/Colors';
 import { Typography } from '@/constants/Typography';
 import React from 'react';
-import { Text as RNText, TextProps } from 'react-native';
+import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 
 type Weight = 300 | 400 | 500 | 700;
 
-interface Props extends TextProps {
+interface TextProps extends RNTextProps {
   weight?: Weight;
   variant?: keyof typeof Typography;
   color?: keyof typeof Colors | string;
@@ -24,7 +24,7 @@ const Text = ({
   color = 'textPrimary',
   style,
   ...props
-}: Props) => {
+}: TextProps) => {
   const appliedColor =
     typeof color === 'string' && Colors[color as keyof typeof Colors]
       ? Colors[color as keyof typeof Colors]

@@ -1,92 +1,91 @@
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-
-import { audioMap } from '@/assets/audio';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
+import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
-import { KanaType } from '@/types/kana';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Audio } from 'expo-av';
-import { useState } from 'react';
-import { Alert, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
-interface Props extends NativeStackHeaderProps {
-  type: KanaType;
-}
+import useKanaAudio from '@/hooks/useKanaAudio';
+import { useKanaContext } from '@/stores/useKanaStore';
+import { KanaTabType } from '@/types/kana';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { Link } from 'expo-router';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-const KanaHeader = ({ navigation, route, type }: Props) => {
-  const { character } = route.params as { character: string };
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const onBackPress = () => navigation.navigate('index');
-
-  const onSpeakPress = async () => {
-    if (isPlaying) return;
-
-    try {
-      const romaji = KANA_TO_ROMAJI[type][character];
-      const sound = new Audio.Sound();
-      const source = audioMap[romaji];
-
-      await sound.loadAsync(source);
-      setIsPlaying(true);
-
-      await sound.playAsync();
-
-      sound.setOnPlaybackStatusUpdate(status => {
-        if (!status.isLoaded) return;
-        if (status.didJustFinish) {
-          setIsPlaying(false);
-          sound.unloadAsync();
-        }
-      });
-    } catch (err) {
-      console.error(err);
-      Alert.alert('오디오 파일을 찾을 수 없습니다.');
-      setIsPlaying(false);
-    }
-  };
+const KanaHeader = ({ route }: NativeStackHeaderProps) => {
+  const { kanaType } = useKanaContext();
+  const { playKanaAudio } = useKanaAudio();
+  const { chart, kana } = route.params as { chart: KanaTabType; kana: string };
+  const currentTab = KANA_TABS[kanaType].find(({ key }) => key === chart);
+  const currentRowIndex = currentTab?.rows.findIndex(row => row.kana.includes(kana))!;
+  const prevRow = currentTab?.rows?.[currentRowIndex - 1];
+  const nextRow = currentTab?.rows?.[currentRowIndex + 1];
 
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
-        <Pressable
+        <Link
           style={styles.button}
-          onPress={onBackPress}
+          href={{ pathname: '/[chart]', params: { chart } }}
         >
-          <Ionicons
-            name="chevron-back"
+          <MaterialIcons
+            name="keyboard-arrow-left"
             size={20}
             color={Colors.textPrimary}
           />
-        </Pressable>
-        <View style={styles.character}>
+        </Link>
+        <View style={styles.kana}>
           <Text
             weight={700}
             variant="h3"
           >
-            {character}
+            {kana}
           </Text>
           <Text
             variant="body1"
             color="textSecondary"
           >
-            [{KANA_TO_ROMAJI[type][character]}]
+            [{KANA_TO_ROMAJI[kanaType][kana]}]
           </Text>
         </View>
-        <Pressable
-          style={[
-            styles.button,
-            { backgroundColor: isPlaying ? Colors.neutralLight : Colors.white }
-          ]}
-          onPress={onSpeakPress}
-          disabled={isPlaying}
-        >
-          <Ionicons
-            name="volume-medium"
-            size={20}
-            color={Colors.textPrimary}
-          />
-        </Pressable>
+        <View style={styles.buttons}>
+          <Link
+            style={[
+              styles.button,
+              { backgroundColor: prevRow ? Colors.white : Colors.neutralLight }
+            ]}
+            href={{
+              pathname: '/[chart]/[kana]',
+              params: { chart, kana: prevRow?.kana[0] || kana }
+            }}
+            onPress={() => {
+              playKanaAudio(prevRow?.kana[0] || kana);
+            }}
+          >
+            <MaterialIcons
+              name="keyboard-arrow-up"
+              size={20}
+              color={prevRow ? Colors.textPrimary : Colors.textSecondary}
+            />
+          </Link>
+          <Link
+            style={[
+              styles.button,
+              { backgroundColor: nextRow ? Colors.white : Colors.neutralLight }
+            ]}
+            href={{
+              pathname: '/[chart]/[kana]',
+              params: { chart, kana: nextRow?.kana[0] || kana }
+            }}
+            onPress={() => {
+              playKanaAudio(nextRow?.kana[0] || kana);
+            }}
+          >
+            <MaterialIcons
+              name="keyboard-arrow-down"
+              size={20}
+              color={nextRow ? Colors.textPrimary : Colors.textSecondary}
+            />
+          </Link>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -103,11 +102,17 @@ const styles = StyleSheet.create({
     gap: 8,
     padding: 16
   },
-  character: {
+  kana: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8
   },
   button: {
     alignItems: 'center',

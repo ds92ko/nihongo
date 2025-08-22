@@ -1,23 +1,25 @@
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
-import { KanaRow, KanaType } from '@/types/kana';
+import useKanaAudio from '@/hooks/useKanaAudio';
+import { KanaRow, KanaTabType } from '@/types/kana';
 import { Link } from 'expo-router';
-import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 interface KanaListProps {
   data: KanaRow[];
-  type: KanaType;
-  character?: string;
-  contentContainerStyle?: StyleProp<ViewStyle>;
+  chart: KanaTabType;
+  kana?: string;
 }
 
-const KanaList = ({ data, type, character, contentContainerStyle }: KanaListProps) => {
+const KanaList = ({ data, chart, kana }: KanaListProps) => {
+  const { playKanaAudio } = useKanaAudio();
+
   return (
     <FlatList
       data={data}
-      scrollEnabled={true}
+      scrollEnabled={data.length > 1}
       keyExtractor={(_, i) => i.toString()}
-      contentContainerStyle={contentContainerStyle}
+      contentContainerStyle={data.length > 1 && styles.rows}
       renderItem={({ item }) => (
         <View style={styles.row}>
           <View style={styles.labelCell}>
@@ -28,22 +30,19 @@ const KanaList = ({ data, type, character, contentContainerStyle }: KanaListProp
               {item.label}
             </Text>
           </View>
-          {item.kana.map((kana, j) => (
+          {item.kana.map((k, j) => (
             <Link
               key={j}
-              style={[
-                styles.cell,
-                !kana && styles.emptyCell,
-                kana === character && styles.activeCell
-              ]}
-              href={{ pathname: `/${type}/[character]`, params: { character: kana } }}
+              style={[styles.cell, !k && styles.emptyCell, k === kana && styles.activeCell]}
+              href={{ pathname: '/[chart]/[kana]', params: { chart, kana: k } }}
+              onPress={() => playKanaAudio(k)}
             >
               <Text
-                weight={kana === character ? 700 : 500}
+                weight={k === kana ? 700 : 500}
                 variant="body2"
-                color={kana === character ? 'textPrimary' : 'textSecondary'}
+                color={k === kana ? 'textPrimary' : 'textSecondary'}
               >
-                {kana}
+                {k}
               </Text>
             </Link>
           ))}
@@ -54,6 +53,11 @@ const KanaList = ({ data, type, character, contentContainerStyle }: KanaListProp
 };
 
 const styles = StyleSheet.create({
+  rows: {
+    padding: 16,
+    backgroundColor: Colors.white,
+    gap: 8
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
