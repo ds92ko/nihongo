@@ -10,12 +10,12 @@ interface ChartTabActions {
   setAnimationEnabled: (enabled: boolean) => void;
 }
 
-interface UseChartTabStore {
+interface ChartTabStore {
   context: ChartTabContext;
   actions: ChartTabActions;
 }
 
-const useChartTabStore = create<UseChartTabStore>(set => ({
+const useChartTabStore = create<ChartTabStore>(set => ({
   context: {
     tabIndex: 0,
     animationEnabled: true
