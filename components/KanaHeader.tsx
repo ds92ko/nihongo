@@ -1,38 +1,49 @@
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
+import { audioMap } from '@/assets/audio';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import { KanaType } from '@/types/kana';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import * as Speech from 'expo-speech';
+import { Audio } from 'expo-av';
 import { useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
-
+import { Alert, Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 interface Props extends NativeStackHeaderProps {
   type: KanaType;
 }
 
 const KanaHeader = ({ navigation, route, type }: Props) => {
   const { character } = route.params as { character: string };
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const onBackPress = () => navigation.navigate('index');
 
-  const onSpeakPress = () => {
-    if (isSpeaking) return;
+  const onSpeakPress = async () => {
+    if (isPlaying) return;
 
-    setIsSpeaking(true);
-    Speech.speak(character, {
-      language: 'ja-JP',
-      voice: 'Google 日本語',
-      pitch: 1.0,
-      rate: 1.0,
-      onStart: () => setIsSpeaking(true),
-      onDone: () => setIsSpeaking(false),
-      onStopped: () => setIsSpeaking(false),
-      onError: () => setIsSpeaking(false)
-    });
+    try {
+      const romaji = KANA_TO_ROMAJI[type][character];
+      const sound = new Audio.Sound();
+      const source = audioMap[romaji];
+
+      await sound.loadAsync(source);
+      setIsPlaying(true);
+
+      await sound.playAsync();
+
+      sound.setOnPlaybackStatusUpdate(status => {
+        if (!status.isLoaded) return;
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+          sound.unloadAsync();
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      Alert.alert('오디오 파일을 찾을 수 없습니다.');
+      setIsPlaying(false);
+    }
   };
 
   return (
@@ -65,10 +76,10 @@ const KanaHeader = ({ navigation, route, type }: Props) => {
         <Pressable
           style={[
             styles.button,
-            { backgroundColor: isSpeaking ? Colors.neutralLight : Colors.white }
+            { backgroundColor: isPlaying ? Colors.neutralLight : Colors.white }
           ]}
           onPress={onSpeakPress}
-          disabled={isSpeaking}
+          disabled={isPlaying}
         >
           <Ionicons
             name="volume-medium"
