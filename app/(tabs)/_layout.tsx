@@ -13,7 +13,8 @@ export default function TabLayout() {
         tabBarStyle: {
           height: 80,
           backgroundColor: Colors.white
-        }
+        },
+        animation: 'shift'
       }}
     >
       <Tabs.Screen

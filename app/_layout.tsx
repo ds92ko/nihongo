@@ -27,8 +27,7 @@ export default function RootLayout() {
                 <Logo />
               </View>
             </SafeAreaView>
-          ),
-          headerShadowVisible: false
+          )
         }}
       />
     </Stack>

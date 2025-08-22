@@ -4,7 +4,11 @@ import { Stack } from 'expo-router';
 
 export default function ChartLayout() {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        animation: 'none'
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
@@ -14,8 +18,7 @@ export default function ChartLayout() {
       <Stack.Screen
         name="[kana]"
         options={{
-          header: props => <KanaHeader {...props} />,
-          headerShadowVisible: false
+          header: props => <KanaHeader {...props} />
         }}
       />
     </Stack>
