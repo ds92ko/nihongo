@@ -1,28 +1,32 @@
+import DefaultHeader from '@/components/DefaultHeader';
+import SettingHeader from '@/components/SettingHeader';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
+import usePopAudio from '@/hooks/usePopAudio';
 import { useChartTabActions } from '@/stores/useChartTabStore';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   const { setTabIndex, setAnimationEnabled } = useChartTabActions();
+  const { playPopAudio } = usePopAudio();
 
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.textSecondary,
         tabBarStyle: {
           height: 80,
           backgroundColor: Colors.white
         },
-        animation: 'shift'
+        animation: 'none'
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
+          header: () => <DefaultHeader />,
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"
@@ -39,10 +43,14 @@ export default function TabLayout() {
             />
           )
         }}
+        listeners={() => ({
+          tabPress: () => playPopAudio()
+        })}
       />
       <Tabs.Screen
         name="chart"
         options={{
+          header: () => <DefaultHeader />,
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"
@@ -61,6 +69,7 @@ export default function TabLayout() {
         }}
         listeners={({ navigation }) => ({
           tabPress: () => {
+            playPopAudio();
             setAnimationEnabled(false);
             setTabIndex(0);
             navigation.navigate('chart');
@@ -68,6 +77,30 @@ export default function TabLayout() {
           focus: () => {
             setAnimationEnabled(true);
           }
+        })}
+      />
+      <Tabs.Screen
+        name="setting"
+        options={{
+          header: () => <SettingHeader />,
+          tabBarLabel: ({ color }) => (
+            <Text
+              variant="tiny"
+              color={color}
+            >
+              설정
+            </Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <Entypo
+              name="cog"
+              size={24}
+              color={color}
+            />
+          )
+        }}
+        listeners={() => ({
+          tabPress: () => playPopAudio()
         })}
       />
     </Tabs>

@@ -1,8 +1,5 @@
-import Logo from '@/components/Logo';
-import { Colors } from '@/constants/Colors';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -21,24 +18,9 @@ export default function RootLayout() {
       <Stack.Screen
         name="(tabs)"
         options={{
-          header: () => (
-            <SafeAreaView style={styles.safe}>
-              <View style={styles.header}>
-                <Logo />
-              </View>
-            </SafeAreaView>
-          )
+          headerShown: false
         }}
       />
     </Stack>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: {
-    backgroundColor: Colors.primary30
-  },
-  header: {
-    padding: 16
-  }
-});
