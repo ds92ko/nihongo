@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
     gap: 2
   },
   tab: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderTopLeftRadius: 8,
@@ -94,6 +97,9 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   kanaIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     aspectRatio: 1,
     padding: 8
   }

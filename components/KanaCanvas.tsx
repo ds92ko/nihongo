@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
     gap: 8
   },
   button: {
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     aspectRatio: 1,

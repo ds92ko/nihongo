@@ -23,6 +23,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <Link
+          dismissTo
           style={styles.button}
           href={{ pathname: '/[chart]', params: { chart } }}
         >
@@ -100,7 +101,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 8,
-    padding: 16
+    paddingHorizontal: 16,
+    paddingBottom: 16
   },
   kana: {
     flexDirection: 'row',
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
     gap: 8
   },
   button: {
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     aspectRatio: 1,

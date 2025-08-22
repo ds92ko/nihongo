@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 8,
