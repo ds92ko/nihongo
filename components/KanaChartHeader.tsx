@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     overflow: 'hidden',
-    marginBottom: 8
+    marginBottom: 16
   },
   kanaIcon: {
     aspectRatio: 1,
