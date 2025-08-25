@@ -5,7 +5,7 @@ import { useSettingActions, useSettingContext } from '@/stores/useSettingStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-export default function Setting() {
+export default function SettingScreen() {
   const { popSoundOff, kanaSoundOff } = useSettingContext();
   const { setPopSoundOff, setKanaSoundOff } = useSettingActions();
 
