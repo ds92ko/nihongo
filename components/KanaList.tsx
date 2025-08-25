@@ -53,7 +53,8 @@ const KanaList = ({ data, kana }: KanaListProps) => {
 
 const styles = StyleSheet.create({
   rows: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     backgroundColor: Colors.white,
     gap: 8
   },

@@ -7,20 +7,21 @@ import { useKanaContext } from '@/stores/useKanaStore';
 import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import { KanaSoundType } from '@/types/kana';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Link } from 'expo-router';
 import { useEffect } from 'react';
 import { Dimensions, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const CONTAINER_PADDING = 16;
+const ROWS_PADDING_TOP = 16;
 const ROWS_GAP = 8;
 const PER_ROW = 3;
-const ROW_WIDTH = (width - CONTAINER_PADDING * 2 - ROWS_GAP * (PER_ROW - 1)) / PER_ROW;
+const ROW_WIDTH = (width - ROWS_PADDING_TOP * 2 - ROWS_GAP * (PER_ROW - 1)) / PER_ROW;
 const ROW_HEIGHT = 36;
 
 const StudyScene = () => {
   const { kanaType } = useKanaContext();
   const { target } = useStudyContext();
-  const { setTarget, resetTarget } = useStudyActions();
+  const { setType, setTarget, resetTarget } = useStudyActions();
   const { playPopAudio } = usePopAudio();
   const disabled = Object.values(target).every(v => !v.length);
 
@@ -40,7 +41,7 @@ const StudyScene = () => {
         contentContainerStyle={styles.groups}
         renderItem={({ item, index }) => {
           const maxHeight =
-            CONTAINER_PADDING +
+            ROWS_PADDING_TOP +
             (Math.ceil(item.rows.length / PER_ROW) + 1) * (ROW_HEIGHT + ROWS_GAP) -
             ROWS_GAP;
           const totalRows = KANA_TABS[kanaType].find(tab => tab.key === item.key)?.rows.length;
@@ -139,8 +140,13 @@ const StudyScene = () => {
         }}
       />
       <View style={styles.buttons}>
-        <Pressable
+        <Link
+          href="/test/study"
           style={[styles.button, disabled && styles.disabledButton]}
+          onPress={() => {
+            playPopAudio();
+            setType(kanaType, 'character');
+          }}
           disabled={disabled}
         >
           <Text
@@ -150,9 +156,14 @@ const StudyScene = () => {
           >
             문자 테스트
           </Text>
-        </Pressable>
-        <Pressable
+        </Link>
+        <Link
+          href="/test/study"
           style={[styles.button, disabled && styles.disabledButton]}
+          onPress={() => {
+            playPopAudio();
+            setType(kanaType, 'pronunciation');
+          }}
           disabled={disabled}
         >
           <Text
@@ -162,7 +173,7 @@ const StudyScene = () => {
           >
             발음 테스트
           </Text>
-        </Pressable>
+        </Link>
       </View>
     </View>
   );
@@ -174,11 +185,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white
   },
   groups: {
-    padding: CONTAINER_PADDING,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     gap: 16
   },
   rows: {
-    paddingTop: CONTAINER_PADDING,
+    paddingTop: ROWS_PADDING_TOP,
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8
@@ -215,7 +227,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
     paddingVertical: 12,
-    paddingHorizontal: CONTAINER_PADDING
+    paddingHorizontal: 16
   },
   button: {
     flex: 1,

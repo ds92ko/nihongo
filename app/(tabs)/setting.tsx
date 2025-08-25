@@ -256,10 +256,11 @@ export default function SettingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary10,
-    padding: 16
+    backgroundColor: Colors.primary10
   },
   contentContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 24,
     gap: 16
   },
   card: {
