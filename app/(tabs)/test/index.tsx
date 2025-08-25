@@ -1,13 +1,13 @@
+import StudyScene from '@/components/StudyScene';
 import TabBar from '@/components/TabBar';
-import TestScene from '@/components/TestScene';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
-  study: () => <TestScene tab="study" />,
-  review: () => <TestScene tab="review" />
+  study: () => <StudyScene />,
+  review: () => <StudyScene />
 });
 
 const routes = [
