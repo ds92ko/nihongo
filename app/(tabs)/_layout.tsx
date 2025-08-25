@@ -56,7 +56,7 @@ export default function TabLayout() {
               variant="tiny"
               color={color}
             >
-              카나 익히기
+              문자 익히기
             </Text>
           ),
           tabBarIcon: ({ color }) => (
