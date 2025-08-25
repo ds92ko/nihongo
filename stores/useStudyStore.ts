@@ -1,18 +1,28 @@
-import { KanaSoundType } from '@/types/kana';
+import { KANA_TABS } from '@/constants/KanaTabs';
+import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
+import { KanaSoundType, KanaType } from '@/types/kana';
 import { create } from 'zustand';
 
 type KanaStudy = Record<KanaSoundType, string[]>;
+type StudyType = 'character' | 'pronunciation';
+export type Progress = {
+  answer: string;
+  character: string;
+  pronunciation: string;
+};
 
 interface StudyContext {
+  type: StudyType | null;
   target: KanaStudy;
-  progress: KanaStudy;
+  progress: Progress[];
 }
 
 interface StudyActions {
+  setType: (kanaType: KanaType, type: StudyType) => void;
   setTarget: (target: Partial<KanaStudy>) => void;
-  setProgress: (progress: Partial<KanaStudy>) => void;
+  initProgress: (kanaType: KanaType) => Progress[];
+  setProgress: (progress: Progress[]) => void;
   resetTarget: () => void;
-  resetProgress: () => void;
 }
 
 interface StudyStore {
@@ -26,12 +36,25 @@ const defaultKanaStudy: KanaStudy = {
   youon: []
 };
 
-const useStudyStore = create<StudyStore>(set => ({
+const useStudyStore = create<StudyStore>((set, get) => ({
   context: {
+    type: null,
     target: defaultKanaStudy,
-    progress: defaultKanaStudy
+    progress: []
   },
   actions: {
+    setType: (kanaType, type) =>
+      set(state => {
+        const progress = get().actions.initProgress(kanaType);
+
+        return {
+          context: {
+            ...state.context,
+            type,
+            progress
+          }
+        };
+      }),
     setTarget: target =>
       set(state => ({
         context: {
@@ -42,14 +65,32 @@ const useStudyStore = create<StudyStore>(set => ({
           }
         }
       })),
+    initProgress: kanaType => {
+      const { target } = get().context;
+      const tabs = KANA_TABS[kanaType];
+
+      return tabs
+        .filter(tab => target[tab.key].length)
+        .flatMap(tab =>
+          tab.rows
+            .filter(row => target[tab.key].includes(row.label))
+            .flatMap(row =>
+              row.kana
+                .filter(Boolean)
+                .map(k => ({
+                  answer: '',
+                  character: k,
+                  pronunciation: KANA_TO_ROMAJI[kanaType][k]
+                }))
+                .filter(Boolean)
+            )
+        );
+    },
     setProgress: progress =>
       set(state => ({
         context: {
           ...state.context,
-          progress: {
-            ...state.context.progress,
-            ...progress
-          }
+          progress
         }
       })),
     resetTarget: () =>
@@ -57,13 +98,6 @@ const useStudyStore = create<StudyStore>(set => ({
         context: {
           ...state.context,
           target: defaultKanaStudy
-        }
-      })),
-    resetProgress: () =>
-      set(state => ({
-        context: {
-          ...state.context,
-          progress: defaultKanaStudy
         }
       }))
   }
