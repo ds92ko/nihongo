@@ -12,12 +12,12 @@ export interface KanaRow {
   kana: string[];
 }
 
-interface Tab {
+export interface KanaTab {
   key: KanaSoundType;
   title: string;
   rows: KanaRow[];
 }
 
 export type KanaTabs = {
-  [key in KanaType]: Tab[];
+  [key in KanaType]: KanaTab[];
 };
