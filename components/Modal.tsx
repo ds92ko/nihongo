@@ -1,43 +1,36 @@
-import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from 'react';
-import { Alert, Pressable, Modal as RNModal, ScrollView, StyleSheet, View } from 'react-native';
+import { ReactNode } from 'react';
+import {
+  Pressable,
+  Modal as RNModal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View
+} from 'react-native';
 
-const Modal = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+interface ModalProps {
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+  title: ReactNode;
+  children: ReactNode;
+  buttons?: ReactNode[];
+}
 
+const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) => {
   return (
-    <View>
-      <Pressable onPress={() => setModalVisible(true)}>
-        <Text>모달 열기</Text>
-      </Pressable>
-      <RNModal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}
-      >
+    <RNModal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+    >
+      <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
           <View style={styles.content}>
             <View style={styles.header}>
-              <View style={styles.title}>
-                <Ionicons
-                  name="bulb-outline"
-                  size={20}
-                  color={Colors.primary}
-                />
-                <Text
-                  weight={700}
-                  variant="body2"
-                >
-                  Tip!
-                </Text>
-              </View>
-              <Pressable onPress={() => setModalVisible(false)}>
+              <View style={styles.title}>{title}</View>
+              <Pressable onPress={() => setVisible(false)}>
                 <Ionicons
                   name="close"
                   size={24}
@@ -45,48 +38,26 @@ const Modal = () => {
                 />
               </Pressable>
             </View>
-            <ScrollView style={styles.body}>
-              <Text variant="body2">학습할 행을 선택하고 테스트를 시작하세요.</Text>
-            </ScrollView>
-            <View style={styles.footer}>
-              <Pressable
-                style={styles.button}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text
-                  weight={500}
-                  variant="body2"
-                >
-                  닫기
-                </Text>
-              </Pressable>
-              <Pressable
-                style={styles.button}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text
-                  weight={500}
-                  variant="body2"
-                >
-                  닫기
-                </Text>
-              </Pressable>
-            </View>
+            <ScrollView style={styles.body}>{children}</ScrollView>
+            {buttons && <View style={styles.footer}>{buttons}</View>}
           </View>
         </View>
-      </RNModal>
-    </View>
+      </SafeAreaView>
+    </RNModal>
   );
 };
 
 const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: Colors.overlay
+  },
   container: {
     flex: 1,
-    padding: 16,
+    padding: 32,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.overlay
+    alignItems: 'center'
   },
   content: {
     flex: 1,
@@ -107,7 +78,7 @@ const styles = StyleSheet.create({
     gap: 4
   },
   body: {
-    flex: 1
+    flexGrow: 0
   },
   footer: {
     flexDirection: 'row',
