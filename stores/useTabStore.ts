@@ -1,21 +1,21 @@
 import { create } from 'zustand';
 
-interface ChartTabContext {
+interface TabContext {
   tabIndex: number;
   animationEnabled: boolean;
 }
 
-interface ChartTabActions {
+interface TabActions {
   setTabIndex: (index: number) => void;
   setAnimationEnabled: (enabled: boolean) => void;
 }
 
-interface ChartTabStore {
-  context: ChartTabContext;
-  actions: ChartTabActions;
+interface TabStore {
+  context: TabContext;
+  actions: TabActions;
 }
 
-const useChartTabStore = create<ChartTabStore>(set => ({
+const useTabStore = create<TabStore>(set => ({
   context: {
     tabIndex: 0,
     animationEnabled: true
@@ -38,5 +38,5 @@ const useChartTabStore = create<ChartTabStore>(set => ({
   }
 }));
 
-export const useChartTabContext = () => useChartTabStore(({ context }) => context);
-export const useChartTabActions = () => useChartTabStore(({ actions }) => actions);
+export const useTabContext = () => useTabStore(({ context }) => context);
+export const useTabActions = () => useTabStore(({ actions }) => actions);

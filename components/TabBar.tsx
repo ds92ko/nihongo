@@ -5,12 +5,12 @@ import usePopAudio from '@/hooks/usePopAudio';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { NavigationState, Route, SceneRendererProps, TabDescriptor } from 'react-native-tab-view';
 
-interface ChartTabBarProps<T extends Route> extends SceneRendererProps {
+interface TabBarProps<T extends Route> extends SceneRendererProps {
   navigationState: NavigationState<T>;
   options: Record<string, TabDescriptor<T>> | undefined;
 }
 
-const ChartTabBar = <T extends Route>({ navigationState, jumpTo }: ChartTabBarProps<T>) => {
+const TabBar = <T extends Route>({ navigationState, jumpTo }: TabBarProps<T>) => {
   const { index } = navigationState;
   const { playPopAudio } = usePopAudio();
 
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ChartTabBar;
+export default TabBar;

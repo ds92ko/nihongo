@@ -1,6 +1,6 @@
 import ChartScene from '@/components/ChartScene';
-import ChartTabBar from '@/components/ChartTabBar';
-import { useChartTabActions, useChartTabContext } from '@/stores/useChartTabStore';
+import TabBar from '@/components/TabBar';
+import { useTabActions, useTabContext } from '@/stores/useTabStore';
 import { useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
@@ -18,8 +18,8 @@ const routes = [
 
 export default function ChartScreen() {
   const layout = useWindowDimensions();
-  const { tabIndex, animationEnabled } = useChartTabContext();
-  const { setTabIndex } = useChartTabActions();
+  const { tabIndex, animationEnabled } = useTabContext();
+  const { setTabIndex } = useTabActions();
 
   return (
     <TabView
@@ -27,7 +27,7 @@ export default function ChartScreen() {
       renderScene={renderScene}
       onIndexChange={setTabIndex}
       initialLayout={{ width: layout.width }}
-      renderTabBar={ChartTabBar}
+      renderTabBar={TabBar}
       animationEnabled={animationEnabled}
     />
   );

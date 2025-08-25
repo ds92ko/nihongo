@@ -3,12 +3,12 @@ import SettingHeader from '@/components/SettingHeader';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
-import { useChartTabActions } from '@/stores/useChartTabStore';
+import { useTabActions } from '@/stores/useTabStore';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
-  const { setTabIndex, setAnimationEnabled } = useChartTabActions();
+  const { setTabIndex, setAnimationEnabled } = useTabActions();
   const { playPopAudio } = usePopAudio();
 
   return (
@@ -73,6 +73,38 @@ export default function TabLayout() {
             setAnimationEnabled(false);
             setTabIndex(0);
             navigation.navigate('chart');
+          },
+          focus: () => {
+            setAnimationEnabled(true);
+          }
+        })}
+      />
+      <Tabs.Screen
+        name="test"
+        options={{
+          header: () => <DefaultHeader />,
+          tabBarLabel: ({ color }) => (
+            <Text
+              variant="tiny"
+              color={color}
+            >
+              테스트
+            </Text>
+          ),
+          tabBarIcon: ({ color }) => (
+            <Entypo
+              name="flower"
+              size={24}
+              color={color}
+            />
+          )
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: () => {
+            playPopAudio();
+            setAnimationEnabled(false);
+            setTabIndex(0);
+            navigation.navigate('test');
           },
           focus: () => {
             setAnimationEnabled(true);
