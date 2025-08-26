@@ -1,4 +1,16 @@
 export const Typography = {
+  display1: {
+    fontSize: 56,
+    lineHeight: 64
+  },
+  display2: {
+    fontSize: 48,
+    lineHeight: 56
+  },
+  display3: {
+    fontSize: 40,
+    lineHeight: 48
+  },
   h1: {
     fontSize: 32,
     lineHeight: 40
