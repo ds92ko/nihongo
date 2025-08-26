@@ -32,6 +32,11 @@ export const Colors = {
   mint: '#A7FFEB',
   peach: '#FFCCBC',
 
+  successAlpha: 'rgba(129, 199, 132, 0.3)',
+  errorAlpha: 'rgba(229, 115, 115, 0.3)',
+  warningAlpha: 'rgba(255, 183, 77, 0.3)',
+  infoAlpha: 'rgba(149, 117, 205, 0.3)',
+
   shadow: 'rgba(0,0,0,0.2)',
   overlay: 'rgba(0,0,0,0.5)'
 };
