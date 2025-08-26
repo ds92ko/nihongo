@@ -22,7 +22,6 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <Link
-          dismissTo
           style={styles.button}
           href={'/chart'}
           onPress={playPopAudio}

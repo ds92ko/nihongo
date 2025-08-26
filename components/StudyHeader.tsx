@@ -14,7 +14,6 @@ const StudyHeader = () => {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <Link
-          dismissTo
           style={styles.button}
           href={'/test'}
           onPress={playPopAudio}
