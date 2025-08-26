@@ -1,19 +1,72 @@
+import { mateImageMap } from '@/assets/images/mates';
 import Switch from '@/components/Switch';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
+import usePopAudio from '@/hooks/usePopAudio';
+import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';
 import { useSettingActions, useSettingContext } from '@/stores/useSettingStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const PADDING_HORIZONTAL = 16;
+const CONTAINER_PADDING = PADDING_HORIZONTAL * 2;
+const CARD_PADDING = PADDING_HORIZONTAL * 2;
+const MATES_GAP = 8;
+const PER_ROW = 4;
+const MATE_SIZE = Math.floor(
+  (width - (CONTAINER_PADDING + CARD_PADDING) - MATES_GAP * (PER_ROW - 1)) / PER_ROW
+);
 
 export default function SettingScreen() {
+  const { mate } = useMateContext();
+  const { setMate } = useMateActions();
   const { popSoundOff, kanaSoundOff } = useSettingContext();
   const { setPopSoundOff, setKanaSoundOff } = useSettingActions();
+  const { playPopAudio } = usePopAudio();
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <View style={styles.card}>
+        <View style={styles.cardTitle}>
+          <Ionicons
+            name="school-outline"
+            size={24}
+            color={Colors.textPrimary}
+          />
+          <Text
+            weight={700}
+            variant="body2"
+          >
+            학습 메이트
+          </Text>
+        </View>
+        <View style={styles.cardContent}>
+          <View style={styles.mates}>
+            {(Object.keys(mateImageMap) as MateType[]).map(key => (
+              <Pressable
+                key={key}
+                style={[
+                  styles.mate,
+                  { backgroundColor: key === mate ? Colors.primary30 : Colors.neutralLight }
+                ]}
+                onPress={() => {
+                  playPopAudio();
+                  setMate(key);
+                }}
+              >
+                <Image
+                  source={mateImageMap[key][key === mate ? 'hi' : 'peace']}
+                  style={styles.mateImage}
+                />
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </View>
       <View style={styles.card}>
         <View style={styles.cardTitle}>
           <Ionicons
@@ -259,14 +312,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary10
   },
   contentContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: PADDING_HORIZONTAL,
     paddingVertical: 24,
     gap: 16
   },
   card: {
     borderRadius: 8,
     backgroundColor: Colors.white,
-    padding: 16
+    padding: PADDING_HORIZONTAL
   },
   cardTitle: {
     flexDirection: 'row',
@@ -276,6 +329,23 @@ const styles = StyleSheet.create({
   cardContent: {
     paddingTop: 16,
     gap: 8
+  },
+  mates: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: MATES_GAP
+  },
+  mate: {
+    overflow: 'hidden',
+    borderRadius: 8,
+    width: MATE_SIZE,
+    padding: 4,
+    aspectRatio: 1
+  },
+  mateImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8
   },
   settingItem: {
     height: 30,
