@@ -1,5 +1,6 @@
 import { mateImageMap } from '@/assets/images/mates';
 import ProgressBar from '@/components/ProgressBar';
+import StudyResult from '@/components/StudyResult';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
@@ -63,9 +64,7 @@ export default function StudyScreen() {
   const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
   const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
 
-  if (!question) return null;
-
-  const correctAnswer = type === 'character' ? question.pronunciation : question.character;
+  const correctAnswer = type === 'character' ? question?.pronunciation : question?.character;
 
   const handleAnswer = (answer: string) => {
     if (selectedAnswer) return;
@@ -73,7 +72,7 @@ export default function StudyScreen() {
     setSelectedAnswer(answer);
 
     const newProgress = progress.map(p =>
-      p.character === question.character ? { ...p, answer } : p
+      p.character === question?.character ? { ...p, answer } : p
     );
     setProgress(newProgress);
 
@@ -86,7 +85,7 @@ export default function StudyScreen() {
   const feedbackImageArr = selectedAnswer === correctAnswer ? correctImage : incorrectImage;
   const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
 
-  return (
+  return question ? (
     <View style={styles.container}>
       <ProgressBar
         progress={progress.filter(p => p.answer).length}
@@ -114,14 +113,19 @@ export default function StudyScreen() {
             style={[
               styles.button,
               styles.questionButton,
-              kanaPlayerStatus.playing && styles.disabledButton
+              (kanaPlayerStatus.playing || Boolean(selectedAnswer)) && styles.disabledButton
             ]}
+            disabled={kanaPlayerStatus.playing || Boolean(selectedAnswer)}
             onPress={() => playKanaAudio(question.character)}
           >
             <MaterialIcons
-              name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
+              name={kanaPlayerStatus.playing || Boolean(selectedAnswer) ? 'headset-off' : 'headset'}
               size={20}
-              color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
+              color={
+                kanaPlayerStatus.playing || Boolean(selectedAnswer)
+                  ? Colors.textSecondary
+                  : Colors.textPrimary
+              }
             />
           </Pressable>
         )}
@@ -163,13 +167,21 @@ export default function StudyScreen() {
                   duration: 50,
                   useNativeDriver: true
                 }),
-                Animated.timing(shakes[index], { toValue: 5, duration: 50, useNativeDriver: true }),
+                Animated.timing(shakes[index], {
+                  toValue: 5,
+                  duration: 50,
+                  useNativeDriver: true
+                }),
                 Animated.timing(shakes[index], {
                   toValue: -5,
                   duration: 50,
                   useNativeDriver: true
                 }),
-                Animated.timing(shakes[index], { toValue: 0, duration: 50, useNativeDriver: true })
+                Animated.timing(shakes[index], {
+                  toValue: 0,
+                  duration: 50,
+                  useNativeDriver: true
+                })
               ]).start();
             }
           }
@@ -200,16 +212,23 @@ export default function StudyScreen() {
                   <Pressable
                     style={[
                       styles.button,
-                      kanaPlayerStatus.playing && styles.disabledButton,
-                      (isCorrect || isIncorrect) && styles.selectedButton
+                      (kanaPlayerStatus.playing || Boolean(selectedAnswer)) && styles.disabledButton
                     ]}
                     disabled={kanaPlayerStatus.playing || isCorrect || isIncorrect}
                     onPress={() => playKanaAudio(kana)}
                   >
                     <MaterialIcons
-                      name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
+                      name={
+                        kanaPlayerStatus.playing || Boolean(selectedAnswer)
+                          ? 'headset-off'
+                          : 'headset'
+                      }
                       size={20}
-                      color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
+                      color={
+                        kanaPlayerStatus.playing || Boolean(selectedAnswer)
+                          ? Colors.textSecondary
+                          : Colors.textPrimary
+                      }
                     />
                   </Pressable>
                 )}
@@ -219,6 +238,8 @@ export default function StudyScreen() {
         })}
       </View>
     </View>
+  ) : (
+    <StudyResult />
   );
 }
 
@@ -283,10 +304,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary30
   },
   disabledButton: {
-    backgroundColor: Colors.primary10
-  },
-  selectedButton: {
-    backgroundColor: Colors.white
+    backgroundColor: 'transparent'
   },
   questionButton: {
     position: 'absolute',
