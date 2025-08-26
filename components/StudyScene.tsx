@@ -15,7 +15,7 @@ const { width } = Dimensions.get('window');
 const ROWS_PADDING_TOP = 16;
 const ROWS_GAP = 8;
 const PER_ROW = 3;
-const ROW_WIDTH = (width - ROWS_PADDING_TOP * 2 - ROWS_GAP * (PER_ROW - 1)) / PER_ROW;
+const ROW_WIDTH = Math.floor((width - ROWS_PADDING_TOP * 2 - ROWS_GAP * (PER_ROW - 1)) / PER_ROW);
 const ROW_HEIGHT = 36;
 
 const StudyScene = () => {
@@ -154,7 +154,7 @@ const StudyScene = () => {
             variant="body2"
             color="white"
           >
-            문자 테스트
+            읽기 테스트
           </Text>
         </Link>
         <Link
@@ -171,7 +171,7 @@ const StudyScene = () => {
             variant="body2"
             color="white"
           >
-            발음 테스트
+            표기 테스트
           </Text>
         </Link>
       </View>

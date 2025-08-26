@@ -30,7 +30,7 @@ const StudyHeader = () => {
             weight={700}
             variant="h4"
           >
-            {type === 'character' ? '문자' : '발음'} 테스트
+            {type === 'character' ? '읽기' : '표기'} 테스트
           </Text>
         </View>
       </View>
