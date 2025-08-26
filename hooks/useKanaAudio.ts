@@ -1,4 +1,4 @@
-import { audioMap } from '@/assets/audio';
+import { kanaAudioMap } from '@/assets/audio/kana';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
@@ -18,7 +18,7 @@ const useKanaAudio = () => {
       if (status.playing) return;
 
       const romaji = KANA_TO_ROMAJI[kanaType][kana];
-      const source = audioMap[romaji];
+      const source = kanaAudioMap[romaji];
 
       try {
         if (!auto) playPopAudio();

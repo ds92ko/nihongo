@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 
 const usePopAudio = () => {
   const { popSoundOff } = useSettingContext();
-  const source = require('@/assets/audio/pop.mp3');
+  const source = require('@/assets/audio/effects/pop.mp3');
   const player = useAudioPlayer(source);
 
   const playPopAudio = useCallback(() => {

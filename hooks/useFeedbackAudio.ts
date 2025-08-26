@@ -11,8 +11,8 @@ const useFeedbackAudio = () => {
       if (popSoundOff) return;
 
       const source = {
-        correct: require('@/assets/audio/correct.mp3'),
-        incorrect: require('@/assets/audio/incorrect.mp3')
+        correct: require('@/assets/audio/effects/correct.mp3'),
+        incorrect: require('@/assets/audio/effects/incorrect.mp3')
       };
 
       try {
