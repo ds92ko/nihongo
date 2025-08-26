@@ -3,13 +3,13 @@ import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
+import useFeedbackAudio from '@/hooks/useFeedbackAudio';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { Progress, useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Animated, Pressable, StyleSheet, View } from 'react-native';
 
 const ANSWERS_LENGTH = 5;
 
@@ -18,7 +18,7 @@ export default function StudyScreen() {
   const { type, progress } = useStudyContext();
   const { setProgress } = useStudyActions();
   const { playKanaAudio, kanaPlayerStatus } = useKanaAudio();
-  const { playPopAudio } = usePopAudio();
+  const { playFeedbackAudio } = useFeedbackAudio();
 
   const getQuestion = (progress: Progress[]) => {
     const unsolved = progress.filter(p => !p.answer);
@@ -52,13 +52,16 @@ export default function StudyScreen() {
   const [question, setQuestion] = useState(() => getQuestion(progress));
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
 
+  const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
+  const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
+
   if (!question) return null;
 
   const correctAnswer = type === 'character' ? question.pronunciation : question.character;
 
   const handleAnswer = (answer: string) => {
     if (selectedAnswer) return;
-    playPopAudio();
+    playFeedbackAudio(answer === correctAnswer ? 'correct' : 'incorrect');
     setSelectedAnswer(answer);
 
     const newProgress = progress.map(p =>
@@ -103,37 +106,82 @@ export default function StudyScreen() {
         </Text>
       </View>
       <View style={styles.answers}>
-        {question.answers?.map(kana => {
+        {question.answers?.map((kana, index) => {
           const answer = type === 'character' ? KANA_TO_ROMAJI[kanaType][kana] : kana;
-          const isCorrect = selectedAnswer && answer === correctAnswer;
-          const isIncorrect = answer === selectedAnswer && answer !== correctAnswer;
+          const isCorrect = Boolean(selectedAnswer && answer === correctAnswer);
+          const isIncorrect = Boolean(answer === selectedAnswer && answer !== correctAnswer);
+
+          if (selectedAnswer) {
+            if (isCorrect) {
+              Animated.sequence([
+                Animated.spring(scales[index], { toValue: 1.03, useNativeDriver: true }),
+                Animated.spring(scales[index], { toValue: 1, useNativeDriver: true })
+              ]).start();
+            }
+            if (isIncorrect) {
+              Animated.sequence([
+                Animated.timing(shakes[index], {
+                  toValue: 10,
+                  duration: 50,
+                  useNativeDriver: true
+                }),
+                Animated.timing(shakes[index], {
+                  toValue: -10,
+                  duration: 50,
+                  useNativeDriver: true
+                }),
+                Animated.timing(shakes[index], { toValue: 5, duration: 50, useNativeDriver: true }),
+                Animated.timing(shakes[index], {
+                  toValue: -5,
+                  duration: 50,
+                  useNativeDriver: true
+                }),
+                Animated.timing(shakes[index], { toValue: 0, duration: 50, useNativeDriver: true })
+              ]).start();
+            }
+          }
 
           return (
-            <Pressable
+            <Animated.View
               key={answer}
-              style={[styles.answer, isCorrect && styles.correct, isIncorrect && styles.incorrect]}
-              onPress={() => handleAnswer(answer)}
+              style={{
+                transform: [{ scale: scales[index] ?? 1 }, { translateX: shakes[index] ?? 0 }]
+              }}
             >
-              <Text
-                weight={isCorrect || isIncorrect ? 700 : 500}
-                color={isCorrect || isIncorrect ? 'white' : 'textSecondary'}
-                style={[styles.answerText, { paddingLeft: type === 'character' ? 44 : 0 }]}
+              <Pressable
+                style={[
+                  styles.answer,
+                  isCorrect && styles.correct,
+                  isIncorrect && styles.incorrect
+                ]}
+                onPress={() => handleAnswer(answer)}
               >
-                {type === 'pronunciation' ? answer : `[${answer}]`}
-              </Text>
-              {type === 'character' && (
-                <Pressable
-                  style={[styles.button, kanaPlayerStatus.playing && styles.disabledButton]}
-                  onPress={() => playKanaAudio(kana)}
+                <Text
+                  weight={isCorrect || isIncorrect ? 700 : 500}
+                  color={isCorrect || isIncorrect ? 'white' : 'textSecondary'}
+                  style={[styles.answerText, { paddingLeft: type === 'character' ? 44 : 0 }]}
                 >
-                  <MaterialIcons
-                    name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
-                    size={20}
-                    color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
-                  />
-                </Pressable>
-              )}
-            </Pressable>
+                  {type === 'pronunciation' ? answer : `[${answer}]`}
+                </Text>
+                {type === 'character' && (
+                  <Pressable
+                    style={[
+                      styles.button,
+                      kanaPlayerStatus.playing && styles.disabledButton,
+                      (isCorrect || isIncorrect) && styles.selectedButton
+                    ]}
+                    disabled={kanaPlayerStatus.playing || isCorrect || isIncorrect}
+                    onPress={() => playKanaAudio(kana)}
+                  >
+                    <MaterialIcons
+                      name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
+                      size={20}
+                      color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
+                    />
+                  </Pressable>
+                )}
+              </Pressable>
+            </Animated.View>
           );
         })}
       </View>
@@ -148,7 +196,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 24,
-    gap: 16
+    gap: 24
   },
   question: {
     position: 'relative',
@@ -161,16 +209,16 @@ const styles = StyleSheet.create({
   },
   answers: {
     display: 'flex',
-    gap: 8
+    gap: 12
   },
   answer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 60,
+    minHeight: 52,
     padding: 8,
-    borderRadius: 30,
+    borderRadius: 26,
     textAlign: 'center',
     backgroundColor: Colors.primary10
   },
@@ -189,16 +237,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     aspectRatio: 1,
-    padding: 12,
+    padding: 8,
     borderRadius: '50%',
     backgroundColor: Colors.primary30
   },
   disabledButton: {
     backgroundColor: Colors.primary10
   },
+  selectedButton: {
+    backgroundColor: Colors.white
+  },
   questionButton: {
     position: 'absolute',
     top: 12,
-    right: 12
+    right: 12,
+    padding: 12
   }
 });
