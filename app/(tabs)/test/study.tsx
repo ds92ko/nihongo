@@ -1,3 +1,4 @@
+import { mateImageMap } from '@/assets/images/mates';
 import ProgressBar from '@/components/ProgressBar';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
@@ -6,12 +7,18 @@ import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import useFeedbackAudio from '@/hooks/useFeedbackAudio';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
+import { useMateContext } from '@/stores/useMateStore';
 import { Progress, useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
-import { Animated, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 
+const { width } = Dimensions.get('window');
+const FEEDBACK_IMAGE_SIZE = width * 0.35;
 const ANSWERS_LENGTH = 5;
+
+const correctImage = ['blushing', 'excited', 'good', 'happy', 'love', 'ok', 'sing', 'yes'];
+const incorrectImage = ['confused', 'huh', 'mocking', 'no', 'sad', 'shocked', 'shy', 'sick'];
 
 export default function StudyScreen() {
   const { kanaType } = useKanaContext();
@@ -19,6 +26,7 @@ export default function StudyScreen() {
   const { setProgress } = useStudyActions();
   const { playKanaAudio, kanaPlayerStatus } = useKanaAudio();
   const { playFeedbackAudio } = useFeedbackAudio();
+  const { mate } = useMateContext();
 
   const getQuestion = (progress: Progress[]) => {
     const unsolved = progress.filter(p => !p.answer);
@@ -75,13 +83,32 @@ export default function StudyScreen() {
     }, 1000);
   };
 
+  const feedbackImageArr = selectedAnswer === correctAnswer ? correctImage : incorrectImage;
+  const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
+
   return (
     <View style={styles.container}>
       <ProgressBar
         progress={progress.filter(p => p.answer).length}
         max={progress.length}
       />
-      <View style={styles.question}>
+      <View
+        style={[
+          styles.question,
+          {
+            backgroundColor: !selectedAnswer
+              ? Colors.white
+              : selectedAnswer === correctAnswer
+                ? Colors.successAlpha
+                : Colors.errorAlpha,
+            borderColor: !selectedAnswer
+              ? Colors.neutral
+              : selectedAnswer === correctAnswer
+                ? Colors.success
+                : Colors.error
+          }
+        ]}
+      >
         {type === 'pronunciation' && (
           <Pressable
             style={[
@@ -97,6 +124,12 @@ export default function StudyScreen() {
               color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
             />
           </Pressable>
+        )}
+        {selectedAnswer && (
+          <Image
+            source={mateImageMap[mate][feedbackImageName]}
+            style={styles.feedbackImage}
+          />
         )}
         <Text
           weight={700}
@@ -204,8 +237,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.neutral
+    borderWidth: 1
+  },
+  feedbackImage: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: FEEDBACK_IMAGE_SIZE,
+    height: FEEDBACK_IMAGE_SIZE,
+    aspectRatio: 1,
+    zIndex: 10
   },
   answers: {
     display: 'flex',
