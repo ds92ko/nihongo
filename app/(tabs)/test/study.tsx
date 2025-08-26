@@ -3,9 +3,11 @@ import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
+import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { Progress, useStudyActions, useStudyContext } from '@/stores/useStudyStore';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -15,6 +17,7 @@ export default function StudyScreen() {
   const { kanaType } = useKanaContext();
   const { type, progress } = useStudyContext();
   const { setProgress } = useStudyActions();
+  const { playKanaAudio, kanaPlayerStatus } = useKanaAudio();
   const { playPopAudio } = usePopAudio();
 
   const getQuestion = (progress: Progress[]) => {
@@ -31,18 +34,12 @@ export default function StudyScreen() {
     if (!rows) return null;
 
     const rowIndex = rows.findIndex(kana => kana.includes(current?.character));
-    const currentRow = [...rows[rowIndex]];
-    const answers = currentRow.map(answer =>
-      type === 'character' ? KANA_TO_ROMAJI[kanaType][answer] : answer
-    );
+    const answers = [...rows[rowIndex]];
 
     if (answers.length < ANSWERS_LENGTH) {
       const otherRows = rows.filter((_, i) => i !== rowIndex).flat();
       const remaining = ANSWERS_LENGTH - answers.length;
-      const otherAnswers = [...otherRows]
-        .sort(() => 0.5 - Math.random())
-        .slice(0, remaining)
-        .map(answer => (type === 'character' ? KANA_TO_ROMAJI[kanaType][answer] : answer));
+      const otherAnswers = [...otherRows].sort(() => 0.5 - Math.random()).slice(0, remaining);
 
       answers.push(...otherAnswers);
     }
@@ -81,15 +78,33 @@ export default function StudyScreen() {
         progress={progress.filter(p => p.answer).length}
         max={progress.length}
       />
-      <Text
-        weight={700}
-        variant="h1"
-        style={styles.question}
-      >
-        {type === 'character' ? question.character : `[${question.pronunciation}]`}
-      </Text>
+      <View style={styles.question}>
+        {type === 'pronunciation' && (
+          <Pressable
+            style={[
+              styles.button,
+              styles.questionButton,
+              kanaPlayerStatus.playing && styles.disabledButton
+            ]}
+            onPress={() => playKanaAudio(question.character)}
+          >
+            <MaterialIcons
+              name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
+              size={20}
+              color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
+            />
+          </Pressable>
+        )}
+        <Text
+          weight={700}
+          variant="display1"
+        >
+          {type === 'character' ? question.character : `[${question.pronunciation}]`}
+        </Text>
+      </View>
       <View style={styles.answers}>
-        {question.answers?.map(answer => {
+        {question.answers?.map(kana => {
+          const answer = type === 'character' ? KANA_TO_ROMAJI[kanaType][kana] : kana;
           const isCorrect = selectedAnswer && answer === correctAnswer;
           const isIncorrect = answer === selectedAnswer && answer !== correctAnswer;
 
@@ -101,11 +116,23 @@ export default function StudyScreen() {
             >
               <Text
                 weight={isCorrect || isIncorrect ? 700 : 500}
-                variant="body2"
                 color={isCorrect || isIncorrect ? 'white' : 'textSecondary'}
+                style={[styles.answerText, { paddingLeft: type === 'character' ? 44 : 0 }]}
               >
                 {type === 'pronunciation' ? answer : `[${answer}]`}
               </Text>
+              {type === 'character' && (
+                <Pressable
+                  style={[styles.button, kanaPlayerStatus.playing && styles.disabledButton]}
+                  onPress={() => playKanaAudio(kana)}
+                >
+                  <MaterialIcons
+                    name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
+                    size={20}
+                    color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
+                  />
+                </Pressable>
+              )}
             </Pressable>
           );
         })}
@@ -124,20 +151,26 @@ const styles = StyleSheet.create({
     gap: 16
   },
   question: {
-    textAlign: 'center'
+    position: 'relative',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.neutral
   },
   answers: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: 16
+    gap: 8
   },
   answer: {
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderRadius: 27,
+    minHeight: 60,
+    padding: 8,
+    borderRadius: 30,
     textAlign: 'center',
     backgroundColor: Colors.primary10
   },
@@ -146,5 +179,26 @@ const styles = StyleSheet.create({
   },
   incorrect: {
     backgroundColor: Colors.error
+  },
+  answerText: {
+    flex: 1,
+    textAlign: 'center'
+  },
+  button: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    aspectRatio: 1,
+    padding: 12,
+    borderRadius: '50%',
+    backgroundColor: Colors.primary30
+  },
+  disabledButton: {
+    backgroundColor: Colors.primary10
+  },
+  questionButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12
   }
 });
