@@ -4,13 +4,11 @@ import { create } from 'zustand';
 interface KanaContext {
   kanaType: KanaType;
   isVisibleGrid: boolean;
-  isPlayingAudio: boolean;
 }
 
 interface KanaActions {
   setKanaType: () => void;
   setIsVisibleGrid: () => void;
-  setIsPlayingAudio: (isPlaying: boolean) => void;
 }
 
 interface KanaStore {
@@ -21,8 +19,7 @@ interface KanaStore {
 const useKanaStore = create<KanaStore>(set => ({
   context: {
     kanaType: 'hiragana' as const,
-    isVisibleGrid: true,
-    isPlayingAudio: false
+    isVisibleGrid: true
   },
   actions: {
     setKanaType: () =>
@@ -37,13 +34,6 @@ const useKanaStore = create<KanaStore>(set => ({
         context: {
           ...state.context,
           isVisibleGrid: !state.context.isVisibleGrid
-        }
-      })),
-    setIsPlayingAudio: isPlaying =>
-      set(state => ({
-        context: {
-          ...state.context,
-          isPlayingAudio: isPlaying
         }
       }))
   }

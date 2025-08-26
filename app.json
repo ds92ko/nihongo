@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "nihongo",
+    "name": "NihonGO",
     "slug": "nihongo",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,6 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
+      "buildNumber": "1.0.0",
       "bundleIdentifier": "com.anonymous.nihongo"
     },
     "android": {
@@ -21,7 +22,8 @@
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
-      ]
+      ],
+      "package": "com.anonymous.nihongo"
     },
     "web": {
       "bundler": "metro",
@@ -40,7 +42,7 @@
         }
       ],
       [
-        "expo-av",
+        "expo-audio",
         {
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }

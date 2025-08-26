@@ -5,7 +5,7 @@ import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -16,10 +16,11 @@ interface KanaCanvasProps {
 }
 
 const KanaCanvas = ({ kana }: KanaCanvasProps) => {
-  const { isVisibleGrid, isPlayingAudio } = useKanaContext();
+  const { isVisibleGrid } = useKanaContext();
   const { setIsVisibleGrid } = useKanaActions();
-  const { playKanaAudio } = useKanaAudio();
+  const { playKanaAudio, kanaPlayerStatus } = useKanaAudio();
   const { playPopAudio } = usePopAudio();
+  const firstRender = useRef(true);
 
   const [restartTrigger, setRestartTrigger] = useState(0);
   const [paths, setPaths] = useState<Point[][]>([]);
@@ -67,6 +68,13 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     playPopAudio();
     setPaths([]);
   };
+
+  useEffect(() => {
+    if (firstRender.current) {
+      playKanaAudio(kana, true);
+      firstRender.current = false;
+    }
+  }, [kana, playKanaAudio]);
 
   return (
     <View style={styles.container}>
@@ -127,25 +135,25 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
           />
         </Pressable>
         <Pressable
-          style={[styles.button, isPlayingAudio && styles.disabledButton]}
+          style={[styles.button, kanaPlayerStatus.playing && styles.disabledButton]}
           onPress={handlePlay}
-          disabled={isPlayingAudio}
+          disabled={kanaPlayerStatus.playing}
         >
           <MaterialIcons
-            name={isPlayingAudio ? 'headset-off' : 'headset'}
+            name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
             size={20}
-            color={isPlayingAudio ? Colors.textSecondary : Colors.textPrimary}
+            color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
           />
         </Pressable>
         <Pressable
-          style={[styles.button, isPlayingAudio && styles.disabledButton]}
+          style={[styles.button, kanaPlayerStatus.playing && styles.disabledButton]}
           onPress={handleRestart}
-          disabled={isPlayingAudio}
+          disabled={kanaPlayerStatus.playing}
         >
           <MaterialIcons
-            name={isPlayingAudio ? 'play-disabled' : 'play-arrow'}
+            name={kanaPlayerStatus.playing ? 'play-disabled' : 'play-arrow'}
             size={20}
-            color={isPlayingAudio ? Colors.textSecondary : Colors.textPrimary}
+            color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
           />
         </Pressable>
         <Pressable

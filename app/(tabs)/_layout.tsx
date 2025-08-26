@@ -44,7 +44,7 @@ export default function TabLayout() {
           )
         }}
         listeners={() => ({
-          tabPress: () => playPopAudio()
+          tabPress: playPopAudio
         })}
       />
       <Tabs.Screen
@@ -132,7 +132,7 @@ export default function TabLayout() {
           )
         }}
         listeners={() => ({
-          tabPress: () => playPopAudio()
+          tabPress: playPopAudio
         })}
       />
     </Tabs>

@@ -1,59 +1,40 @@
 import { audioMap } from '@/assets/audio';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
-import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
+import usePopAudio from '@/hooks/usePopAudio';
+import { useKanaContext } from '@/stores/useKanaStore';
 import { useSettingContext } from '@/stores/useSettingStore';
-import { Audio } from 'expo-av';
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useCallback } from 'react';
 
 const useKanaAudio = () => {
-  const { popSoundOff, kanaSoundOff } = useSettingContext();
-  const { kanaType, isPlayingAudio } = useKanaContext();
-  const { setIsPlayingAudio } = useKanaActions();
-
-  const playSound = useCallback(async (sound: Audio.Sound) => {
-    return new Promise<void>((resolve, reject) => {
-      sound.setOnPlaybackStatusUpdate(status => {
-        if (!status.isLoaded) return;
-        if (status.didJustFinish) {
-          sound.unloadAsync().finally(() => resolve());
-        }
-      });
-      sound.playAsync().catch(reject);
-    });
-  }, []);
+  const { playPopAudio } = usePopAudio();
+  const { kanaSoundOff } = useSettingContext();
+  const { kanaType } = useKanaContext();
+  const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
 
   const playKanaAudio = useCallback(
-    async (kana: string) => {
-      if (isPlayingAudio) return;
+    async (kana: string, auto?: boolean) => {
+      if (status.playing) return;
 
       const romaji = KANA_TO_ROMAJI[kanaType][kana];
       const source = audioMap[romaji];
 
       try {
-        setIsPlayingAudio(true);
-
-        if (!popSoundOff) {
-          const popSound = new Audio.Sound();
-          await popSound.loadAsync(require('@/assets/audio/pop.mp3'));
-          await playSound(popSound);
-        }
+        if (!auto) playPopAudio();
 
         if (!kanaSoundOff) {
-          const kanaSound = new Audio.Sound();
-          await kanaSound.loadAsync(source);
-          await playSound(kanaSound);
+          player.replace(source);
+          player.play();
         }
-
-        setIsPlayingAudio(false);
       } catch (err) {
         console.error(err);
-        setIsPlayingAudio(false);
       }
     },
-    [kanaType, isPlayingAudio, setIsPlayingAudio, playSound, popSoundOff, kanaSoundOff]
+    [kanaType, playPopAudio, kanaSoundOff, player, status]
   );
 
-  return { playKanaAudio };
+  return { playKanaAudio, kanaPlayerStatus: status };
 };
 
 export default useKanaAudio;

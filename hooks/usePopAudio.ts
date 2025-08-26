@@ -1,28 +1,22 @@
 import { useSettingContext } from '@/stores/useSettingStore';
-import { Audio } from 'expo-av';
+import { useAudioPlayer } from 'expo-audio';
 import { useCallback } from 'react';
 
 const usePopAudio = () => {
   const { popSoundOff } = useSettingContext();
-  const playPopAudio = useCallback(async () => {
+  const source = require('@/assets/audio/pop.mp3');
+  const player = useAudioPlayer(source);
+
+  const playPopAudio = useCallback(() => {
     if (popSoundOff) return;
 
-    const sound = new Audio.Sound();
-
     try {
-      await sound.loadAsync(require('@/assets/audio/pop.mp3'));
-      await sound.playAsync();
-
-      sound.setOnPlaybackStatusUpdate(status => {
-        if (!status.isLoaded) return;
-        if (status.didJustFinish) {
-          sound.unloadAsync();
-        }
-      });
-    } catch (error) {
-      console.error('Error playing click sound:', error);
+      player.seekTo(0);
+      player.play();
+    } catch (err) {
+      console.error(err);
     }
-  }, [popSoundOff]);
+  }, [player, popSoundOff]);
 
   return { playPopAudio };
 };

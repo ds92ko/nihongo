@@ -21,8 +21,8 @@ const TabBar = <T extends Route>({ navigationState, jumpTo }: TabBarProps<T>) =>
           <Pressable
             key={route.key}
             onPress={() => {
-              jumpTo(route.key);
               playPopAudio();
+              jumpTo(route.key);
             }}
             style={[
               styles.tab,
