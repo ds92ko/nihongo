@@ -1,5 +1,6 @@
 import Accordion from '@/components/Accordion';
 import EmptyState from '@/components/EmptyState';
+import InfoCard from '@/components/InfoCard';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
@@ -19,6 +20,12 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 const NOTES_PADDING_TOP = 16;
 const NOTES_GAP = 12;
 const NOTE_HEIGHT = 52;
+
+const tips = [
+  '오답을 틀린 횟수별로 확인하고, 다시 학습해보세요.',
+  '문자와 발음을 함께 보거나, 문자 혹은 발음만 볼 수 있어요.',
+  '테스트에서 틀린 문제를 다시 맞히면 오답노트에서 사라져요.'
+];
 
 const ReviewNoteScene = () => {
   const { kanaType } = useKanaContext();
@@ -55,6 +62,7 @@ const ReviewNoteScene = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
+        <InfoCard tips={tips} />
         <View style={styles.controls}>
           <Pressable
             style={[
