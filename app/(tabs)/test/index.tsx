@@ -1,9 +1,9 @@
 import ReviewNoteScene from '@/components/ReviewNoteScene';
 import StudyScene from '@/components/StudyScene';
 import TabBar from '@/components/TabBar';
+import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
-import React from 'react';
-import { useWindowDimensions } from 'react-native';
+import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
@@ -17,18 +17,29 @@ const routes = [
 ];
 
 export default function TestScreen() {
-  const layout = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const { tabIndex, animationEnabled } = useTabContext();
   const { setTabIndex } = useTabActions();
 
   return (
-    <TabView
-      navigationState={{ index: tabIndex, routes }}
-      renderScene={renderScene}
-      onIndexChange={setTabIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={TabBar}
-      animationEnabled={animationEnabled}
-    />
+    <SafeAreaView style={styles.safe}>
+      <TabView
+        lazy
+        swipeEnabled
+        navigationState={{ index: tabIndex, routes }}
+        renderScene={renderScene}
+        onIndexChange={setTabIndex}
+        initialLayout={{ width }}
+        renderTabBar={TabBar}
+        animationEnabled={animationEnabled}
+      />
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: Colors.primary30
+  }
+});

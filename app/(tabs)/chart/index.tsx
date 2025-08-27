@@ -1,7 +1,8 @@
 import ChartScene from '@/components/ChartScene';
 import TabBar from '@/components/TabBar';
+import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
-import { useWindowDimensions } from 'react-native';
+import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
@@ -22,13 +23,24 @@ export default function ChartScreen() {
   const { setTabIndex } = useTabActions();
 
   return (
-    <TabView
-      navigationState={{ index: tabIndex, routes }}
-      renderScene={renderScene}
-      onIndexChange={setTabIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={TabBar}
-      animationEnabled={animationEnabled}
-    />
+    <SafeAreaView style={styles.safe}>
+      <TabView
+        lazy
+        swipeEnabled
+        navigationState={{ index: tabIndex, routes }}
+        renderScene={renderScene}
+        onIndexChange={setTabIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={TabBar}
+        animationEnabled={animationEnabled}
+      />
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: Colors.primary30
+  }
+});

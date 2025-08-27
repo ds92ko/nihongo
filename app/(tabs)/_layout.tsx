@@ -1,4 +1,4 @@
-import DefaultHeader from '@/components/DefaultHeader';
+import HomeHeader from '@/components/HomeHeader';
 import SettingHeader from '@/components/SettingHeader';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
@@ -26,7 +26,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          header: () => <DefaultHeader />,
+          header: () => <HomeHeader />,
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"
@@ -50,7 +50,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="chart"
         options={{
-          header: () => <DefaultHeader />,
+          headerShown: false,
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"
@@ -82,7 +82,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="test"
         options={{
-          header: () => <DefaultHeader />,
+          headerShown: false,
           tabBarLabel: ({ color }) => (
             <Text
               variant="tiny"

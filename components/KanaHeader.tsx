@@ -104,8 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 8,
-    paddingHorizontal: 16,
-    paddingBottom: 16
+    padding: 16
   },
   kana: {
     flexDirection: 'row',

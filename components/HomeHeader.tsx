@@ -2,7 +2,7 @@ import Logo from '@/components/Logo';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-const DefaultHeader = () => {
+const HomeHeader = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DefaultHeader;
+export default HomeHeader;
