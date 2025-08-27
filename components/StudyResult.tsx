@@ -6,6 +6,7 @@ import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
 import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
 import { Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -128,7 +129,7 @@ const StudyResult = () => {
                   </Text>
                 </View>
                 <Pressable
-                  style={[styles.audioButton, playing && styles.disabledAudioButton]}
+                  style={[styles.iconButton, playing && styles.disabledIconButton]}
                   disabled={playing}
                   onPress={() => playKanaAudio(character)}
                 >
@@ -138,6 +139,17 @@ const StudyResult = () => {
                     color={playing ? Colors.textSecondary : Colors.textPrimary}
                   />
                 </Pressable>
+                <Link
+                  href={{ pathname: '/chart/[kana]', params: { kana: character } }}
+                  style={styles.iconButton}
+                  onPress={playPopAudio}
+                >
+                  <MaterialCommunityIcons
+                    name="lead-pencil"
+                    size={20}
+                    color={Colors.textPrimary}
+                  />
+                </Link>
               </View>
             );
           })}
@@ -248,7 +260,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 8
   },
-  audioButton: {
+  iconButton: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -257,7 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     backgroundColor: Colors.primary30
   },
-  disabledAudioButton: {
+  disabledIconButton: {
     backgroundColor: Colors.primary10
   },
   buttons: {
