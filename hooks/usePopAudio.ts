@@ -1,11 +1,12 @@
 import { useSettingContext } from '@/stores/useSettingStore';
-import { useAudioPlayer } from 'expo-audio';
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useCallback } from 'react';
 
 const usePopAudio = () => {
   const { popSoundOff } = useSettingContext();
   const source = require('@/assets/audio/effects/pop.mp3');
   const player = useAudioPlayer(source);
+  const status = useAudioPlayerStatus(player);
 
   const playPopAudio = useCallback(() => {
     if (popSoundOff) return;
@@ -18,7 +19,7 @@ const usePopAudio = () => {
     }
   }, [player, popSoundOff]);
 
-  return { playPopAudio };
+  return { playPopAudio, popPlayerStatus: status };
 };
 
 export default usePopAudio;
