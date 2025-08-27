@@ -5,152 +5,174 @@ import usePopAudio from '@/hooks/usePopAudio';
 import { useMateContext } from '@/stores/useMateStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 
 const { width } = Dimensions.get('window');
-const slides = [
-  '테스트할 행을 선택한 뒤, 원하는 방식으로 테스트를 시작해보세요.',
-  '읽기 테스트는 제시된 문자를 보고 발음을 맞히는 방식이에요.',
-  '표기 테스트는 제시된 발음에 맞는 문자를 맞히는 방식이에요.'
-];
+const CAROUSEL_WIDTH = width * 0.6;
+const MATE_IMAGE_SIZE = width * 0.3;
 
-const InfoCard = () => {
+interface InfoCardProps {
+  tips: string[];
+}
+
+const InfoCard = ({ tips }: InfoCardProps) => {
   const { mate } = useMateContext();
   const { playPopAudio } = usePopAudio();
-
   const progress = useSharedValue<number>(0);
+  const carouselRef = useRef<ICarouselInstance>(null);
+  const [carouselHeight, setCarouselHeight] = useState(0);
+  const [visible, setVisible] = useState(true);
 
-  const ref = useRef<ICarouselInstance>(null);
+  const handleClose = () => {
+    playPopAudio();
+    setVisible(false);
+  };
 
   const onPressPagination = (index: number) => {
-    ref.current?.scrollTo({
+    playPopAudio();
+    carouselRef.current?.scrollTo({
       count: index - progress.value,
       animated: true
     });
   };
 
   return (
-    <View style={styles.infoCard}>
-      <View style={styles.infoHeader}>
-        <View style={styles.infoTitle}>
-          <MaterialCommunityIcons
-            name="lightbulb-on-outline"
-            size={24}
-            color={Colors.info}
-          />
-          <Text
-            weight={700}
-            variant="body2"
-          >
-            Tip!
-          </Text>
+    visible && (
+      <View style={styles.infoCard}>
+        <View style={styles.infoHeader}>
+          <View style={styles.infoTitle}>
+            <MaterialCommunityIcons
+              name="lightbulb-on-outline"
+              size={24}
+              color={Colors.info}
+            />
+            <Text
+              weight={700}
+              variant="body2"
+            >
+              Tip!
+            </Text>
+          </View>
+          <Pressable onPress={handleClose}>
+            <Ionicons
+              name="close"
+              size={24}
+              color={Colors.textPrimary}
+            />
+          </Pressable>
         </View>
-        <Pressable
-          onPress={() => {
-            playPopAudio();
-          }}
-        >
-          <Ionicons
-            name="close"
-            size={24}
-            color={Colors.textPrimary}
-          />
-        </Pressable>
-      </View>
-      <View style={styles.infoBody}>
-        <View style={styles.infoContent}>
-          <Carousel
-            ref={ref}
-            loop={false}
-            vertical={false}
-            width={width * 0.6}
-            height={100}
-            onProgressChange={progress}
-            snapEnabled
-            pagingEnabled
-            autoPlayInterval={1000}
-            data={slides}
-            renderItem={({ item }) => <Text variant="caption">{item}</Text>}
-          />
-          <Pagination.Custom
-            progress={progress}
-            data={slides}
-            size={8}
-            dotStyle={styles.dot}
-            activeDotStyle={styles.activeDot}
-            containerStyle={styles.pagination}
-            horizontal
-            onPress={onPressPagination}
-          />
-        </View>
-        <View style={styles.infoImage}>
-          <View style={styles.infoImageBox}>
-            <Image
-              source={mateImageMap[mate].hi}
-              style={styles.mateImage}
+        <View style={styles.infoBody}>
+          <View style={styles.infoContent}>
+            <Carousel
+              ref={carouselRef}
+              loop
+              snapEnabled
+              pagingEnabled
+              onProgressChange={progress}
+              width={CAROUSEL_WIDTH}
+              height={carouselHeight}
+              autoPlay
+              autoPlayInterval={3000}
+              data={tips}
+              mode="parallax"
+              modeConfig={{
+                parallaxScrollingScale: 1,
+                parallaxAdjacentItemScale: 0.8,
+                parallaxScrollingOffset: 10
+              }}
+              renderItem={({ item, index }) => (
+                <View
+                  onLayout={e =>
+                    setCarouselHeight(prev => Math.max(prev, e.nativeEvent.layout.height))
+                  }
+                  style={styles.carousel}
+                >
+                  <View style={styles.carouselNumber}>
+                    <Text
+                      weight={700}
+                      variant="tiny"
+                      color={Colors.white}
+                    >
+                      {index + 1}
+                    </Text>
+                  </View>
+                  <Text variant="caption">{item}</Text>
+                </View>
+              )}
+            />
+            <Pagination.Custom
+              progress={progress}
+              data={tips}
+              size={8}
+              dotStyle={styles.dot}
+              activeDotStyle={styles.activeDot}
+              containerStyle={styles.pagination}
+              horizontal
+              onPress={onPressPagination}
             />
           </View>
+          <Image
+            source={mateImageMap[mate].hi}
+            style={styles.mateImage}
+          />
         </View>
       </View>
-    </View>
+    )
   );
 };
 
 const styles = StyleSheet.create({
   infoCard: {
-    gap: 16,
+    gap: 12,
+    padding: 12,
     borderRadius: 8,
-    paddingRight: 8,
     backgroundColor: Colors.infoAlpha
   },
   infoHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingTop: 16
+    gap: 8
   },
   infoTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8
+    gap: 6
   },
   infoBody: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    position: 'relative'
   },
   infoContent: {
-    width: '70%',
-    paddingHorizontal: 16,
-    paddingBottom: 16
+    width: CAROUSEL_WIDTH,
+    gap: 12
   },
-  infoImage: {
-    width: '30%',
-    justifyContent: 'flex-end'
+  carousel: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: Colors.white
   },
-  infoImageBox: {
-    width: '100%',
-    aspectRatio: 1
+  carouselNumber: {
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexShrink: 0,
+    borderRadius: 4,
+    backgroundColor: Colors.info
   },
-  mateImage: {
-    width: '100%',
-    height: '100%'
-  },
-
   pagination: {
     alignItems: 'center',
-    gap: 16
+    gap: 12
   },
   dot: {
     backgroundColor: Colors.neutral,
     borderRadius: 4
-    // borderRadius: '50%',
-    // width: 12,
-    // height: 12
   },
   activeDot: {
     overflow: 'hidden',
@@ -158,9 +180,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 10,
     height: 10
-    // borderRadius: '50%',
-    // width: 12,
-    // height: 12
+  },
+  mateImage: {
+    position: 'absolute',
+    bottom: -12,
+    right: -6,
+    width: MATE_IMAGE_SIZE,
+    height: MATE_IMAGE_SIZE,
+    zIndex: 10
   }
 });
 
