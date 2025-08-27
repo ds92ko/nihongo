@@ -146,7 +146,7 @@ export default function SettingScreen() {
                   }}
                 >
                   <Image
-                    source={mateImageMap[key][key === mate ? 'hi' : 'peace']}
+                    source={mateImageMap[key][key === mate ? 'happy' : 'peace']}
                     style={styles.mateImage}
                   />
                 </Pressable>
