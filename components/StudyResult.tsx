@@ -27,7 +27,7 @@ const getFeedbackImageName = (accuracy: number) => {
 const StudyResult = () => {
   const { mate } = useMateContext();
   const { type, progress } = useStudyContext();
-  const { playKanaAudio, kanaPlayerStatus } = useKanaAudio();
+  const { playKanaAudio, playing } = useKanaAudio();
   const correctAnswers = progress.filter(
     ({ answer, character, pronunciation }) =>
       answer === (type === 'character' ? pronunciation : character)
@@ -38,19 +38,11 @@ const StudyResult = () => {
     <View style={styles.container}>
       <ScrollView
         style={styles.result}
-        contentContainerStyle={{ gap: 16 }}
+        contentContainerStyle={styles.resultContainer}
       >
-        <View
-          style={{
-            borderRadius: 8,
-            backgroundColor: Colors.primary10,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <View style={{ padding: 16, gap: 8 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 2 }}>
+        <View style={styles.resultSummary}>
+          <View style={styles.summaryText}>
+            <View style={styles.accuracy}>
               <Text
                 weight={700}
                 variant="display2"
@@ -61,22 +53,17 @@ const StudyResult = () => {
                 weight={700}
                 variant="h4"
                 color="textSecondary"
-                style={{ marginBottom: 6 }}
+                style={styles.accuracyUnit}
               >
                 점
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={styles.badges}>
               <Text
                 weight={700}
                 variant="caption"
                 color="success"
-                style={{
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 8,
-                  backgroundColor: Colors.successAlpha
-                }}
+                style={[styles.badge, styles.correctBadge]}
               >
                 정답 {correctAnswers.length}개
               </Text>
@@ -84,12 +71,7 @@ const StudyResult = () => {
                 weight={700}
                 variant="caption"
                 color="error"
-                style={{
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 8,
-                  backgroundColor: Colors.errorAlpha
-                }}
+                style={[styles.badge, styles.incorrectBadge]}
               >
                 오답 {progress.length - correctAnswers.length}개
               </Text>
@@ -103,22 +85,21 @@ const StudyResult = () => {
         <View>
           {progress.map(({ answer, character, pronunciation }, index) => {
             const isCorrect = answer === (type === 'character' ? pronunciation : character);
+
             return (
               <View
                 key={`${character}-${pronunciation}`}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 8,
-                  paddingVertical: 12,
-                  borderTopWidth: index === 0 ? 0 : 1,
-                  borderColor: Colors.neutralLight
-                }}
+                style={[
+                  styles.resultDetail,
+                  {
+                    borderTopWidth: index === 0 ? 0 : 1
+                  }
+                ]}
               >
                 <Text
                   weight={500}
-                  variant="caption"
-                  style={{ width: 30, textAlign: 'center' }}
+                  variant="body2"
+                  style={styles.detailNumber}
                 >
                   {index + 1}.
                 </Text>
@@ -126,28 +107,37 @@ const StudyResult = () => {
                   weight={700}
                   variant="small"
                   color={isCorrect ? 'success' : 'error'}
-                  style={{
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 8,
-                    backgroundColor: isCorrect ? Colors.successAlpha : Colors.errorAlpha
-                  }}
+                  style={[
+                    styles.badge,
+                    styles.smallBadge,
+                    isCorrect ? styles.correctBadge : styles.incorrectBadge
+                  ]}
                 >
                   {isCorrect ? '정답' : '오답'}
                 </Text>
-                <View style={{ flexDirection: 'row', flex: 1, gap: 4 }}>
-                  <Text weight={700}>{character}</Text>
-                  <Text color="textSecondary">[{pronunciation}]</Text>
+                <View style={styles.answer}>
+                  <Text
+                    weight={700}
+                    style={styles.answerText}
+                  >
+                    {character}
+                  </Text>
+                  <Text
+                    color="textSecondary"
+                    style={styles.answerText}
+                  >
+                    [{pronunciation}]
+                  </Text>
                 </View>
                 <Pressable
-                  style={[styles.button, kanaPlayerStatus.playing && styles.disabledButton]}
-                  disabled={kanaPlayerStatus.playing}
+                  style={[styles.button, playing && styles.disabledButton]}
+                  disabled={playing}
                   onPress={() => playKanaAudio(character)}
                 >
                   <MaterialIcons
-                    name={kanaPlayerStatus.playing ? 'headset-off' : 'headset'}
+                    name={playing ? 'headset-off' : 'headset'}
                     size={20}
-                    color={kanaPlayerStatus.playing ? Colors.textSecondary : Colors.textPrimary}
+                    color={playing ? Colors.textSecondary : Colors.textPrimary}
                   />
                 </Pressable>
               </View>
@@ -168,9 +158,71 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 24
   },
+  resultContainer: {
+    gap: 16
+  },
+  resultSummary: {
+    borderRadius: 8,
+    backgroundColor: Colors.primary10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  summaryText: {
+    padding: 16,
+    gap: 8
+  },
+  accuracy: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 2
+  },
+  accuracyUnit: {
+    marginBottom: 6
+  },
+  badges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8
+  },
+  badge: {
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8
+  },
+  smallBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6
+  },
+  correctBadge: {
+    backgroundColor: Colors.successAlpha
+  },
+  incorrectBadge: {
+    backgroundColor: Colors.errorAlpha
+  },
   feedbackImage: {
     width: FEEDBACK_IMAGE_SIZE,
     height: FEEDBACK_IMAGE_SIZE
+  },
+  resultDetail: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    borderColor: Colors.neutralLight
+  },
+  detailNumber: {
+    width: 35,
+    textAlign: 'center'
+  },
+  answer: {
+    flexDirection: 'row',
+    flex: 1,
+    gap: 4
+  },
+  answerText: {
+    width: 50,
+    textAlign: 'center'
   },
   button: {
     display: 'flex',

@@ -25,7 +25,7 @@ export default function StudyScreen() {
   const { kanaType } = useKanaContext();
   const { type, progress } = useStudyContext();
   const { setProgress } = useStudyActions();
-  const { playKanaAudio, kanaPlayerStatus } = useKanaAudio();
+  const { playKanaAudio, playing } = useKanaAudio();
   const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
 
@@ -113,19 +113,15 @@ export default function StudyScreen() {
             style={[
               styles.button,
               styles.questionButton,
-              (kanaPlayerStatus.playing || Boolean(selectedAnswer)) && styles.disabledButton
+              (playing || Boolean(selectedAnswer)) && styles.disabledButton
             ]}
-            disabled={kanaPlayerStatus.playing || Boolean(selectedAnswer)}
+            disabled={playing || Boolean(selectedAnswer)}
             onPress={() => playKanaAudio(question.character)}
           >
             <MaterialIcons
-              name={kanaPlayerStatus.playing || Boolean(selectedAnswer) ? 'headset-off' : 'headset'}
+              name={playing || Boolean(selectedAnswer) ? 'headset-off' : 'headset'}
               size={20}
-              color={
-                kanaPlayerStatus.playing || Boolean(selectedAnswer)
-                  ? Colors.textSecondary
-                  : Colors.textPrimary
-              }
+              color={playing || Boolean(selectedAnswer) ? Colors.textSecondary : Colors.textPrimary}
             />
           </Pressable>
         )}
@@ -212,20 +208,16 @@ export default function StudyScreen() {
                   <Pressable
                     style={[
                       styles.button,
-                      (kanaPlayerStatus.playing || Boolean(selectedAnswer)) && styles.disabledButton
+                      (playing || Boolean(selectedAnswer)) && styles.disabledButton
                     ]}
-                    disabled={kanaPlayerStatus.playing || isCorrect || isIncorrect}
+                    disabled={playing || isCorrect || isIncorrect}
                     onPress={() => playKanaAudio(kana)}
                   >
                     <MaterialIcons
-                      name={
-                        kanaPlayerStatus.playing || Boolean(selectedAnswer)
-                          ? 'headset-off'
-                          : 'headset'
-                      }
+                      name={playing || Boolean(selectedAnswer) ? 'headset-off' : 'headset'}
                       size={20}
                       color={
-                        kanaPlayerStatus.playing || Boolean(selectedAnswer)
+                        playing || Boolean(selectedAnswer)
                           ? Colors.textSecondary
                           : Colors.textPrimary
                       }
