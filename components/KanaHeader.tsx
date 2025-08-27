@@ -4,19 +4,27 @@ import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
+import { useTabActions } from '@/stores/useTabStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 const KanaHeader = ({ route }: NativeStackHeaderProps) => {
+  const { setTabIndex } = useTabActions();
   const { kanaType } = useKanaContext();
   const { playPopAudio } = usePopAudio();
   const { kana } = route.params as { kana: string };
   const currentTab = KANA_TABS[kanaType].find(tab => tab.rows.find(row => row.kana.includes(kana)));
+  const currentTabIndex = KANA_TABS[kanaType].findIndex(({ key }) => key === currentTab?.key);
   const currentRowIndex = currentTab?.rows.findIndex(row => row.kana.includes(kana))!;
   const prevRow = currentTab?.rows?.[currentRowIndex - 1];
   const nextRow = currentTab?.rows?.[currentRowIndex + 1];
+
+  const handleGoToChart = () => {
+    playPopAudio();
+    setTabIndex(currentTabIndex);
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -24,7 +32,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
         <Link
           style={styles.button}
           href={'/chart'}
-          onPress={playPopAudio}
+          onPress={handleGoToChart}
         >
           <MaterialIcons
             name="keyboard-arrow-left"
