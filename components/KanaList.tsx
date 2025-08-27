@@ -16,7 +16,7 @@ const KanaList = ({ data, kana }: KanaListProps) => {
   return (
     <FlatList
       data={data}
-      scrollEnabled={data.length > 1}
+      scrollEnabled={false}
       keyExtractor={(_, i) => i.toString()}
       contentContainerStyle={data.length > 1 && styles.rows}
       renderItem={({ item }) => (
@@ -53,9 +53,6 @@ const KanaList = ({ data, kana }: KanaListProps) => {
 
 const styles = StyleSheet.create({
   rows: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    backgroundColor: Colors.white,
     gap: 8
   },
   row: {
