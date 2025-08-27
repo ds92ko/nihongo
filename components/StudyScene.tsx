@@ -39,7 +39,7 @@ const StudyScene = () => {
         scrollEnabled={true}
         keyExtractor={(_, i) => i.toString()}
         contentContainerStyle={styles.groups}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           const maxHeight =
             ROWS_PADDING_TOP +
             (Math.ceil(item.rows.length / PER_ROW) + 1) * (ROW_HEIGHT + ROWS_GAP) -
@@ -54,7 +54,6 @@ const StudyScene = () => {
                 title={item.title}
                 suffix={
                   <Text
-                    weight={400}
                     variant="caption"
                     color="textSecondary"
                   >
@@ -69,7 +68,7 @@ const StudyScene = () => {
                   </Text>
                 }
                 maxHeight={maxHeight}
-                defaultExpanded={index === 0}
+                defaultExpanded
               >
                 <View style={styles.rows}>
                   <Pressable
