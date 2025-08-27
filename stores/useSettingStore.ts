@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
 interface SettingContext {
-  popSoundOff: boolean;
+  soundEffectOff: boolean;
   kanaSoundOff: boolean;
 }
 
 interface SettingActions {
-  setPopSoundOff: () => void;
-  setKanaSoundOff: () => void;
+  toggleSoundEffect: () => void;
+  toggleKanaSound: () => void;
 }
 
 interface SettingStore {
@@ -17,18 +17,18 @@ interface SettingStore {
 
 const useSettingStore = create<SettingStore>(set => ({
   context: {
-    popSoundOff: false,
+    soundEffectOff: false,
     kanaSoundOff: false
   },
   actions: {
-    setPopSoundOff: () =>
+    toggleSoundEffect: () =>
       set(state => ({
         context: {
           ...state.context,
-          popSoundOff: !state.context.popSoundOff
+          soundEffectOff: !state.context.soundEffectOff
         }
       })),
-    setKanaSoundOff: () =>
+    toggleKanaSound: () =>
       set(state => ({
         context: {
           ...state.context,

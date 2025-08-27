@@ -3,12 +3,12 @@ import { useAudioPlayer } from 'expo-audio';
 import { useCallback } from 'react';
 
 const useFeedbackAudio = () => {
-  const { popSoundOff } = useSettingContext();
+  const { soundEffectOff } = useSettingContext();
   const player = useAudioPlayer();
 
   const playFeedbackAudio = useCallback(
     (feedback: 'correct' | 'incorrect') => {
-      if (popSoundOff) return;
+      if (soundEffectOff) return;
 
       const source = {
         correct: require('@/assets/audio/effects/correct.mp3'),
@@ -22,7 +22,7 @@ const useFeedbackAudio = () => {
         console.error(err);
       }
     },
-    [player, popSoundOff]
+    [player, soundEffectOff]
   );
 
   return { playFeedbackAudio };

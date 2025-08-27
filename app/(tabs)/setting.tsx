@@ -21,8 +21,8 @@ const MATE_SIZE = Math.floor(
 export default function SettingScreen() {
   const { mate } = useMateContext();
   const { setMate } = useMateActions();
-  const { popSoundOff, kanaSoundOff } = useSettingContext();
-  const { setPopSoundOff, setKanaSoundOff } = useSettingActions();
+  const { soundEffectOff, kanaSoundOff } = useSettingContext();
+  const { toggleSoundEffect, toggleKanaSound } = useSettingActions();
   const { playPopAudio } = usePopAudio();
 
   return (
@@ -92,7 +92,7 @@ export default function SettingScreen() {
             </Text>
             <Switch
               value={!kanaSoundOff}
-              onValueChange={setKanaSoundOff}
+              onValueChange={toggleKanaSound}
             />
           </View>
           <View style={styles.settingItem}>
@@ -104,8 +104,8 @@ export default function SettingScreen() {
               효과음
             </Text>
             <Switch
-              value={!popSoundOff}
-              onValueChange={setPopSoundOff}
+              value={!soundEffectOff}
+              onValueChange={toggleSoundEffect}
             />
           </View>
         </View>

@@ -3,13 +3,13 @@ import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useCallback } from 'react';
 
 const usePopAudio = () => {
-  const { popSoundOff } = useSettingContext();
+  const { soundEffectOff } = useSettingContext();
   const source = require('@/assets/audio/effects/pop.mp3');
   const player = useAudioPlayer(source);
   const status = useAudioPlayerStatus(player);
 
   const playPopAudio = useCallback(() => {
-    if (popSoundOff) return;
+    if (soundEffectOff) return;
 
     try {
       player.seekTo(0);
@@ -17,7 +17,7 @@ const usePopAudio = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [player, popSoundOff]);
+  }, [player, soundEffectOff]);
 
   return { playPopAudio, popPlayerStatus: status };
 };
