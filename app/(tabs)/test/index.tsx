@@ -1,3 +1,4 @@
+import ReviewNoteScene from '@/components/ReviewNoteScene';
 import StudyScene from '@/components/StudyScene';
 import TabBar from '@/components/TabBar';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
@@ -7,12 +8,12 @@ import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
   study: () => <StudyScene />,
-  review: () => <StudyScene />
+  reviewNote: () => <ReviewNoteScene />
 });
 
 const routes = [
   { key: 'study', title: '문제풀이' },
-  { key: 'review', title: '오답노트' }
+  { key: 'reviewNote', title: '오답노트' }
 ];
 
 export default function TestScreen() {

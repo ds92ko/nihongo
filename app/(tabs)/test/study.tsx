@@ -8,6 +8,7 @@ import useFeedbackAudio from '@/hooks/useFeedbackAudio';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
+import { useReviewNoteActions } from '@/stores/useReviewNoteStore';
 import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
@@ -26,6 +27,7 @@ export default function StudyScreen() {
   const { playKanaAudio, playing } = useKanaAudio();
   const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
+  const { addNote, removeNote } = useReviewNoteActions();
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
   const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
@@ -34,14 +36,20 @@ export default function StudyScreen() {
   const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
 
   const handleAnswer = (answer: string) => {
-    if (selectedAnswer) return;
+    if (!question || selectedAnswer) return;
+
     playFeedbackAudio(answer === correctAnswer ? 'correct' : 'incorrect');
     setSelectedAnswer(answer);
+    setProgress(progress.map(p => (p.character === question.character ? { ...p, answer } : p)));
 
-    const newProgress = progress.map(p =>
-      p.character === question?.character ? { ...p, answer } : p
-    );
-    setProgress(newProgress);
+    if (answer === correctAnswer) {
+      removeNote(kanaType, question.character);
+    } else {
+      addNote(kanaType, {
+        character: question.character,
+        pronunciation: question.pronunciation
+      });
+    }
 
     setTimeout(() => {
       setQuestion(kanaType);
@@ -226,7 +234,6 @@ const styles = StyleSheet.create({
     zIndex: 10
   },
   answers: {
-    display: 'flex',
     gap: 12
   },
   answer: {
