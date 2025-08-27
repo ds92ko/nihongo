@@ -10,32 +10,27 @@ export const Colors = {
   primary80: '#ff8f8f',
   primary90: '#ff8181',
 
-  secondary: '#FFD54F',
-  accent: '#4FC3F7',
-
   success: '#81C784',
+  successAlpha: 'rgba(129, 199, 132, 0.15)',
   error: '#E57373',
+  errorAlpha: 'rgba(229, 115, 115, 0.15)',
   warning: '#FFB74D',
+  warningAlpha: 'rgba(255, 183, 77, 0.15)',
   info: '#9575CD',
+  infoAlpha: 'rgba(149, 117, 205, 0.15)',
 
-  background: '#FFF8E1',
   textPrimary: '#4E342E',
   textSecondary: '#7E5E4D',
 
   white: '#FFFFFF',
   neutralLight: '#F5F5F5',
   neutral: '#C9C9C9',
-  neutralDark: '#616161',
+  neutralDark: '#9E9E9E',
 
   highlight: '#FFEA00',
   sparkle: '#FF80AB',
   mint: '#A7FFEB',
   peach: '#FFCCBC',
-
-  successAlpha: 'rgba(129, 199, 132, 0.3)',
-  errorAlpha: 'rgba(229, 115, 115, 0.3)',
-  warningAlpha: 'rgba(255, 183, 77, 0.3)',
-  infoAlpha: 'rgba(149, 117, 205, 0.3)',
 
   shadow: 'rgba(0,0,0,0.2)',
   overlay: 'rgba(0,0,0,0.5)'
