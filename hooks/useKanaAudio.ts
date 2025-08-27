@@ -7,7 +7,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useCallback } from 'react';
 
 const useKanaAudio = () => {
-  const { playPopAudio } = usePopAudio();
+  const { playPopAudio, popPlayerStatus } = usePopAudio();
   const { kanaSoundOff } = useSettingContext();
   const { kanaType } = useKanaContext();
   const player = useAudioPlayer();
@@ -15,7 +15,7 @@ const useKanaAudio = () => {
 
   const playKanaAudio = useCallback(
     async (kana: string, auto?: boolean) => {
-      if (status.playing) return;
+      if (popPlayerStatus.playing || status.playing) return;
 
       const romaji = KANA_TO_ROMAJI[kanaType][kana];
       const source = kanaAudioMap[romaji];
@@ -31,10 +31,10 @@ const useKanaAudio = () => {
         console.error(err);
       }
     },
-    [kanaType, playPopAudio, kanaSoundOff, player, status]
+    [popPlayerStatus.playing, status.playing, kanaType, playPopAudio, kanaSoundOff, player]
   );
 
-  return { playKanaAudio, kanaPlayerStatus: status };
+  return { playKanaAudio, playing: popPlayerStatus.playing || status.playing };
 };
 
 export default useKanaAudio;
