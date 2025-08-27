@@ -5,24 +5,32 @@ import { create } from 'zustand';
 
 type KanaStudy = Record<KanaSoundType, string[]>;
 type StudyType = 'character' | 'pronunciation';
+
 export type Progress = {
   answer: string;
   character: string;
   pronunciation: string;
 };
 
+export interface Question extends Progress {
+  answers: string[];
+}
+
 interface StudyContext {
   type: StudyType | null;
   target: KanaStudy;
   progress: Progress[];
+  question: Question | null;
 }
 
 interface StudyActions {
-  setType: (kanaType: KanaType, type: StudyType) => void;
+  startStudy: (kanaType: KanaType, type: StudyType) => void;
   setTarget: (target: Partial<KanaStudy>) => void;
+  resetTarget: () => void;
   initProgress: (kanaType: KanaType) => Progress[];
   setProgress: (progress: Progress[]) => void;
-  resetTarget: () => void;
+  initQuestion: (kanaType: KanaType, progress: Progress[]) => Question | null;
+  setQuestion: (kanaType: KanaType) => void;
 }
 
 interface StudyStore {
@@ -36,22 +44,27 @@ const defaultKanaStudy: KanaStudy = {
   youon: []
 };
 
+const ANSWERS_LENGTH = 5;
+
 const useStudyStore = create<StudyStore>((set, get) => ({
   context: {
     type: null,
     target: defaultKanaStudy,
-    progress: []
+    progress: [],
+    question: null
   },
   actions: {
-    setType: (kanaType, type) =>
+    startStudy: (kanaType, type) =>
       set(state => {
         const progress = get().actions.initProgress(kanaType);
+        const question = get().actions.initQuestion(kanaType, progress);
 
         return {
           context: {
             ...state.context,
             type,
-            progress
+            progress,
+            question
           }
         };
       }),
@@ -63,6 +76,13 @@ const useStudyStore = create<StudyStore>((set, get) => ({
             ...state.context.target,
             ...target
           }
+        }
+      })),
+    resetTarget: () =>
+      set(state => ({
+        context: {
+          ...state.context,
+          target: defaultKanaStudy
         }
       })),
     initProgress: kanaType => {
@@ -93,13 +113,44 @@ const useStudyStore = create<StudyStore>((set, get) => ({
           progress
         }
       })),
-    resetTarget: () =>
+    initQuestion: (kanaType, progress) => {
+      const unsolved = progress.filter(p => !p.answer);
+
+      if (!unsolved.length) return null;
+
+      const random = Math.floor(Math.random() * unsolved.length);
+      const current = unsolved[random];
+      const rows = KANA_TABS[kanaType]
+        .find(tab => tab.rows.find(row => row.kana.includes(current.character)))
+        ?.rows.map(({ kana }) => kana.filter(Boolean));
+
+      if (!rows) return null;
+
+      const rowIndex = rows.findIndex(kana => kana.includes(current.character));
+      const answers = [...rows[rowIndex]];
+
+      if (answers.length < ANSWERS_LENGTH) {
+        const otherRows = rows.filter((_, i) => i !== rowIndex).flat();
+        const remaining = ANSWERS_LENGTH - answers.length;
+        const otherAnswers = [...otherRows].sort(() => 0.5 - Math.random()).slice(0, remaining);
+
+        answers.push(...otherAnswers);
+      }
+
+      answers.sort(() => 0.5 - Math.random());
+
+      return unsolved.length ? { ...current, answers } : null;
+    },
+    setQuestion: kanaType => {
+      const progress = get().context.progress;
+      const question = get().actions.initQuestion(kanaType, progress);
       set(state => ({
         context: {
           ...state.context,
-          target: defaultKanaStudy
+          question
         }
-      }))
+      }));
+    }
   }
 }));
 

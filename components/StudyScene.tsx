@@ -21,7 +21,7 @@ const ROW_HEIGHT = 36;
 const StudyScene = () => {
   const { kanaType } = useKanaContext();
   const { target } = useStudyContext();
-  const { setType, setTarget, resetTarget } = useStudyActions();
+  const { startStudy, setTarget, resetTarget } = useStudyActions();
   const { playPopAudio } = usePopAudio();
   const disabled = Object.values(target).every(v => !v.length);
 
@@ -145,7 +145,7 @@ const StudyScene = () => {
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
             playPopAudio();
-            setType(kanaType, 'character');
+            startStudy(kanaType, 'character');
           }}
           disabled={disabled}
         >
@@ -162,7 +162,7 @@ const StudyScene = () => {
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
             playPopAudio();
-            setType(kanaType, 'pronunciation');
+            startStudy(kanaType, 'pronunciation');
           }}
           disabled={disabled}
         >

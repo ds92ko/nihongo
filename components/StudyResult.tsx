@@ -2,9 +2,12 @@ import { mateImageMap } from '@/assets/images/mates';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
+import usePopAudio from '@/hooks/usePopAudio';
+import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
-import { useStudyContext } from '@/stores/useStudyStore';
+import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Link } from 'expo-router';
 import { Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -26,8 +29,11 @@ const getFeedbackImageName = (accuracy: number) => {
 
 const StudyResult = () => {
   const { mate } = useMateContext();
+  const { kanaType } = useKanaContext();
   const { type, progress } = useStudyContext();
+  const { startStudy } = useStudyActions();
   const { playKanaAudio, playing } = useKanaAudio();
+  const { playPopAudio } = usePopAudio();
   const correctAnswers = progress.filter(
     ({ answer, character, pronunciation }) =>
       answer === (type === 'character' ? pronunciation : character)
@@ -36,10 +42,7 @@ const StudyResult = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.result}
-        contentContainerStyle={styles.resultContainer}
-      >
+      <ScrollView contentContainerStyle={styles.result}>
         <View style={styles.resultSummary}>
           <View style={styles.summaryText}>
             <View style={styles.accuracy}>
@@ -116,21 +119,16 @@ const StudyResult = () => {
                   {isCorrect ? '정답' : '오답'}
                 </Text>
                 <View style={styles.answer}>
+                  <Text weight={700}>{character}</Text>
                   <Text
-                    weight={700}
-                    style={styles.answerText}
-                  >
-                    {character}
-                  </Text>
-                  <Text
+                    variant="body2"
                     color="textSecondary"
-                    style={styles.answerText}
                   >
                     [{pronunciation}]
                   </Text>
                 </View>
                 <Pressable
-                  style={[styles.button, playing && styles.disabledButton]}
+                  style={[styles.audioButton, playing && styles.disabledAudioButton]}
                   disabled={playing}
                   onPress={() => playKanaAudio(character)}
                 >
@@ -145,6 +143,37 @@ const StudyResult = () => {
           })}
         </View>
       </ScrollView>
+      <View style={styles.buttons}>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            if (!type) return;
+            playPopAudio();
+            startStudy(kanaType, type);
+          }}
+        >
+          <Text
+            weight={700}
+            variant="body2"
+            color="white"
+          >
+            복습하기
+          </Text>
+        </Pressable>
+        <Link
+          href="/test"
+          style={styles.button}
+          onPress={playPopAudio}
+        >
+          <Text
+            weight={700}
+            variant="body2"
+            color="white"
+          >
+            테스트 종료
+          </Text>
+        </Link>
+      </View>
     </View>
   );
 };
@@ -156,9 +185,7 @@ const styles = StyleSheet.create({
   },
   result: {
     paddingHorizontal: 16,
-    paddingVertical: 24
-  },
-  resultContainer: {
+    paddingVertical: 24,
     gap: 16
   },
   resultSummary: {
@@ -217,14 +244,11 @@ const styles = StyleSheet.create({
   },
   answer: {
     flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
-    gap: 4
+    gap: 8
   },
-  answerText: {
-    width: 50,
-    textAlign: 'center'
-  },
-  button: {
+  audioButton: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -233,8 +257,27 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     backgroundColor: Colors.primary30
   },
-  disabledButton: {
+  disabledAudioButton: {
     backgroundColor: Colors.primary10
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16
+  },
+  button: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    textAlign: 'center',
+    backgroundColor: Colors.primary
   }
 });
 

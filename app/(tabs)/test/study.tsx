@@ -3,68 +3,35 @@ import ProgressBar from '@/components/ProgressBar';
 import StudyResult from '@/components/StudyResult';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
-import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import useFeedbackAudio from '@/hooks/useFeedbackAudio';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
-import { Progress, useStudyActions, useStudyContext } from '@/stores/useStudyStore';
+import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
 import { Animated, Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const FEEDBACK_IMAGE_SIZE = width * 0.35;
-const ANSWERS_LENGTH = 5;
 
 const correctImage = ['blushing', 'excited', 'good', 'happy', 'love', 'ok', 'sing', 'yes'];
 const incorrectImage = ['confused', 'huh', 'mocking', 'no', 'sad', 'shocked', 'shy', 'sick'];
 
 export default function StudyScreen() {
   const { kanaType } = useKanaContext();
-  const { type, progress } = useStudyContext();
-  const { setProgress } = useStudyActions();
+  const { type, progress, question } = useStudyContext();
+  const { setProgress, setQuestion } = useStudyActions();
   const { playKanaAudio, playing } = useKanaAudio();
   const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
-
-  const getQuestion = (progress: Progress[]) => {
-    const unsolved = progress.filter(p => !p.answer);
-    if (!unsolved.length) return null;
-
-    const random = Math.floor(Math.random() * unsolved.length);
-    const current = unsolved[random];
-
-    const rows = KANA_TABS[kanaType]
-      .find(tab => tab.rows.find(row => row.kana.includes(current?.character)))
-      ?.rows.map(({ kana }) => kana.filter(Boolean));
-
-    if (!rows) return null;
-
-    const rowIndex = rows.findIndex(kana => kana.includes(current?.character));
-    const answers = [...rows[rowIndex]];
-
-    if (answers.length < ANSWERS_LENGTH) {
-      const otherRows = rows.filter((_, i) => i !== rowIndex).flat();
-      const remaining = ANSWERS_LENGTH - answers.length;
-      const otherAnswers = [...otherRows].sort(() => 0.5 - Math.random()).slice(0, remaining);
-
-      answers.push(...otherAnswers);
-    }
-
-    answers.sort(() => 0.5 - Math.random());
-
-    return unsolved.length ? { ...current, answers } : null;
-  };
-
-  const [question, setQuestion] = useState(() => getQuestion(progress));
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
-
   const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
   const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
-
   const correctAnswer = type === 'character' ? question?.pronunciation : question?.character;
+  const feedbackImageArr = selectedAnswer === correctAnswer ? correctImage : incorrectImage;
+  const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
 
   const handleAnswer = (answer: string) => {
     if (selectedAnswer) return;
@@ -77,13 +44,10 @@ export default function StudyScreen() {
     setProgress(newProgress);
 
     setTimeout(() => {
-      setQuestion(getQuestion(newProgress));
+      setQuestion(kanaType);
       setSelectedAnswer('');
     }, 1000);
   };
-
-  const feedbackImageArr = selectedAnswer === correctAnswer ? correctImage : incorrectImage;
-  const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
 
   return question ? (
     <View style={styles.container}>
