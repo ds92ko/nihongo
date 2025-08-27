@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/Colors';
+import usePopAudio from '@/hooks/usePopAudio';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ReactNode } from 'react';
 import {
@@ -10,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-interface ModalProps {
+export interface ModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   title: ReactNode;
@@ -19,6 +20,8 @@ interface ModalProps {
 }
 
 const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) => {
+  const { playPopAudio } = usePopAudio();
+
   return (
     <RNModal
       animationType="fade"
@@ -30,7 +33,12 @@ const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) =>
           <View style={styles.content}>
             <View style={styles.header}>
               <View style={styles.title}>{title}</View>
-              <Pressable onPress={() => setVisible(false)}>
+              <Pressable
+                onPress={() => {
+                  playPopAudio();
+                  setVisible(false);
+                }}
+              >
                 <Ionicons
                   name="close"
                   size={24}
@@ -65,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 8,
     padding: 16,
-    gap: 16
+    gap: 24
   },
   header: {
     flexDirection: 'row',
@@ -75,7 +83,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flexDirection: 'row',
-    gap: 4
+    gap: 8
   },
   body: {
     flexGrow: 0
