@@ -98,7 +98,6 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
         </View>
         <View
           style={styles.canvas}
-          pointerEvents="box-none"
           {...panResponder.panHandlers}
         >
           <Svg
