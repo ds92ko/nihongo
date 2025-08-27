@@ -91,9 +91,10 @@ const InfoCard = ({ tips }: InfoCardProps) => {
               }}
               renderItem={({ item, index }) => (
                 <View
-                  onLayout={e =>
-                    setCarouselHeight(prev => Math.max(prev, e.nativeEvent.layout.height))
-                  }
+                  onLayout={e => {
+                    const { height } = e.nativeEvent.layout;
+                    setCarouselHeight(prev => Math.max(prev, height));
+                  }}
                   style={styles.carousel}
                 >
                   <View style={styles.carouselNumber}>
@@ -105,7 +106,14 @@ const InfoCard = ({ tips }: InfoCardProps) => {
                       {index + 1}
                     </Text>
                   </View>
-                  <Text variant="caption">{item}</Text>
+                  <Text
+                    variant="caption"
+                    style={{
+                      flexShrink: 1
+                    }}
+                  >
+                    {item}
+                  </Text>
                 </View>
               )}
             />
