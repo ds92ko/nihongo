@@ -10,28 +10,34 @@ import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import Carousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 
-const { width } = Dimensions.get('window');
-const CAROUSEL_WIDTH = width * 0.6;
-const MATE_IMAGE_SIZE = width * 0.3;
-
 interface InfoCardProps {
   tips: string[];
 }
+
+const { width } = Dimensions.get('window');
+const CAROUSEL_WIDTH = width * 0.6;
+const MATE_IMAGE_SIZE = width * 0.3;
 
 const InfoCard = ({ tips }: InfoCardProps) => {
   const { mate } = useMateContext();
   const { playPopAudio } = usePopAudio();
   const progress = useSharedValue<number>(0);
   const carouselRef = useRef<ICarouselInstance>(null);
-  const [carouselHeight, setCarouselHeight] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [carouselHeight, setCarouselHeight] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
 
   const handleClose = () => {
     playPopAudio();
     setVisible(false);
   };
 
-  const onPressPagination = (index: number) => {
+  const handleToggleAutoPlay = () => {
+    playPopAudio();
+    setAutoPlay(prev => !prev);
+  };
+
+  const handlePagination = (index: number) => {
     playPopAudio();
     carouselRef.current?.scrollTo({
       count: index - progress.value,
@@ -74,7 +80,7 @@ const InfoCard = ({ tips }: InfoCardProps) => {
               onProgressChange={progress}
               width={CAROUSEL_WIDTH}
               height={carouselHeight}
-              autoPlay
+              autoPlay={autoPlay}
               autoPlayInterval={3000}
               data={tips}
               mode="parallax"
@@ -103,16 +109,25 @@ const InfoCard = ({ tips }: InfoCardProps) => {
                 </View>
               )}
             />
-            <Pagination.Custom
-              progress={progress}
-              data={tips}
-              size={8}
-              dotStyle={styles.dot}
-              activeDotStyle={styles.activeDot}
-              containerStyle={styles.pagination}
-              horizontal
-              onPress={onPressPagination}
-            />
+            <View style={styles.pagination}>
+              <Pressable onPress={handleToggleAutoPlay}>
+                <Ionicons
+                  name={autoPlay ? 'pause' : 'play'}
+                  size={16}
+                  color={Colors.info}
+                />
+              </Pressable>
+              <Pagination.Custom
+                progress={progress}
+                data={tips}
+                size={8}
+                dotStyle={styles.dot}
+                activeDotStyle={styles.activeDot}
+                containerStyle={styles.pagination}
+                horizontal
+                onPress={handlePagination}
+              />
+            </View>
           </View>
           <Image
             source={mateImageMap[mate].hi}
@@ -167,8 +182,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.info
   },
   pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 12
+    gap: 10
   },
   dot: {
     backgroundColor: Colors.neutral,
