@@ -1,4 +1,5 @@
 import Accordion from '@/components/Accordion';
+import InfoCard from '@/components/InfoCard';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
@@ -9,7 +10,7 @@ import { KanaSoundType } from '@/types/kana';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
 import { useEffect } from 'react';
-import { Dimensions, FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Dimensions, FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const ROWS_PADDING_TOP = 16;
@@ -34,110 +35,113 @@ const StudyScene = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={KANA_TABS[kanaType]}
-        scrollEnabled={true}
-        keyExtractor={(_, i) => i.toString()}
-        contentContainerStyle={styles.groups}
-        renderItem={({ item }) => {
-          const maxHeight =
-            ROWS_PADDING_TOP +
-            (Math.ceil(item.rows.length / PER_ROW) + 1) * (ROW_HEIGHT + ROWS_GAP) -
-            ROWS_GAP;
-          const totalRows = KANA_TABS[kanaType].find(tab => tab.key === item.key)?.rows.length;
-          const totalSelected = target[item.key].length;
-          const allSelected = totalSelected === totalRows;
+      <ScrollView contentContainerStyle={styles.content}>
+        <InfoCard />
+        <FlatList
+          data={KANA_TABS[kanaType]}
+          scrollEnabled={false}
+          keyExtractor={(_, i) => i.toString()}
+          contentContainerStyle={styles.groups}
+          renderItem={({ item }) => {
+            const maxHeight =
+              ROWS_PADDING_TOP +
+              (Math.ceil(item.rows.length / PER_ROW) + 1) * (ROW_HEIGHT + ROWS_GAP) -
+              ROWS_GAP;
+            const totalRows = KANA_TABS[kanaType].find(tab => tab.key === item.key)?.rows.length;
+            const totalSelected = target[item.key].length;
+            const allSelected = totalSelected === totalRows;
 
-          return (
-            <View>
-              <Accordion
-                title={item.title}
-                suffix={
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
+            return (
+              <View>
+                <Accordion
+                  title={item.title}
+                  suffix={
                     <Text
-                      weight={500}
                       variant="caption"
-                      color="primary"
+                      color="textSecondary"
                     >
-                      {totalSelected}
-                    </Text>
-                    /{totalRows}
-                  </Text>
-                }
-                maxHeight={maxHeight}
-                defaultExpanded
-              >
-                <View style={styles.rows}>
-                  <Pressable
-                    style={[styles.row, allSelected && styles.activeRow, styles.allRow]}
-                    onPress={() =>
-                      handleSelect({
-                        key: item.key,
-                        value: allSelected ? [] : item.rows.map(row => row.label)
-                      })
-                    }
-                  >
-                    <View style={styles.checkbox}>
-                      {allSelected && (
-                        <Ionicons
-                          name="checkmark"
-                          size={16}
-                          color={Colors.textPrimary}
-                        />
-                      )}
-                    </View>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                      color={allSelected ? 'textPrimary' : 'textSecondary'}
-                    >
-                      {item.title} 전체
-                    </Text>
-                  </Pressable>
-                  {item.rows.map((row, j) => {
-                    const isSelected = target[item.key].includes(row.label);
-
-                    return (
-                      <Pressable
-                        key={j}
-                        style={[styles.row, isSelected && styles.activeRow]}
-                        onPress={() => {
-                          handleSelect({
-                            key: item.key,
-                            value: isSelected
-                              ? target[item.key].filter(label => label !== row.label)
-                              : [...target[item.key], row.label]
-                          });
-                        }}
+                      <Text
+                        weight={500}
+                        variant="caption"
+                        color="primary"
                       >
-                        <View style={styles.checkbox}>
-                          {isSelected && (
-                            <Ionicons
-                              name="checkmark"
-                              size={16}
-                              color={Colors.textPrimary}
-                            />
-                          )}
-                        </View>
-                        <Text
-                          weight={500}
-                          variant="caption"
-                          color={isSelected ? 'textPrimary' : 'textSecondary'}
+                        {totalSelected}
+                      </Text>
+                      /{totalRows}
+                    </Text>
+                  }
+                  maxHeight={maxHeight}
+                  defaultExpanded
+                >
+                  <View style={styles.rows}>
+                    <Pressable
+                      style={[styles.row, allSelected && styles.activeRow, styles.allRow]}
+                      onPress={() =>
+                        handleSelect({
+                          key: item.key,
+                          value: allSelected ? [] : item.rows.map(row => row.label)
+                        })
+                      }
+                    >
+                      <View style={styles.checkbox}>
+                        {allSelected && (
+                          <Ionicons
+                            name="checkmark"
+                            size={16}
+                            color={Colors.textPrimary}
+                          />
+                        )}
+                      </View>
+                      <Text
+                        weight={500}
+                        variant="caption"
+                        color={allSelected ? 'textPrimary' : 'textSecondary'}
+                      >
+                        {item.title} 전체
+                      </Text>
+                    </Pressable>
+                    {item.rows.map((row, j) => {
+                      const isSelected = target[item.key].includes(row.label);
+
+                      return (
+                        <Pressable
+                          key={j}
+                          style={[styles.row, isSelected && styles.activeRow]}
+                          onPress={() => {
+                            handleSelect({
+                              key: item.key,
+                              value: isSelected
+                                ? target[item.key].filter(label => label !== row.label)
+                                : [...target[item.key], row.label]
+                            });
+                          }}
                         >
-                          {row.label}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-              </Accordion>
-            </View>
-          );
-        }}
-      />
+                          <View style={styles.checkbox}>
+                            {isSelected && (
+                              <Ionicons
+                                name="checkmark"
+                                size={16}
+                                color={Colors.textPrimary}
+                              />
+                            )}
+                          </View>
+                          <Text
+                            weight={500}
+                            variant="caption"
+                            color={isSelected ? 'textPrimary' : 'textSecondary'}
+                          >
+                            {row.label}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </Accordion>
+              </View>
+            );
+          }}
+        />
+      </ScrollView>
       <View style={styles.buttons}>
         <Link
           href="/test/study"
@@ -183,9 +187,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white
   },
-  groups: {
+  content: {
     paddingHorizontal: 16,
     paddingVertical: 24,
+    gap: 16
+  },
+  groups: {
     gap: 16
   },
   rows: {
