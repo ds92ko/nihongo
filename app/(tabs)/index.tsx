@@ -1,12 +1,16 @@
 import { mateImageMap } from '@/assets/images/mates';
+import ProgressBar from '@/components/ProgressBar';
+import SloganBanner from '@/components/SloganBanner';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { useMateContext } from '@/stores/useMateStore';
 import { useStatsContext } from '@/stores/useStatsStore';
 import Entypo from '@expo/vector-icons/Entypo';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
-import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 dayjs.locale('ja');
 
@@ -22,6 +26,8 @@ const WEEKLY_IMAGE_SIZE =
   WEEKLY_PADDING -
   WEEKLY_STAMP_SIZE * DAYS_IN_WEEK -
   WEEKDAYS_GAP * (DAYS_IN_WEEK - 1);
+
+const dailyGoal = 10;
 
 const getWeekly = ({
   practiceDates,
@@ -58,36 +64,41 @@ const getStreak = (dates: string[]) => {
   return streak;
 };
 
-const testDates = [
-  '2025-08-22',
-  '2025-08-23',
-  '2025-08-24',
-  '2025-08-25',
-  '2025-08-26',
-  '2025-08-27',
-  '2024-08-28'
+const weeklyImage = [
+  'mocking',
+  'ok',
+  'yes',
+  'good',
+  'happy',
+  'love',
+  'blushing',
+  'sing',
+  'excited'
 ];
-
-const weeklyImage = ['mocking', 'ok', 'yes', 'good', 'happy', 'blushing', 'sing', 'excited'];
 
 export default function Index() {
   const { mate } = useMateContext();
   const { practice, quiz } = useStatsContext();
-  const practiceDates = [...testDates, ...Object.keys(practice)];
-  const quizDates = [...testDates, ...Object.keys(quiz)];
+  const practiceDates = [...Object.keys(practice)];
+  const quizDates = [...Object.keys(quiz)];
   const practiceStreak = getStreak(practiceDates);
   const quizStreak = getStreak(quizDates);
+  const studyStreak = getStreak([...practiceDates, ...quizDates]);
   const weekly = getWeekly({ practiceDates, quizDates });
-
-  console.log('practiceStreak', practiceStreak);
-  console.log('quizStreak', quizStreak);
-  console.log('weekly', weekly);
+  const today = dayjs().format('YYYY-MM-DD');
+  const todayPractice = practice[today];
+  const todayQuiz = quiz[today];
+  const todayListening = todayPractice?.listening.length || 0;
+  const todayWriting = todayPractice?.writing.length || 0;
+  const todayCharacter = todayQuiz?.character.length || 0;
+  const todayPronunciation = todayQuiz?.pronunciation.length || 0;
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
+      <SloganBanner />
       <View style={styles.streaks}>
         <View style={[styles.streak, { backgroundColor: Colors.practiceLight }]}>
           <View style={styles.streakIcon}>
@@ -115,7 +126,7 @@ export default function Index() {
               <Text
                 weight={500}
                 variant="caption"
-                style={styles.dateUnit}
+                style={styles.unit}
                 color={Colors.textSecondary}
               >
                 일
@@ -149,7 +160,7 @@ export default function Index() {
               <Text
                 weight={500}
                 variant="caption"
-                style={styles.dateUnit}
+                style={styles.unit}
                 color={Colors.textSecondary}
               >
                 일
@@ -190,9 +201,333 @@ export default function Index() {
           ))}
         </View>
         <Image
-          source={mateImageMap[mate][weeklyImage[Math.min(practiceStreak, quizStreak)]]}
+          source={mateImageMap[mate][weeklyImage[studyStreak]]}
           style={styles.weeklyImage}
         />
+      </View>
+      <View style={styles.missions}>
+        <View style={styles.missionsHeader}>
+          <View style={styles.missionTitle}>
+            <MaterialIcons
+              name="assignment"
+              size={20}
+              color={Colors.primary}
+            />
+            <Text
+              weight={700}
+              variant="body2"
+            >
+              오늘의 숙제
+            </Text>
+          </View>
+          <Pressable style={styles.goalSetting}>
+            <Text
+              weight={700}
+              variant="small"
+              color="white"
+            >
+              목표 설정
+            </Text>
+          </Pressable>
+        </View>
+        <View style={styles.mission}>
+          <View style={styles.missionHeader}>
+            <View style={styles.missionTitle}>
+              <MaterialIcons
+                name="headset"
+                size={16}
+                color={Colors.practice}
+              />
+              <Text
+                weight={700}
+                variant="caption"
+              >
+                듣기 연습하기
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="marker-check"
+              size={28}
+              color={todayListening >= dailyGoal ? Colors.practice : Colors.neutralLight}
+              style={styles.completeCheck}
+            />
+          </View>
+          <View style={styles.missionBody}>
+            <View style={styles.missionContent}>
+              <View style={styles.missionGoal}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  하루 목표 가나
+                </Text>
+                <View style={styles.goal}>
+                  <Text
+                    weight={500}
+                    variant="caption"
+                  >
+                    {dailyGoal}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
+              <ProgressBar
+                progress={todayListening}
+                max={dailyGoal}
+                height={16}
+                progressColor="practice"
+                barColor="practiceLight"
+                text="none"
+              />
+            </View>
+            <View style={styles.missionPercentage}>
+              <Text
+                weight={700}
+                variant="h2"
+                color={Colors.textPractice}
+              >
+                {parseFloat(((Math.min(todayListening, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.unit}
+                color={Colors.textSecondary}
+              >
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.mission}>
+          <View style={styles.missionHeader}>
+            <View style={styles.missionTitle}>
+              <MaterialCommunityIcons
+                name="lead-pencil"
+                size={16}
+                color={Colors.practice}
+              />
+              <Text
+                weight={700}
+                variant="caption"
+              >
+                쓰기 연습하기
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="marker-check"
+              size={28}
+              color={todayWriting >= dailyGoal ? Colors.practice : Colors.neutralLight}
+              style={styles.completeCheck}
+            />
+          </View>
+          <View style={styles.missionBody}>
+            <View style={styles.missionContent}>
+              <View style={styles.missionGoal}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  하루 목표 가나
+                </Text>
+                <View style={styles.goal}>
+                  <Text
+                    weight={500}
+                    variant="caption"
+                  >
+                    {dailyGoal}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
+              <ProgressBar
+                progress={todayWriting}
+                max={dailyGoal}
+                height={16}
+                progressColor="practice"
+                barColor="practiceLight"
+                text="none"
+              />
+            </View>
+            <View style={styles.missionPercentage}>
+              <Text
+                weight={700}
+                variant="h2"
+                color={Colors.textPractice}
+              >
+                {parseFloat(((Math.min(todayWriting, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.unit}
+                color={Colors.textSecondary}
+              >
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.mission}>
+          <View style={styles.missionHeader}>
+            <View style={styles.missionTitle}>
+              <MaterialCommunityIcons
+                name="syllabary-hiragana"
+                size={16}
+                color={Colors.quiz}
+              />
+              <Text
+                weight={700}
+                variant="caption"
+              >
+                읽기 퀴즈풀기
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="marker-check"
+              size={28}
+              color={todayCharacter >= dailyGoal ? Colors.quiz : Colors.neutralLight}
+              style={styles.completeCheck}
+            />
+          </View>
+          <View style={styles.missionBody}>
+            <View style={styles.missionContent}>
+              <View style={styles.missionGoal}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  하루 목표 가나
+                </Text>
+                <View style={styles.goal}>
+                  <Text
+                    weight={500}
+                    variant="caption"
+                  >
+                    {dailyGoal}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
+              <ProgressBar
+                progress={todayCharacter}
+                max={dailyGoal}
+                height={16}
+                progressColor="quiz"
+                barColor="quizLight"
+                text="none"
+              />
+            </View>
+            <View style={styles.missionPercentage}>
+              <Text
+                weight={700}
+                variant="h2"
+                color={Colors.textQuiz}
+              >
+                {parseFloat(((Math.min(todayCharacter, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.unit}
+                color={Colors.textSecondary}
+              >
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.mission}>
+          <View style={styles.missionHeader}>
+            <View style={styles.missionTitle}>
+              <MaterialCommunityIcons
+                name="spellcheck"
+                size={16}
+                color={Colors.quiz}
+              />
+              <Text
+                weight={700}
+                variant="caption"
+              >
+                표기 퀴즈풀기
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="marker-check"
+              size={28}
+              color={todayPronunciation >= dailyGoal ? Colors.quiz : Colors.neutralLight}
+              style={styles.completeCheck}
+            />
+          </View>
+          <View style={styles.missionBody}>
+            <View style={styles.missionContent}>
+              <View style={styles.missionGoal}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  하루 목표 가나
+                </Text>
+                <View style={styles.goal}>
+                  <Text
+                    weight={500}
+                    variant="caption"
+                  >
+                    {dailyGoal}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
+              <ProgressBar
+                progress={todayPronunciation}
+                max={dailyGoal}
+                height={16}
+                progressColor="quiz"
+                barColor="quizLight"
+                text="none"
+              />
+            </View>
+            <View style={styles.missionPercentage}>
+              <Text
+                weight={700}
+                variant="h2"
+                color={Colors.textQuiz}
+              >
+                {parseFloat(
+                  ((Math.min(todayPronunciation, dailyGoal) / dailyGoal) * 100).toFixed(1)
+                )}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.unit}
+                color={Colors.textSecondary}
+              >
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
@@ -207,6 +542,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: CONTAINER_PADDING_HORIZONTAL,
     paddingVertical: 24,
     gap: 16
+  },
+  streaks: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12
+  },
+  streak: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 8,
+    padding: 16,
+    gap: 12
+  },
+  streakIcon: {
+    backgroundColor: Colors.white,
+    borderRadius: '50%',
+    padding: 10
+  },
+  streakText: {
+    gap: 2,
+    alignItems: 'flex-end'
+  },
+  dateCount: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    gap: 2
+  },
+  unit: {
+    marginBottom: 4
   },
   weekly: {
     position: 'relative',
@@ -240,36 +607,68 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: Colors.white
   },
-  streaks: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12
-  },
-  streak: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 8,
+  missions: {
     padding: 16,
+    backgroundColor: Colors.primary10,
+    borderRadius: 8,
     gap: 12
   },
-  streakIcon: {
+  missionsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8
+  },
+  mission: {
     backgroundColor: Colors.white,
-    borderRadius: '50%',
-    padding: 10
+    borderRadius: 8,
+    padding: 12,
+    gap: 8
   },
-  streakText: {
-    gap: 2,
-    alignItems: 'flex-end'
+  missionHeader: {
+    position: 'relative'
   },
-  dateCount: {
+  missionTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+  completeCheck: {
+    position: 'absolute',
+    top: 0,
+    right: 0
+  },
+  goalSetting: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: Colors.primary
+  },
+  missionBody: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    gap: 8
+  },
+  missionContent: {
+    flex: 1,
+    gap: 8
+  },
+  missionGoal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4
+  },
+  goal: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  missionPercentage: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    gap: 2
+    gap: 2,
+    minWidth: 75
   },
-  dateUnit: {
-    marginBottom: 4
-  }
+  missionComplete: { opacity: 0.5 }
 });
