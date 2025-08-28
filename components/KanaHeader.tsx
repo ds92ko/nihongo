@@ -107,10 +107,12 @@ const styles = StyleSheet.create({
     padding: 16
   },
   kana: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4
+    gap: 4,
+    paddingLeft: 44
   },
   buttons: {
     flexDirection: 'row',
