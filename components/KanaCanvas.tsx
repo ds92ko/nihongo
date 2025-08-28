@@ -7,7 +7,7 @@ import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import { useStatsActions } from '@/stores/useStatsStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PanResponder, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -27,6 +27,8 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
 
   const [restartTrigger, setRestartTrigger] = useState(0);
   const [paths, setPaths] = useState<Point[][]>([]);
+  const [panResponderEnded, setPanResponderEnded] = useState(false);
+  const [autoDelete, setAutoDelete] = useState(true);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -50,7 +52,9 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
 
           return prev;
         });
-      }
+      },
+      onPanResponderStart: () => setPanResponderEnded(false),
+      onPanResponderEnd: () => setPanResponderEnded(true)
     })
   ).current;
 
@@ -59,18 +63,26 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     setIsVisibleGrid();
   };
 
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     playKanaAudio(kana);
     setPracticeStats(kanaType, 'listening', kana);
-  };
+  }, [kana, kanaType, playKanaAudio, setPracticeStats]);
 
-  const handleRestart = () => {
+  const handleRestart = useCallback(() => {
     handlePlay();
     setRestartTrigger(prev => prev + 1);
     setPaths([]);
-  };
+  }, [handlePlay]);
 
   const handleClear = () => {
+    if (autoDelete) {
+      setAutoDelete(false);
+      return;
+    }
+    if (!paths.length) {
+      setAutoDelete(true);
+      return;
+    }
     playPopAudio();
     setPaths([]);
   };
@@ -79,8 +91,19 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     const pathLength = [...kana].flatMap(char => kanaMap[char] || []).length;
 
     if (pathLength !== paths.length) return;
+    if (autoDelete && panResponderEnded) handleRestart();
     setPracticeStats(kanaType, 'writing', kana);
-  }, [kanaType, kana, paths.length, setPracticeStats]);
+  }, [
+    kanaType,
+    kana,
+    paths.length,
+    setPracticeStats,
+    autoDelete,
+    playPopAudio,
+    panResponderEnded,
+    handlePlay,
+    handleRestart
+  ]);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -169,14 +192,19 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
           />
         </Pressable>
         <Pressable
-          style={[styles.button, !paths.length && styles.disabledButton]}
+          style={styles.button}
           onPress={handleClear}
-          disabled={!paths.length}
         >
           <MaterialCommunityIcons
-            name={paths.length ? 'delete-outline' : 'delete-off-outline'}
+            name={
+              autoDelete
+                ? 'delete-clock-outline'
+                : paths.length
+                  ? 'delete-outline'
+                  : 'delete-off-outline'
+            }
             size={20}
-            color={paths.length ? Colors.textPrimary : Colors.textSecondary}
+            color={autoDelete || paths.length ? Colors.textPrimary : Colors.textSecondary}
           />
         </Pressable>
       </View>
