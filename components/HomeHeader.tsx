@@ -14,10 +14,15 @@ const HomeHeader = () => {
 
 const styles = StyleSheet.create({
   safe: {
-    backgroundColor: Colors.primary10
+    backgroundColor: Colors.primary30
   },
   header: {
-    padding: 16
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8
   }
 });
 
