@@ -93,7 +93,7 @@ export default function TabLayout() {
           ),
           tabBarIcon: ({ color }) => (
             <Entypo
-              name="flower"
+              name="open-book"
               size={24}
               color={color}
             />
