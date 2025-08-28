@@ -9,6 +9,7 @@ import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
 import { useReviewNoteActions } from '@/stores/useReviewNoteStore';
+import { useStatsActions } from '@/stores/useStatsStore';
 import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
@@ -28,6 +29,7 @@ export default function StudyScreen() {
   const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
   const { addNote, removeNote } = useReviewNoteActions();
+  const { setStudyStats } = useStatsActions();
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
   const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
@@ -41,6 +43,12 @@ export default function StudyScreen() {
     playFeedbackAudio(answer === correctAnswer ? 'correct' : 'incorrect');
     setSelectedAnswer(answer);
     setProgress(progress.map(p => (p.character === question.character ? { ...p, answer } : p)));
+    setStudyStats(
+      kanaType,
+      type === 'character' ? 'character' : 'pronunciation',
+      question.character,
+      answer === correctAnswer
+    );
 
     if (answer === correctAnswer) {
       removeNote(kanaType, question.character);

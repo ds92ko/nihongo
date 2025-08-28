@@ -4,7 +4,7 @@ import { KanaSoundType, KanaType } from '@/types/kana';
 import { create } from 'zustand';
 
 type KanaStudy = Record<KanaSoundType, string[]>;
-type StudyType = 'character' | 'pronunciation';
+export type StudyType = 'character' | 'pronunciation';
 
 export type Progress = {
   answer: string;

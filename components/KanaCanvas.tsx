@@ -1,8 +1,10 @@
+import kanaMap from '@/assets/paths';
 import KanaSvg from '@/components/KanaSvg';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
+import { useStatsActions } from '@/stores/useStatsStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useEffect, useRef, useState } from 'react';
@@ -16,10 +18,11 @@ interface KanaCanvasProps {
 }
 
 const KanaCanvas = ({ kana }: KanaCanvasProps) => {
-  const { isVisibleGrid } = useKanaContext();
+  const { kanaType, isVisibleGrid } = useKanaContext();
   const { setIsVisibleGrid } = useKanaActions();
   const { playKanaAudio, playing } = useKanaAudio();
   const { playPopAudio } = usePopAudio();
+  const { setPracticeStats } = useStatsActions();
   const firstRender = useRef(true);
 
   const [restartTrigger, setRestartTrigger] = useState(0);
@@ -47,8 +50,7 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
 
           return prev;
         });
-      },
-      onPanResponderRelease: () => {}
+      }
     })
   ).current;
 
@@ -56,18 +58,29 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     playPopAudio();
     setIsVisibleGrid();
   };
-  const handlePlay = () => playKanaAudio(kana);
+
+  const handlePlay = () => {
+    playKanaAudio(kana);
+    setPracticeStats(kanaType, 'listening', kana);
+  };
 
   const handleRestart = () => {
+    handlePlay();
     setRestartTrigger(prev => prev + 1);
     setPaths([]);
-    handlePlay();
   };
 
   const handleClear = () => {
     playPopAudio();
     setPaths([]);
   };
+
+  useEffect(() => {
+    const pathLength = [...kana].flatMap(char => kanaMap[char] || []).length;
+
+    if (pathLength !== paths.length) return;
+    setPracticeStats(kanaType, 'writing', kana);
+  }, [kanaType, kana, paths.length, setPracticeStats]);
 
   useEffect(() => {
     if (firstRender.current) {
