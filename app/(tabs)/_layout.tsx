@@ -56,7 +56,7 @@ export default function TabLayout() {
               variant="tiny"
               color={color}
             >
-              문자 연습
+              연습
             </Text>
           ),
           tabBarIcon: ({ color }) => (
@@ -88,7 +88,7 @@ export default function TabLayout() {
               variant="tiny"
               color={color}
             >
-              테스트
+              퀴즈
             </Text>
           ),
           tabBarIcon: ({ color }) => (

@@ -182,7 +182,7 @@ const StudyResult = () => {
             variant="body2"
             color="white"
           >
-            테스트 종료
+            퀴즈 종료
           </Text>
         </Link>
       </View>

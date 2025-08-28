@@ -20,9 +20,9 @@ const ROW_WIDTH = Math.floor((width - ROWS_PADDING_TOP * 2 - ROWS_GAP * (PER_ROW
 const ROW_HEIGHT = 36;
 
 const tips = [
-  '테스트할 행을 선택한 뒤, 원하는 방식으로 테스트를 시작해보세요.',
-  '읽기 테스트는 제시된 문자를 보고 발음을 맞히는 방식이에요.',
-  '표기 테스트는 제시된 발음에 맞는 문자를 맞히는 방식이에요.'
+  '퀴즈를 진행할 행을 선택한 뒤, 원하는 방식으로 시작해보세요.',
+  '읽기 퀴즈는 제시된 문자를 보고 발음을 맞히는 방식이에요.',
+  '표기 퀴즈는 제시된 발음에 맞는 문자를 맞히는 방식이에요.'
 ];
 
 const StudyScene = () => {
@@ -163,7 +163,7 @@ const StudyScene = () => {
             variant="body2"
             color="white"
           >
-            읽기 테스트
+            읽기 퀴즈
           </Text>
         </Link>
         <Link
@@ -180,7 +180,7 @@ const StudyScene = () => {
             variant="body2"
             color="white"
           >
-            표기 테스트
+            표기 퀴즈
           </Text>
         </Link>
       </View>
