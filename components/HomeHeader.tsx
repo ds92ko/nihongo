@@ -14,7 +14,7 @@ const HomeHeader = () => {
 
 const styles = StyleSheet.create({
   safe: {
-    backgroundColor: Colors.primary30
+    backgroundColor: Colors.primary10
   },
   header: {
     padding: 16

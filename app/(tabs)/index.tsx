@@ -1,10 +1,275 @@
+import { mateImageMap } from '@/assets/images/mates';
 import Text from '@/components/Text';
-import { View } from 'react-native';
+import { Colors } from '@/constants/Colors';
+import { useMateContext } from '@/stores/useMateStore';
+import { useStatsContext } from '@/stores/useStatsStore';
+import Entypo from '@expo/vector-icons/Entypo';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ja';
+import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
+
+dayjs.locale('ja');
+
+const { width } = Dimensions.get('window');
+const DAYS_IN_WEEK = 7;
+const CONTAINER_PADDING_HORIZONTAL = 16;
+const WEEKLY_PADDING = 16;
+const WEEKLY_STAMP_SIZE = 26;
+const WEEKDAYS_GAP = 8;
+const WEEKLY_IMAGE_SIZE =
+  width -
+  CONTAINER_PADDING_HORIZONTAL * 2 -
+  WEEKLY_PADDING -
+  WEEKLY_STAMP_SIZE * DAYS_IN_WEEK -
+  WEEKDAYS_GAP * (DAYS_IN_WEEK - 1);
+
+const getWeekly = ({
+  practiceDates,
+  quizDates
+}: {
+  practiceDates: string[];
+  quizDates: string[];
+}) => {
+  const today = dayjs();
+  const pastWeek = Array.from({ length: DAYS_IN_WEEK }).map((_, i) =>
+    today.subtract(DAYS_IN_WEEK - 1 - i, 'day').startOf('day')
+  );
+
+  return pastWeek.map(d => ({
+    day: d.format('dd'),
+    practice: practiceDates.some(x => dayjs(x).isSame(d, 'day')),
+    quiz: quizDates.some(x => dayjs(x).isSame(d, 'day'))
+  }));
+};
+const getStreak = (dates: string[]) => {
+  const parsedDates = dates.map(d => dayjs(d)).sort((a, b) => b.diff(a));
+  const today = dayjs();
+  let streak = 0;
+
+  for (let i = 0; i < parsedDates.length; i++) {
+    const date = parsedDates[i];
+
+    if (i === 0 && !date.isSame(today, 'day')) break;
+    if (i > 0 && parsedDates[i - 1].diff(date, 'day') !== 1) break;
+
+    streak++;
+  }
+
+  return streak;
+};
+
+const testDates = [
+  '2025-08-22',
+  '2025-08-23',
+  '2025-08-24',
+  '2025-08-25',
+  '2025-08-26',
+  '2025-08-27',
+  '2024-08-28'
+];
+
+const weeklyImage = ['mocking', 'ok', 'yes', 'good', 'happy', 'blushing', 'sing', 'excited'];
 
 export default function Index() {
+  const { mate } = useMateContext();
+  const { practice, quiz } = useStatsContext();
+  const practiceDates = [...testDates, ...Object.keys(practice)];
+  const quizDates = [...testDates, ...Object.keys(quiz)];
+  const practiceStreak = getStreak(practiceDates);
+  const quizStreak = getStreak(quizDates);
+  const weekly = getWeekly({ practiceDates, quizDates });
+
+  console.log('practiceStreak', practiceStreak);
+  console.log('quizStreak', quizStreak);
+  console.log('weekly', weekly);
+
   return (
-    <View>
-      <Text>메인페이지</Text>
-    </View>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
+      <View style={styles.streaks}>
+        <View style={[styles.streak, { backgroundColor: Colors.practiceLight }]}>
+          <View style={styles.streakIcon}>
+            <Entypo
+              name="pencil"
+              size={32}
+              color={Colors.practice}
+            />
+          </View>
+          <View style={styles.streakText}>
+            <Text
+              weight={700}
+              variant="caption"
+            >
+              연속 연습
+            </Text>
+            <View style={styles.dateCount}>
+              <Text
+                weight={700}
+                variant="h3"
+                color={Colors.textPractice}
+              >
+                {practiceStreak}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.dateUnit}
+                color={Colors.textSecondary}
+              >
+                일
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={[styles.streak, { backgroundColor: Colors.quizLight }]}>
+          <View style={styles.streakIcon}>
+            <Entypo
+              name="open-book"
+              size={32}
+              color={Colors.quiz}
+            />
+          </View>
+          <View style={styles.streakText}>
+            <Text
+              weight={700}
+              variant="caption"
+            >
+              연속 퀴즈
+            </Text>
+            <View style={styles.dateCount}>
+              <Text
+                weight={700}
+                variant="h3"
+                color={Colors.textQuiz}
+              >
+                {quizStreak}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.dateUnit}
+                color={Colors.textSecondary}
+              >
+                일
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.weekly}>
+        <View style={styles.weekdays}>
+          {weekly.map(({ day, practice, quiz }) => (
+            <View
+              key={day}
+              style={styles.weekday}
+            >
+              <Text
+                weight={700}
+                variant="small"
+                color={Colors.textSecondary}
+              >
+                {day}
+              </Text>
+              <View style={styles.stamp}>
+                <Entypo
+                  name="pencil"
+                  size={18}
+                  color={practice ? Colors.practice : Colors.neutralLight}
+                />
+              </View>
+              <View style={styles.stamp}>
+                <Entypo
+                  name="open-book"
+                  size={18}
+                  color={quiz ? Colors.quiz : Colors.neutralLight}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
+        <Image
+          source={mateImageMap[mate][weeklyImage[Math.min(practiceStreak, quizStreak)]]}
+          style={styles.weeklyImage}
+        />
+      </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.white
+  },
+  contentContainer: {
+    paddingHorizontal: CONTAINER_PADDING_HORIZONTAL,
+    paddingVertical: 24,
+    gap: 16
+  },
+  weekly: {
+    position: 'relative',
+    borderRadius: 8,
+    padding: WEEKLY_PADDING,
+    gap: 12,
+    backgroundColor: Colors.infoLight
+  },
+  weekdays: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: WEEKDAYS_GAP
+  },
+  weekday: {
+    alignItems: 'center',
+    gap: WEEKDAYS_GAP
+  },
+  weeklyImage: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: WEEKLY_IMAGE_SIZE,
+    height: WEEKLY_IMAGE_SIZE,
+    zIndex: 10
+  },
+  stamp: {
+    width: WEEKLY_STAMP_SIZE,
+    height: WEEKLY_STAMP_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    backgroundColor: Colors.white
+  },
+  streaks: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12
+  },
+  streak: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 8,
+    padding: 16,
+    gap: 12
+  },
+  streakIcon: {
+    backgroundColor: Colors.white,
+    borderRadius: '50%',
+    padding: 10
+  },
+  streakText: {
+    gap: 2,
+    alignItems: 'flex-end'
+  },
+  dateCount: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    gap: 2
+  },
+  dateUnit: {
+    marginBottom: 4
+  }
+});
