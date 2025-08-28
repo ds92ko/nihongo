@@ -1,28 +1,31 @@
 import { Colors } from '@/constants/Colors';
 import { Typography } from '@/constants/Typography';
-import { StyleSheet, Text, TextProps } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-interface LogoProps extends TextProps {
-  variant?: 'white' | 'black';
+interface LogoProps {
+  variant?: 'fill' | 'outline';
 }
 
-const Logo = ({ variant = 'black', style, ...props }: LogoProps) => {
+const Logo = ({ variant = 'fill' }: LogoProps) => {
   return (
-    <Text
-      {...props}
-      style={[styles[variant], Typography.h1, { color: Colors.textPrimary }, style]}
-    >
-      Nihon
-      <Text style={{ color: Colors.primary }}>GO</Text>
-    </Text>
+    <View style={styles.logo}>
+      <Text style={[styles[variant], Typography.display3, { color: Colors.textPrimary }]}>
+        Nihon
+      </Text>
+      <Text style={[styles[variant], Typography.display3, { color: Colors.primary }]}>GO!</Text>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  black: {
+  logo: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  fill: {
     fontFamily: 'Cafe24Meongi-B'
   },
-  white: {
+  outline: {
     fontFamily: 'Cafe24Meongi-W'
   }
 });
