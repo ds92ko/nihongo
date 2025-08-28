@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 8,
     borderRadius: 8,
-    backgroundColor: Colors.warningAlpha
+    backgroundColor: Colors.warningLight
   }
 });
 

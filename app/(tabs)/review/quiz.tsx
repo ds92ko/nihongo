@@ -78,8 +78,8 @@ export default function QuizScreen() {
             backgroundColor: !selectedAnswer
               ? Colors.white
               : selectedAnswer === correctAnswer
-                ? Colors.successAlpha
-                : Colors.errorAlpha,
+                ? Colors.successLight
+                : Colors.errorLight,
             borderColor: !selectedAnswer
               ? Colors.neutral
               : selectedAnswer === correctAnswer

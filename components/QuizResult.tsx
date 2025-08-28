@@ -234,10 +234,10 @@ const styles = StyleSheet.create({
     paddingVertical: 6
   },
   correctBadge: {
-    backgroundColor: Colors.successAlpha
+    backgroundColor: Colors.successLight
   },
   incorrectBadge: {
-    backgroundColor: Colors.errorAlpha
+    backgroundColor: Colors.errorLight
   },
   feedbackImage: {
     width: FEEDBACK_IMAGE_SIZE,

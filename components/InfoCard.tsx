@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: Colors.infoAlpha
+    backgroundColor: Colors.infoLight
   },
   infoHeader: {
     flexDirection: 'row',
