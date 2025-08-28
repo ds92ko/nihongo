@@ -1,7 +1,5 @@
 import { KanaType } from '@/types/kana';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type ReviewNoteMode = 'both' | 'character' | 'pronunciation';
 
@@ -38,78 +36,65 @@ const DEFAULT_CONTEXT: ReviewNoteContext = {
   }
 };
 
-const useReviewNoteStore = create<ReviewNoteStore>()(
-  persist(
-    set => ({
-      context: DEFAULT_CONTEXT,
-      actions: {
-        addNote: (kanaType, note) =>
-          set(state => {
-            const existing = state.context.notes[kanaType];
-            const found = existing.find(n => n.character === note.character);
-            const updatedNotes = found
-              ? existing.map(n =>
-                  n.character === note.character ? { ...n, count: n.count + 1 } : n
-                )
-              : [...existing, { ...note, mode: 'both', count: 1 }];
+const useReviewNoteStore = create<ReviewNoteStore>(set => ({
+  context: DEFAULT_CONTEXT,
+  actions: {
+    addNote: (kanaType, note) =>
+      set(state => {
+        const existing = state.context.notes[kanaType];
+        const found = existing.find(n => n.character === note.character);
+        const updatedNotes = found
+          ? existing.map(n => (n.character === note.character ? { ...n, count: n.count + 1 } : n))
+          : [...existing, { ...note, mode: 'both', count: 1 }];
 
-            return {
-              context: {
-                ...state.context,
-                notes: {
-                  ...state.context.notes,
-                  [kanaType]: updatedNotes
-                }
-              }
-            };
-          }),
-        removeNote: (kanaType, character) =>
-          set(state => ({
-            context: {
-              ...state.context,
-              notes: {
-                ...state.context.notes,
-                [kanaType]: state.context.notes[kanaType].filter(
-                  note => note.character !== character
-                )
-              }
+        return {
+          context: {
+            ...state.context,
+            notes: {
+              ...state.context.notes,
+              [kanaType]: updatedNotes
             }
-          })),
-        setNote: (kanaType, note) =>
-          set(state => ({
-            context: {
-              ...state.context,
-              notes: {
-                ...state.context.notes,
-                [kanaType]: state.context.notes[kanaType].map(n =>
-                  n.character === note.character ? note : n
-                )
-              }
-            }
-          })),
-        setAllMode: (kanaType, mode) =>
-          set(state => ({
-            context: {
-              ...state.context,
-              notes: {
-                ...state.context.notes,
-                [kanaType]: state.context.notes[kanaType].map(note => ({ ...note, mode }))
-              }
-            }
-          })),
-        resetNotes: () =>
-          set({
-            context: DEFAULT_CONTEXT
-          })
-      }
-    }),
-    {
-      name: 'incorrect-note-storage',
-      storage: createJSONStorage(() => AsyncStorage),
-      partialize: ({ context }) => ({ context })
-    }
-  )
-);
+          }
+        };
+      }),
+    removeNote: (kanaType, character) =>
+      set(state => ({
+        context: {
+          ...state.context,
+          notes: {
+            ...state.context.notes,
+            [kanaType]: state.context.notes[kanaType].filter(note => note.character !== character)
+          }
+        }
+      })),
+    setNote: (kanaType, note) =>
+      set(state => ({
+        context: {
+          ...state.context,
+          notes: {
+            ...state.context.notes,
+            [kanaType]: state.context.notes[kanaType].map(n =>
+              n.character === note.character ? note : n
+            )
+          }
+        }
+      })),
+    setAllMode: (kanaType, mode) =>
+      set(state => ({
+        context: {
+          ...state.context,
+          notes: {
+            ...state.context.notes,
+            [kanaType]: state.context.notes[kanaType].map(note => ({ ...note, mode }))
+          }
+        }
+      })),
+    resetNotes: () =>
+      set({
+        context: DEFAULT_CONTEXT
+      })
+  }
+}));
 
 export const useReviewNoteContext = () => useReviewNoteStore(({ context }) => context);
 export const useReviewNoteActions = () => useReviewNoteStore(({ actions }) => actions);
