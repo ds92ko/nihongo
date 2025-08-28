@@ -7,6 +7,7 @@ import usePopAudio from '@/hooks/usePopAudio';
 import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';
 import { useMistakeActions, useMistakeContext } from '@/stores/useMistakeStore';
 import { useSettingActions, useSettingContext } from '@/stores/useSettingStore';
+import { useStatsActions, useStatsContext } from '@/stores/useStatsStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -39,6 +40,8 @@ export default function SettingScreen() {
   const { playPopAudio } = usePopAudio();
   const { mistakes } = useMistakeContext();
   const { resetMistakes } = useMistakeActions();
+  const { practice, quiz } = useStatsContext();
+  const { resetPracticeStats, resetQuizStats } = useStatsActions();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialog, setDialog] = useState<Omit<ModalProps, 'visible' | 'setVisible'> | null>(null);
 
@@ -122,7 +125,7 @@ export default function SettingScreen() {
             <Ionicons
               name="school-outline"
               size={24}
-              color={Colors.textPrimary}
+              color={Colors.primary}
             />
             <Text
               weight={700}
@@ -159,7 +162,7 @@ export default function SettingScreen() {
             <Ionicons
               name="volume-medium-outline"
               size={24}
-              color={Colors.textPrimary}
+              color={Colors.primary}
             />
             <Text
               weight={700}
@@ -214,7 +217,7 @@ export default function SettingScreen() {
             <Ionicons
               name="server-outline"
               size={24}
-              color={Colors.textPrimary}
+              color={Colors.primary}
             />
             <Text
               weight={700}
@@ -227,15 +230,87 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPress={() => {
+                const isEmpty = !Object.keys(practice).length;
+
+                openDialog({
+                  type: isEmpty ? 'alert' : 'confirm',
+                  title: isEmpty ? '연습 기록이 비어있어요.' : '연습 기록을 초기화할까요?',
+                  contents: isEmpty
+                    ? ['초기화할 연습 기록이 없어요.']
+                    : [
+                        '초기화하면 연습 기록의 모든 데이터가 삭제됩니다.',
+                        '삭제된 데이터는 복구할 수 없어요.'
+                      ],
+                  confirm: isEmpty
+                    ? undefined
+                    : {
+                        label: '초기화',
+                        onPress: resetPracticeStats
+                      }
+                });
+              }}
+            >
+              <Text
+                weight={500}
+                variant="caption"
+                color="textSecondary"
+              >
+                연습 기록
+              </Text>
+              <Ionicons
+                name="trash-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
+            </Pressable>
+            <Pressable
+              style={styles.settingItem}
+              onPress={() => {
+                const isEmpty = !Object.keys(quiz).length;
+
+                openDialog({
+                  type: isEmpty ? 'alert' : 'confirm',
+                  title: isEmpty ? '퀴즈 기록이 비어있어요.' : '퀴즈 기록을 초기화할까요?',
+                  contents: isEmpty
+                    ? ['초기화할 퀴즈 기록이 없어요.']
+                    : [
+                        '초기화하면 퀴즈 기록의 모든 데이터가 삭제됩니다.',
+                        '삭제된 데이터는 복구할 수 없어요.'
+                      ],
+                  confirm: isEmpty
+                    ? undefined
+                    : {
+                        label: '초기화',
+                        onPress: resetQuizStats
+                      }
+                });
+              }}
+            >
+              <Text
+                weight={500}
+                variant="caption"
+                color="textSecondary"
+              >
+                퀴즈 기록
+              </Text>
+              <Ionicons
+                name="trash-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
+            </Pressable>
+            <Pressable
+              style={styles.settingItem}
+              onPress={() => {
                 const isEmpty = !mistakes.hiragana.length && !mistakes.katakana.length;
 
                 openDialog({
                   type: isEmpty ? 'alert' : 'confirm',
-                  title: isEmpty ? '오답노트가 비어있어요.' : '오답노트를 초기화할까요?',
+                  title: isEmpty ? '오답 노트가 비어있어요.' : '오답 노트를 초기화할까요?',
                   contents: isEmpty
-                    ? ['초기화할 오답노트가 없어요.']
+                    ? ['초기화할 오답 노트가 없어요.']
                     : [
-                        '초기화하면 오답노트의 모든 데이터가 삭제됩니다.',
+                        '초기화하면 오답 노트의 모든 데이터가 삭제됩니다.',
                         '삭제된 데이터는 복구할 수 없어요.'
                       ],
                   confirm: isEmpty
@@ -252,7 +327,7 @@ export default function SettingScreen() {
                 variant="caption"
                 color="textSecondary"
               >
-                오답노트
+                오답 노트
               </Text>
               <Ionicons
                 name="trash-outline"
@@ -267,7 +342,7 @@ export default function SettingScreen() {
             <Ionicons
               name="help-circle-outline"
               size={24}
-              color={Colors.textPrimary}
+              color={Colors.primary}
             />
             <Text
               weight={700}
@@ -340,7 +415,7 @@ export default function SettingScreen() {
             <Ionicons
               name="document-text-outline"
               size={24}
-              color={Colors.textPrimary}
+              color={Colors.primary}
             />
             <Text
               weight={700}
@@ -399,7 +474,7 @@ export default function SettingScreen() {
             <Ionicons
               name="information-circle-outline"
               size={24}
-              color={Colors.textPrimary}
+              color={Colors.primary}
             />
             <Text
               weight={700}
