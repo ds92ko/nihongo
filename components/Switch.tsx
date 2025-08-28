@@ -18,14 +18,6 @@ const Switch = ({ value, onValueChange }: SwitchProps) => {
   const [animValue] = useState(new Animated.Value(value ? 1 : 0));
   const { playPopAudio } = usePopAudio();
 
-  useEffect(() => {
-    Animated.timing(animValue, {
-      toValue: value ? 1 : 0,
-      duration: 200,
-      useNativeDriver: false
-    }).start();
-  }, [value, animValue]);
-
   const handleChange = () => {
     playPopAudio();
     onValueChange(!value);
@@ -40,6 +32,14 @@ const Switch = ({ value, onValueChange }: SwitchProps) => {
     outputRange: [0, INNER_WIDTH - THUMB_SIZE],
     extrapolate: 'clamp'
   });
+
+  useEffect(() => {
+    Animated.timing(animValue, {
+      toValue: value ? 1 : 0,
+      duration: 200,
+      useNativeDriver: false
+    }).start();
+  }, [value, animValue]);
 
   return (
     <Pressable onPress={handleChange}>
