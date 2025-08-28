@@ -125,10 +125,7 @@ const ReviewNoteScene = () => {
                 key={count}
                 title={`틀린 횟수 ${count}회`}
                 suffix={
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
+                  <View style={styles.suffix}>
                     <Text
                       weight={500}
                       variant="caption"
@@ -136,8 +133,13 @@ const ReviewNoteScene = () => {
                     >
                       {notes.length}
                     </Text>
-                    개
-                  </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
                 }
                 maxHeight={NOTES_PADDING_TOP + notes.length * (NOTE_HEIGHT + NOTES_GAP) - NOTES_GAP}
                 defaultExpanded
@@ -239,6 +241,10 @@ const styles = StyleSheet.create({
   },
   groups: {
     gap: 16
+  },
+  suffix: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   notes: {
     paddingTop: NOTES_PADDING_TOP,

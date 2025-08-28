@@ -5,7 +5,7 @@ import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
-import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
+import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import { KanaSoundType } from '@/types/kana';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Link } from 'expo-router';
@@ -25,10 +25,10 @@ const tips = [
   '표기 퀴즈는 제시된 발음에 맞는 문자를 맞히는 방식이에요.'
 ];
 
-const StudyScene = () => {
+const QuizScene = () => {
   const { kanaType } = useKanaContext();
-  const { target } = useStudyContext();
-  const { startStudy, setTarget, resetTarget } = useStudyActions();
+  const { target } = useQuizContext();
+  const { startQuiz, setTarget, resetTarget } = useQuizActions();
   const { playPopAudio } = usePopAudio();
   const disabled = Object.values(target).every(v => !v.length);
 
@@ -62,10 +62,7 @@ const StudyScene = () => {
                 <Accordion
                   title={item.title}
                   suffix={
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
+                    <View style={styles.suffix}>
                       <Text
                         weight={500}
                         variant="caption"
@@ -73,8 +70,13 @@ const StudyScene = () => {
                       >
                         {totalSelected}
                       </Text>
-                      /{totalRows}
-                    </Text>
+                      <Text
+                        variant="caption"
+                        color="textSecondary"
+                      >
+                        /{totalRows}
+                      </Text>
+                    </View>
                   }
                   maxHeight={maxHeight}
                   defaultExpanded
@@ -150,11 +152,11 @@ const StudyScene = () => {
       </ScrollView>
       <View style={styles.buttons}>
         <Link
-          href="/test/study"
+          href="/test/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
             playPopAudio();
-            startStudy(kanaType, 'character');
+            startQuiz(kanaType, 'character');
           }}
           disabled={disabled}
         >
@@ -167,11 +169,11 @@ const StudyScene = () => {
           </Text>
         </Link>
         <Link
-          href="/test/study"
+          href="/test/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
             playPopAudio();
-            startStudy(kanaType, 'pronunciation');
+            startQuiz(kanaType, 'pronunciation');
           }}
           disabled={disabled}
         >
@@ -200,6 +202,10 @@ const styles = StyleSheet.create({
   },
   groups: {
     gap: 16
+  },
+  suffix: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   rows: {
     paddingTop: ROWS_PADDING_TOP,
@@ -257,4 +263,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default StudyScene;
+export default QuizScene;

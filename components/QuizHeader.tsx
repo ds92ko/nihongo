@@ -1,13 +1,13 @@
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
-import { useStudyContext } from '@/stores/useStudyStore';
+import { useQuizContext } from '@/stores/useQuizStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-const StudyHeader = () => {
-  const { type } = useStudyContext();
+const QuizHeader = () => {
+  const { type } = useQuizContext();
   const { playPopAudio } = usePopAudio();
 
   return (
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default StudyHeader;
+export default QuizHeader;

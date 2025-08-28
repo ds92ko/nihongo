@@ -5,7 +5,7 @@ import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
-import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
+import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
@@ -28,11 +28,11 @@ const getFeedbackImageName = (accuracy: number) => {
   return 'shocked';
 };
 
-const StudyResult = () => {
+const QuizResult = () => {
   const { mate } = useMateContext();
   const { kanaType } = useKanaContext();
-  const { type, progress } = useStudyContext();
-  const { startStudy } = useStudyActions();
+  const { type, progress } = useQuizContext();
+  const { startQuiz } = useQuizActions();
   const { playKanaAudio, playing } = useKanaAudio();
   const { playPopAudio } = usePopAudio();
   const correctAnswers = progress.filter(
@@ -161,7 +161,7 @@ const StudyResult = () => {
           onPress={() => {
             if (!type) return;
             playPopAudio();
-            startStudy(kanaType, type);
+            startQuiz(kanaType, type);
           }}
         >
           <Text
@@ -293,4 +293,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default StudyResult;
+export default QuizResult;

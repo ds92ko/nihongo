@@ -1,5 +1,5 @@
+import QuizScreen from '@/components/QuizScene';
 import ReviewNoteScene from '@/components/ReviewNoteScene';
-import StudyScene from '@/components/StudyScene';
 import TabBar from '@/components/TabBar';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
@@ -7,12 +7,12 @@ import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
-  study: () => <StudyScene />,
+  quiz: () => <QuizScreen />,
   reviewNote: () => <ReviewNoteScene />
 });
 
 const routes = [
-  { key: 'study', title: '문제풀이' },
+  { key: 'quiz', title: '문제풀이' },
   { key: 'reviewNote', title: '오답노트' }
 ];
 

@@ -1,6 +1,6 @@
 import { mateImageMap } from '@/assets/images/mates';
 import ProgressBar from '@/components/ProgressBar';
-import StudyResult from '@/components/StudyResult';
+import QuizResult from '@/components/QuizResult';
 import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
@@ -8,9 +8,9 @@ import useFeedbackAudio from '@/hooks/useFeedbackAudio';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
+import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import { useReviewNoteActions } from '@/stores/useReviewNoteStore';
 import { useStatsActions } from '@/stores/useStatsStore';
-import { useStudyActions, useStudyContext } from '@/stores/useStudyStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
 import { Animated, Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
@@ -21,15 +21,15 @@ const FEEDBACK_IMAGE_SIZE = width * 0.35;
 const correctImage = ['blushing', 'excited', 'good', 'happy', 'love', 'ok', 'sing', 'yes'];
 const incorrectImage = ['confused', 'huh', 'mocking', 'no', 'sad', 'shocked', 'shy', 'sick'];
 
-export default function StudyScreen() {
+export default function QuizScreen() {
   const { kanaType } = useKanaContext();
-  const { type, progress, question } = useStudyContext();
-  const { setProgress, setQuestion } = useStudyActions();
+  const { type, progress, question } = useQuizContext();
+  const { setProgress, setQuestion } = useQuizActions();
   const { playKanaAudio, playing } = useKanaAudio();
   const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
   const { addNote, removeNote } = useReviewNoteActions();
-  const { setStudyStats } = useStatsActions();
+  const { setQuizStats } = useStatsActions();
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
   const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
@@ -43,7 +43,7 @@ export default function StudyScreen() {
     playFeedbackAudio(answer === correctAnswer ? 'correct' : 'incorrect');
     setSelectedAnswer(answer);
     setProgress(progress.map(p => (p.character === question.character ? { ...p, answer } : p)));
-    setStudyStats(
+    setQuizStats(
       kanaType,
       type === 'character' ? 'character' : 'pronunciation',
       question.character,
@@ -211,7 +211,7 @@ export default function StudyScreen() {
       </View>
     </View>
   ) : (
-    <StudyResult />
+    <QuizResult />
   );
 }
 

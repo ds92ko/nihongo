@@ -3,8 +3,8 @@ import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import { KanaSoundType, KanaType } from '@/types/kana';
 import { create } from 'zustand';
 
-type KanaStudy = Record<KanaSoundType, string[]>;
-export type StudyType = 'character' | 'pronunciation';
+type KanaQuiz = Record<KanaSoundType, string[]>;
+export type QuizType = 'character' | 'pronunciation';
 
 export type Progress = {
   answer: string;
@@ -16,16 +16,16 @@ export interface Question extends Progress {
   answers: string[];
 }
 
-interface StudyContext {
-  type: StudyType | null;
-  target: KanaStudy;
+interface QuizContext {
+  type: QuizType | null;
+  target: KanaQuiz;
   progress: Progress[];
   question: Question | null;
 }
 
-interface StudyActions {
-  startStudy: (kanaType: KanaType, type: StudyType) => void;
-  setTarget: (target: Partial<KanaStudy>) => void;
+interface QuizActions {
+  startQuiz: (kanaType: KanaType, type: QuizType) => void;
+  setTarget: (target: Partial<KanaQuiz>) => void;
   resetTarget: () => void;
   initProgress: (kanaType: KanaType) => Progress[];
   setProgress: (progress: Progress[]) => void;
@@ -33,12 +33,12 @@ interface StudyActions {
   setQuestion: (kanaType: KanaType) => void;
 }
 
-interface StudyStore {
-  context: StudyContext;
-  actions: StudyActions;
+interface QuizStore {
+  context: QuizContext;
+  actions: QuizActions;
 }
 
-const defaultKanaStudy: KanaStudy = {
+const defaultKanaQuiz: KanaQuiz = {
   seion: [],
   dakuon: [],
   youon: []
@@ -46,15 +46,15 @@ const defaultKanaStudy: KanaStudy = {
 
 const ANSWERS_LENGTH = 5;
 
-const useStudyStore = create<StudyStore>((set, get) => ({
+const useQuizStore = create<QuizStore>((set, get) => ({
   context: {
     type: null,
-    target: defaultKanaStudy,
+    target: defaultKanaQuiz,
     progress: [],
     question: null
   },
   actions: {
-    startStudy: (kanaType, type) =>
+    startQuiz: (kanaType, type) =>
       set(state => {
         const progress = get().actions.initProgress(kanaType);
         const question = get().actions.initQuestion(kanaType, progress);
@@ -82,7 +82,7 @@ const useStudyStore = create<StudyStore>((set, get) => ({
       set(state => ({
         context: {
           ...state.context,
-          target: defaultKanaStudy
+          target: defaultKanaQuiz
         }
       })),
     initProgress: kanaType => {
@@ -154,5 +154,5 @@ const useStudyStore = create<StudyStore>((set, get) => ({
   }
 }));
 
-export const useStudyContext = () => useStudyStore(({ context }) => context);
-export const useStudyActions = () => useStudyStore(({ actions }) => actions);
+export const useQuizContext = () => useQuizStore(({ context }) => context);
+export const useQuizActions = () => useQuizStore(({ actions }) => actions);

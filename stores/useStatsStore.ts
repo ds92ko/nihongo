@@ -1,4 +1,4 @@
-import { StudyType } from '@/stores/useStudyStore';
+import { QuizType } from '@/stores/useQuizStore';
 import { KanaType } from '@/types/kana';
 import dayjs from 'dayjs';
 import { create } from 'zustand';
@@ -15,31 +15,31 @@ type PracticeStats = {
   [key in PracticeType]: PracticeStat[];
 };
 
-interface StudyStat {
+interface QuizStat {
   type: KanaType;
   kana: string;
   correct: number;
   incorrect: number;
 }
 
-type StudyStats = {
-  [key in StudyType]: StudyStat[];
+type QuizStats = {
+  [key in QuizType]: QuizStat[];
 };
 
 interface StatsContext {
   practice: {
     [date: string]: PracticeStats;
   };
-  study: {
-    [date: string]: StudyStats;
+  quiz: {
+    [date: string]: QuizStats;
   };
 }
 
 interface StatsActions {
   setPracticeStats: (kanaType: KanaType, type: PracticeType, kana: string) => void;
   resetPracticeStats: () => void;
-  setStudyStats: (kanaType: KanaType, type: StudyType, kana: string, correct: boolean) => void;
-  resetStudyStats: () => void;
+  setQuizStats: (kanaType: KanaType, type: QuizType, kana: string, correct: boolean) => void;
+  resetQuizStats: () => void;
 }
 
 interface StatsStore {
@@ -52,7 +52,7 @@ const DEFAULT_PRACTICE_STATS: PracticeStats = {
   writing: []
 };
 
-const DEFAULT_STUDY_STATS: StudyStats = {
+const DEFAULT_QUIZ_STATS: QuizStats = {
   character: [],
   pronunciation: []
 };
@@ -60,7 +60,7 @@ const DEFAULT_STUDY_STATS: StudyStats = {
 const useStatsStore = create<StatsStore>(set => ({
   context: {
     practice: {},
-    study: {}
+    quiz: {}
   },
   actions: {
     setPracticeStats: (kanaType, type, kana) =>
@@ -96,10 +96,10 @@ const useStatsStore = create<StatsStore>(set => ({
           practice: {}
         }
       })),
-    setStudyStats: (kanaType, type, kana, correct) =>
+    setQuizStats: (kanaType, type, kana, correct) =>
       set(state => {
         const today = dayjs().format('YYYY-MM-DD');
-        const todayStats = state.context.study[today] || { ...DEFAULT_STUDY_STATS };
+        const todayStats = state.context.quiz[today] || { ...DEFAULT_QUIZ_STATS };
 
         const stats = todayStats[type];
         const existing = stats.find(s => s.kana === kana && s.type === kanaType);
@@ -121,8 +121,8 @@ const useStatsStore = create<StatsStore>(set => ({
         return {
           context: {
             ...state.context,
-            study: {
-              ...state.context.study,
+            quiz: {
+              ...state.context.quiz,
               [today]: {
                 ...todayStats,
                 [type]: newStats
@@ -131,11 +131,11 @@ const useStatsStore = create<StatsStore>(set => ({
           }
         };
       }),
-    resetStudyStats: () =>
+    resetQuizStats: () =>
       set(state => ({
         context: {
           ...state.context,
-          study: {}
+          quiz: {}
         }
       }))
   }

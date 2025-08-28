@@ -1,4 +1,4 @@
-import StudyHeader from '@/components/StudyHeader';
+import QuizHeader from '@/components/QuizHeader';
 import { Stack } from 'expo-router';
 
 export default function TestLayout() {
@@ -15,9 +15,9 @@ export default function TestLayout() {
         }}
       />
       <Stack.Screen
-        name="study"
+        name="quiz"
         options={{
-          header: () => <StudyHeader />
+          header: () => <QuizHeader />
         }}
       />
     </Stack>
