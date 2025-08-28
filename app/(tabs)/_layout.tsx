@@ -48,7 +48,7 @@ export default function TabLayout() {
         })}
       />
       <Tabs.Screen
-        name="chart"
+        name="practice"
         options={{
           headerShown: false,
           tabBarLabel: ({ color }) => (
@@ -72,7 +72,7 @@ export default function TabLayout() {
             playPopAudio();
             setAnimationEnabled(false);
             setTabIndex(0);
-            navigation.navigate('chart');
+            navigation.navigate('practice');
           },
           focus: () => {
             setAnimationEnabled(true);

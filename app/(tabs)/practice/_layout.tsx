@@ -1,7 +1,7 @@
 import KanaHeader from '@/components/KanaHeader';
 import { Stack } from 'expo-router';
 
-export default function ChartLayout() {
+export default function PracticeLayout() {
   return (
     <Stack
       screenOptions={{

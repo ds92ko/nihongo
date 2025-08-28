@@ -33,7 +33,7 @@ const KanaList = ({ data, kana }: KanaListProps) => {
             <Link
               key={j}
               style={[styles.cell, !k && styles.emptyCell, k === kana && styles.activeCell]}
-              href={{ pathname: '/chart/[kana]', params: { kana: k } }}
+              href={{ pathname: '/practice/[kana]', params: { kana: k } }}
               onPress={playPopAudio}
             >
               <Text

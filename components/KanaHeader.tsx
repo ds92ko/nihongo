@@ -21,7 +21,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
   const prevRow = currentTab?.rows?.[currentRowIndex - 1];
   const nextRow = currentTab?.rows?.[currentRowIndex + 1];
 
-  const handleGoToChart = () => {
+  const handleGoToPractice = () => {
     playPopAudio();
     setTabIndex(currentTabIndex);
   };
@@ -31,8 +31,8 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
       <View style={styles.header}>
         <Link
           style={styles.button}
-          href={'/chart'}
-          onPress={handleGoToChart}
+          href={'/practice'}
+          onPress={handleGoToPractice}
         >
           <MaterialIcons
             name="keyboard-arrow-left"
@@ -61,7 +61,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
               { backgroundColor: prevRow ? Colors.white : Colors.neutralLight }
             ]}
             href={{
-              pathname: '/chart/[kana]',
+              pathname: '/practice/[kana]',
               params: { kana: prevRow?.kana[0] || kana }
             }}
             onPress={playPopAudio}
@@ -78,7 +78,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
               { backgroundColor: nextRow ? Colors.white : Colors.neutralLight }
             ]}
             href={{
-              pathname: '/chart/[kana]',
+              pathname: '/practice/[kana]',
               params: { kana: nextRow?.kana[0] || kana }
             }}
             onPress={playPopAudio}

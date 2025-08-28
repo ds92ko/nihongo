@@ -1,4 +1,4 @@
-import ChartScene from '@/components/ChartScene';
+import PracticeScene from '@/components/PracticeScene';
 import TabBar from '@/components/TabBar';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
@@ -6,9 +6,9 @@ import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
-  seion: () => <ChartScene chart="seion" />,
-  dakuon: () => <ChartScene chart="dakuon" />,
-  youon: () => <ChartScene chart="youon" />
+  seion: () => <PracticeScene type="seion" />,
+  dakuon: () => <PracticeScene type="dakuon" />,
+  youon: () => <PracticeScene type="youon" />
 });
 
 const routes = [
@@ -17,7 +17,7 @@ const routes = [
   { key: 'youon', title: '요음' }
 ];
 
-export default function ChartScreen() {
+export default function PracticeScreen() {
   const layout = useWindowDimensions();
   const { tabIndex, animationEnabled } = useTabContext();
   const { setTabIndex } = useTabActions();

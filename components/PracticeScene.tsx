@@ -6,8 +6,8 @@ import { useKanaContext } from '@/stores/useKanaStore';
 import { KanaSoundType } from '@/types/kana';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-interface ChartSceneProps {
-  chart: KanaSoundType;
+interface PracticeSceneProps {
+  type: KanaSoundType;
 }
 
 const tips = {
@@ -24,14 +24,14 @@ const commonTips = [
   '연습에서는 발음을 듣고 직접 따라 써볼 수 있어요.'
 ];
 
-const ChartScene = ({ chart }: ChartSceneProps) => {
+const PracticeScene = ({ type }: PracticeSceneProps) => {
   const { kanaType } = useKanaContext();
-  const data = KANA_TABS[kanaType].find(t => t.key === chart)?.rows ?? [];
+  const data = KANA_TABS[kanaType].find(t => t.key === type)?.rows ?? [];
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <InfoCard tips={[...tips[chart], ...commonTips]} />
+        <InfoCard tips={[...tips[type], ...commonTips]} />
         <KanaList data={data} />
       </ScrollView>
     </View>
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ChartScene;
+export default PracticeScene;

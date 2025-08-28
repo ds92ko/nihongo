@@ -140,7 +140,7 @@ const QuizResult = () => {
                   />
                 </Pressable>
                 <Link
-                  href={{ pathname: '/chart/[kana]', params: { kana: character } }}
+                  href={{ pathname: '/practice/[kana]', params: { kana: character } }}
                   style={styles.iconButton}
                   onPress={playPopAudio}
                 >
