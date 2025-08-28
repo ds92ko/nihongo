@@ -1,10 +1,12 @@
 import { StudyType } from '@/stores/useStudyStore';
 import { KanaType } from '@/types/kana';
+import dayjs from 'dayjs';
 import { create } from 'zustand';
 
 type PracticeType = 'listening' | 'writing';
 
 interface PracticeStat {
+  type: KanaType;
   kana: string;
   count: number;
 }
@@ -14,6 +16,7 @@ type PracticeStats = {
 };
 
 interface StudyStat {
+  type: KanaType;
   kana: string;
   correct: number;
   incorrect: number;
@@ -23,14 +26,14 @@ type StudyStats = {
   [key in StudyType]: StudyStat[];
 };
 
-interface KanaStats {
-  practice: PracticeStats;
-  study: StudyStats;
+interface StatsContext {
+  practice: {
+    [date: string]: PracticeStats;
+  };
+  study: {
+    [date: string]: StudyStats;
+  };
 }
-
-type StatsContext = {
-  [key in KanaType]: KanaStats;
-};
 
 interface StatsActions {
   setPracticeStats: (kanaType: KanaType, type: PracticeType, kana: string) => void;
@@ -44,47 +47,42 @@ interface StatsStore {
   actions: StatsActions;
 }
 
-const DEFAULT_STATS_CONTEXT: StatsContext = {
-  hiragana: {
-    practice: {
-      listening: [],
-      writing: []
-    },
-    study: {
-      character: [],
-      pronunciation: []
-    }
-  },
-  katakana: {
-    practice: {
-      listening: [],
-      writing: []
-    },
-    study: {
-      character: [],
-      pronunciation: []
-    }
-  }
+const DEFAULT_PRACTICE_STATS: PracticeStats = {
+  listening: [],
+  writing: []
+};
+
+const DEFAULT_STUDY_STATS: StudyStats = {
+  character: [],
+  pronunciation: []
 };
 
 const useStatsStore = create<StatsStore>(set => ({
-  context: DEFAULT_STATS_CONTEXT,
+  context: {
+    practice: {},
+    study: {}
+  },
   actions: {
     setPracticeStats: (kanaType, type, kana) =>
       set(state => {
-        const stats = state.context[kanaType].practice[type];
-        const existing = stats.find(s => s.kana === kana);
+        const today = dayjs().format('YYYY-MM-DD');
+        const todayStats = state.context.practice[today] || { ...DEFAULT_PRACTICE_STATS };
+
+        const stats = todayStats[type];
+        const existing = stats.find(s => s.kana === kana && s.type === kanaType);
         const newStats = existing
-          ? stats.map(s => (s.kana === kana ? { ...s, count: s.count + 1 } : s))
-          : [...stats, { kana, count: 1 }];
+          ? stats.map(s =>
+              s.kana === kana && s.type === kanaType ? { ...s, count: s.count + 1 } : s
+            )
+          : [...stats, { type: kanaType, kana, count: 1 }];
 
         return {
           context: {
             ...state.context,
-            [kanaType]: {
-              ...state.context[kanaType],
-              practice: {
-                ...state.context[kanaType].practice,
+            practice: {
+              ...state.context.practice,
+              [today]: {
+                ...todayStats,
                 [type]: newStats
               }
             }
@@ -95,23 +93,19 @@ const useStatsStore = create<StatsStore>(set => ({
       set(state => ({
         context: {
           ...state.context,
-          hiragana: {
-            ...state.context.hiragana,
-            practice: DEFAULT_STATS_CONTEXT.hiragana.practice
-          },
-          katakana: {
-            ...state.context.katakana,
-            practice: DEFAULT_STATS_CONTEXT.katakana.practice
-          }
+          practice: {}
         }
       })),
     setStudyStats: (kanaType, type, kana, correct) =>
       set(state => {
-        const stats = state.context[kanaType].study[type];
-        const existing = stats.find(s => s.kana === kana);
+        const today = dayjs().format('YYYY-MM-DD');
+        const todayStats = state.context.study[today] || { ...DEFAULT_STUDY_STATS };
+
+        const stats = todayStats[type];
+        const existing = stats.find(s => s.kana === kana && s.type === kanaType);
         const newStats = existing
           ? stats.map(s =>
-              s.kana === kana
+              s.kana === kana && s.type === kanaType
                 ? {
                     ...s,
                     correct: s.correct + (correct ? 1 : 0),
@@ -119,15 +113,18 @@ const useStatsStore = create<StatsStore>(set => ({
                   }
                 : s
             )
-          : [...stats, { kana, correct: correct ? 1 : 0, incorrect: correct ? 0 : 1 }];
+          : [
+              ...stats,
+              { type: kanaType, kana, correct: correct ? 1 : 0, incorrect: correct ? 0 : 1 }
+            ];
 
         return {
           context: {
             ...state.context,
-            [kanaType]: {
-              ...state.context[kanaType],
-              study: {
-                ...state.context[kanaType].study,
+            study: {
+              ...state.context.study,
+              [today]: {
+                ...todayStats,
                 [type]: newStats
               }
             }
@@ -138,14 +135,7 @@ const useStatsStore = create<StatsStore>(set => ({
       set(state => ({
         context: {
           ...state.context,
-          hiragana: {
-            ...state.context.hiragana,
-            study: DEFAULT_STATS_CONTEXT.hiragana.study
-          },
-          katakana: {
-            ...state.context.katakana,
-            study: DEFAULT_STATS_CONTEXT.katakana.study
-          }
+          study: {}
         }
       }))
   }
