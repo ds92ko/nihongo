@@ -12,8 +12,8 @@ const renderScene = SceneMap({
 });
 
 const routes = [
-  { key: 'quiz', title: '문제풀이' },
-  { key: 'mistake', title: '오답노트' }
+  { key: 'quiz', title: '문제 풀이' },
+  { key: 'mistake', title: '오답 노트' }
 ];
 
 export default function ReviewScreen() {
