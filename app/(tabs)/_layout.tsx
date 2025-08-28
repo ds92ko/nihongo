@@ -80,7 +80,7 @@ export default function TabLayout() {
         })}
       />
       <Tabs.Screen
-        name="test"
+        name="review"
         options={{
           headerShown: false,
           tabBarLabel: ({ color }) => (
@@ -104,7 +104,7 @@ export default function TabLayout() {
             playPopAudio();
             setAnimationEnabled(false);
             setTabIndex(0);
-            navigation.navigate('test');
+            navigation.navigate('review');
           },
           focus: () => {
             setAnimationEnabled(true);

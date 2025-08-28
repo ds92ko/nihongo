@@ -173,7 +173,7 @@ const QuizResult = () => {
           </Text>
         </Pressable>
         <Link
-          href="/test"
+          href="/review"
           style={styles.button}
           onPress={playPopAudio}
         >

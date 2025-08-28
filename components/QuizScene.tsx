@@ -152,7 +152,7 @@ const QuizScene = () => {
       </ScrollView>
       <View style={styles.buttons}>
         <Link
-          href="/test/quiz"
+          href="/review/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
             playPopAudio();
@@ -169,7 +169,7 @@ const QuizScene = () => {
           </Text>
         </Link>
         <Link
-          href="/test/quiz"
+          href="/review/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
             playPopAudio();

@@ -16,7 +16,7 @@ const routes = [
   { key: 'mistake', title: '오답노트' }
 ];
 
-export default function TestScreen() {
+export default function ReviewScreen() {
   const { width } = useWindowDimensions();
   const { tabIndex, animationEnabled } = useTabContext();
   const { setTabIndex } = useTabActions();

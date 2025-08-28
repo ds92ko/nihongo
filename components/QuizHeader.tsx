@@ -15,7 +15,7 @@ const QuizHeader = () => {
       <View style={styles.header}>
         <Link
           style={styles.button}
-          href={'/test'}
+          href={'/review'}
           onPress={playPopAudio}
         >
           <MaterialIcons

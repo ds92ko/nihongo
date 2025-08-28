@@ -1,7 +1,7 @@
 import QuizHeader from '@/components/QuizHeader';
 import { Stack } from 'expo-router';
 
-export default function TestLayout() {
+export default function ReviewLayout() {
   return (
     <Stack
       screenOptions={{
