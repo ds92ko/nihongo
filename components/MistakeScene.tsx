@@ -7,19 +7,19 @@ import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import {
-  ReviewNote,
-  ReviewNoteMode,
-  useReviewNoteActions,
-  useReviewNoteContext
-} from '@/stores/useReviewNoteStore';
+  Mistake,
+  MistakeMode,
+  useMistakeActions,
+  useMistakeContext
+} from '@/stores/useMistakeStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-const NOTES_PADDING_TOP = 16;
-const NOTES_GAP = 12;
-const NOTE_HEIGHT = 52;
+const MISTAKES_PADDING_TOP = 16;
+const MISTAKES_GAP = 12;
+const MISTAKE_HEIGHT = 52;
 
 const tips = [
   '오답을 틀린 횟수가 많은 순서대로 확인하고, 다시 학습해보세요.',
@@ -27,34 +27,35 @@ const tips = [
   '퀴즈에서 틀린 문제를 다시 맞히면 오답노트에서 사라져요.'
 ];
 
-const ReviewNoteScene = () => {
+const MistakeScene = () => {
   const { kanaType } = useKanaContext();
   const { playKanaAudio, playing } = useKanaAudio();
   const { playPopAudio } = usePopAudio();
-  const { notes } = useReviewNoteContext();
-  const { setNote, setAllMode } = useReviewNoteActions();
+  const { mistakes } = useMistakeContext();
+  const { setMistake, setMistakeModes } = useMistakeActions();
 
-  const isEmpty = !notes[kanaType].length;
-  const isBothMode = !isEmpty && notes[kanaType].every(note => note.mode === 'both');
-  const isCharacterMode = !isEmpty && notes[kanaType].every(note => note.mode === 'character');
+  const isEmpty = !mistakes[kanaType].length;
+  const isBothMode = !isEmpty && mistakes[kanaType].every(mistake => mistake.mode === 'both');
+  const isCharacterMode =
+    !isEmpty && mistakes[kanaType].every(mistake => mistake.mode === 'character');
   const isPronunciationMode =
-    !isEmpty && notes[kanaType].every(note => note.mode === 'pronunciation');
-  const groupedNotes = Object.entries(
-    notes[kanaType].reduce<Record<number, ReviewNote[]>>((groups, note) => {
-      groups[note.count] = notes[kanaType].filter(n => n.count === note.count);
+    !isEmpty && mistakes[kanaType].every(mistake => mistake.mode === 'pronunciation');
+  const groupedMistakes = Object.entries(
+    mistakes[kanaType].reduce<Record<number, Mistake[]>>((groups, mistake) => {
+      groups[mistake.count] = mistakes[kanaType].filter(n => n.count === mistake.count);
       return groups;
     }, {})
   ).sort((a, b) => Number(b[0]) - Number(a[0]));
 
-  const handleToggleAllMode = (mode: ReviewNoteMode) => {
+  const handleToggleAllMode = (mode: MistakeMode) => {
     playPopAudio();
-    setAllMode(kanaType, mode);
+    setMistakeModes(kanaType, mode);
   };
 
-  const handleToggleMode = ({ mode, ...note }: ReviewNote) => {
+  const handleToggleMode = ({ mode, ...mistake }: Mistake) => {
     playPopAudio();
-    setNote(kanaType, {
-      ...note,
+    setMistake(kanaType, {
+      ...mistake,
       mode: mode === 'both' ? 'character' : mode === 'character' ? 'pronunciation' : 'both'
     });
   };
@@ -120,7 +121,7 @@ const ReviewNoteScene = () => {
           <EmptyState>오답노트가 비어있어요.</EmptyState>
         ) : (
           <View style={styles.groups}>
-            {groupedNotes.map(([count, notes]) => (
+            {groupedMistakes.map(([count, mistakes]) => (
               <Accordion
                 key={count}
                 title={`틀린 횟수 ${count}회`}
@@ -131,7 +132,7 @@ const ReviewNoteScene = () => {
                       variant="caption"
                       color="primary"
                     >
-                      {notes.length}
+                      {mistakes.length}
                     </Text>
                     <Text
                       variant="caption"
@@ -141,32 +142,36 @@ const ReviewNoteScene = () => {
                     </Text>
                   </View>
                 }
-                maxHeight={NOTES_PADDING_TOP + notes.length * (NOTE_HEIGHT + NOTES_GAP) - NOTES_GAP}
+                maxHeight={
+                  MISTAKES_PADDING_TOP +
+                  mistakes.length * (MISTAKE_HEIGHT + MISTAKES_GAP) -
+                  MISTAKES_GAP
+                }
                 defaultExpanded
               >
-                <View style={styles.notes}>
-                  {notes.map(note => (
+                <View style={styles.mistakes}>
+                  {mistakes.map(mistake => (
                     <View
-                      key={note.character}
-                      style={styles.note}
+                      key={mistake.character}
+                      style={styles.mistake}
                     >
-                      <View style={styles.noteContent}>
-                        {note.mode !== 'pronunciation' && (
-                          <Text weight={700}>{note.character}</Text>
+                      <View style={styles.mistakeContent}>
+                        {mistake.mode !== 'pronunciation' && (
+                          <Text weight={700}>{mistake.character}</Text>
                         )}
-                        {note.mode !== 'character' && (
+                        {mistake.mode !== 'character' && (
                           <Text
                             weight={500}
                             color="textSecondary"
                           >
-                            [{note.pronunciation}]
+                            [{mistake.pronunciation}]
                           </Text>
                         )}
                       </View>
-                      <View style={styles.noteControl}>
+                      <View style={styles.mistakeControl}>
                         <Pressable
                           style={styles.iconButton}
-                          onPress={() => handleToggleMode(note)}
+                          onPress={() => handleToggleMode(mistake)}
                         >
                           <MaterialIcons
                             name="sync"
@@ -176,7 +181,7 @@ const ReviewNoteScene = () => {
                         </Pressable>
                         <Pressable
                           style={[styles.iconButton, playing && styles.disabledIconButton]}
-                          onPress={() => playKanaAudio(note.character)}
+                          onPress={() => playKanaAudio(mistake.character)}
                           disabled={playing}
                         >
                           <MaterialIcons
@@ -186,7 +191,10 @@ const ReviewNoteScene = () => {
                           />
                         </Pressable>
                         <Link
-                          href={{ pathname: '/practice/[kana]', params: { kana: note.character } }}
+                          href={{
+                            pathname: '/practice/[kana]',
+                            params: { kana: mistake.character }
+                          }}
                           style={styles.iconButton}
                           onPress={playPopAudio}
                         >
@@ -246,27 +254,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  notes: {
-    paddingTop: NOTES_PADDING_TOP,
-    gap: NOTES_GAP
+  mistakes: {
+    paddingTop: MISTAKES_PADDING_TOP,
+    gap: MISTAKES_GAP
   },
-  note: {
+  mistake: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 8,
-    minHeight: NOTE_HEIGHT,
+    minHeight: MISTAKE_HEIGHT,
     padding: 8,
     borderRadius: 26,
     backgroundColor: Colors.primary10
   },
-  noteContent: {
+  mistakeContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     paddingLeft: 16
   },
-  noteControl: {
+  mistakeControl: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -286,4 +294,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ReviewNoteScene;
+export default MistakeScene;

@@ -5,7 +5,7 @@ import Text from '@/components/Text';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
 import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';
-import { useReviewNoteActions, useReviewNoteContext } from '@/stores/useReviewNoteStore';
+import { useMistakeActions, useMistakeContext } from '@/stores/useMistakeStore';
 import { useSettingActions, useSettingContext } from '@/stores/useSettingStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
@@ -37,8 +37,8 @@ export default function SettingScreen() {
   const { soundEffectOff, kanaSoundOff } = useSettingContext();
   const { toggleSoundEffect, toggleKanaSound } = useSettingActions();
   const { playPopAudio } = usePopAudio();
-  const { notes } = useReviewNoteContext();
-  const { resetNotes } = useReviewNoteActions();
+  const { mistakes } = useMistakeContext();
+  const { resetMistakes } = useMistakeActions();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialog, setDialog] = useState<Omit<ModalProps, 'visible' | 'setVisible'> | null>(null);
 
@@ -227,7 +227,7 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPress={() => {
-                const isEmpty = !notes.hiragana.length && !notes.katakana.length;
+                const isEmpty = !mistakes.hiragana.length && !mistakes.katakana.length;
 
                 openDialog({
                   type: isEmpty ? 'alert' : 'confirm',
@@ -242,7 +242,7 @@ export default function SettingScreen() {
                     ? undefined
                     : {
                         label: '초기화',
-                        onPress: resetNotes
+                        onPress: resetMistakes
                       }
                 });
               }}

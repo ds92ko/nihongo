@@ -1,5 +1,5 @@
+import MistakeScene from '@/components/MistakeScene';
 import QuizScreen from '@/components/QuizScene';
-import ReviewNoteScene from '@/components/ReviewNoteScene';
 import TabBar from '@/components/TabBar';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
@@ -8,12 +8,12 @@ import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
   quiz: () => <QuizScreen />,
-  reviewNote: () => <ReviewNoteScene />
+  mistake: () => <MistakeScene />
 });
 
 const routes = [
   { key: 'quiz', title: '문제풀이' },
-  { key: 'reviewNote', title: '오답노트' }
+  { key: 'mistake', title: '오답노트' }
 ];
 
 export default function TestScreen() {

@@ -8,8 +8,8 @@ import useFeedbackAudio from '@/hooks/useFeedbackAudio';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
+import { useMistakeActions } from '@/stores/useMistakeStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
-import { useReviewNoteActions } from '@/stores/useReviewNoteStore';
 import { useStatsActions } from '@/stores/useStatsStore';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
@@ -28,7 +28,7 @@ export default function QuizScreen() {
   const { playKanaAudio, playing } = useKanaAudio();
   const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
-  const { addNote, removeNote } = useReviewNoteActions();
+  const { addMistake, removeMistake } = useMistakeActions();
   const { setQuizStats } = useStatsActions();
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
@@ -51,9 +51,9 @@ export default function QuizScreen() {
     );
 
     if (answer === correctAnswer) {
-      removeNote(kanaType, question.character);
+      removeMistake(kanaType, question.character);
     } else {
-      addNote(kanaType, {
+      addMistake(kanaType, {
         character: question.character,
         pronunciation: question.pronunciation
       });
