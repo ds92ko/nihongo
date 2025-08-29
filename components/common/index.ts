@@ -1,4 +1,5 @@
 export { default as Accordion } from '@/components/common/Accordion';
+export { default as Carousel } from '@/components/common/Carousel';
 export { default as EmptyState } from '@/components/common/EmptyState';
 export { default as InfoCard } from '@/components/common/InfoCard';
 export { default as KanaToggle } from '@/components/common/KanaToggle';
