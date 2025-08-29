@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     flexDirection: 'row',
-    gap: 8
+    gap: 4
   },
   body: {
     flexGrow: 0
