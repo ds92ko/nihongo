@@ -1,7 +1,7 @@
 import kanaMap from '@/assets/paths';
-import { KanaSvg } from '@/components/local/practice';
 import { styles } from '@/components/local/practice/KanaCanvas/styles';
 import { KanaCanvasProps, Paths } from '@/components/local/practice/KanaCanvas/types';
+import KanaSvg from '@/components/local/practice/KanaSvg';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';

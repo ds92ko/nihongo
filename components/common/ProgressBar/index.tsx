@@ -1,6 +1,6 @@
-import { Text } from '@/components/common';
 import { styles } from '@/components/common/ProgressBar/styles';
 import { ProgressBarProps } from '@/components/common/ProgressBar/types';
+import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
 import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';

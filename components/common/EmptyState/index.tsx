@@ -1,6 +1,6 @@
-import { Text } from '@/components/common';
 import { styles } from '@/components/common/EmptyState/styles';
 import { EmptyStateProps } from '@/components/common/EmptyState/types';
+import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { View } from 'react-native';

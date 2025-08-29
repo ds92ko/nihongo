@@ -1,6 +1,7 @@
-import { KanaToggle, Text } from '@/components/common';
+import KanaToggle from '@/components/common/KanaToggle';
 import { styles } from '@/components/common/TabBar/styles';
 import { TabBarProps } from '@/components/common/TabBar/types';
+import Text from '@/components/common/Text';
 import usePopAudio from '@/hooks/usePopAudio';
 import { Pressable, SafeAreaView, View } from 'react-native';
 import { Route } from 'react-native-tab-view';

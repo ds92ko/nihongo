@@ -1,5 +1,5 @@
-import { Logo } from '@/components/local/home';
 import { styles } from '@/components/local/home/HomeHeader/styles';
+import Logo from '@/components/local/home/Logo';
 import { SafeAreaView, View } from 'react-native';
 
 const HomeHeader = () => (

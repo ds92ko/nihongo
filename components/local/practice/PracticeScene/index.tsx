@@ -1,5 +1,5 @@
 import { InfoCard } from '@/components/common';
-import { KanaList } from '@/components/local/practice';
+import KanaList from '@/components/local/practice/KanaList';
 import { tips } from '@/components/local/practice/PracticeScene/constants';
 import { styles } from '@/components/local/practice/PracticeScene/styles';
 import { PracticeSceneProps } from '@/components/local/practice/PracticeScene/types';

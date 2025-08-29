@@ -1,6 +1,6 @@
-import { Text } from '@/components/common';
 import { styles } from '@/components/common/Accordion/styles';
 import { AccordionProps } from '@/components/common/Accordion/types';
+import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
 import Ionicons from '@expo/vector-icons/Ionicons';

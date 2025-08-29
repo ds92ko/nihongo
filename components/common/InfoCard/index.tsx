@@ -1,8 +1,8 @@
 import { mateImageMap } from '@/assets/images/mates';
-import { Text } from '@/components/common';
 import { CAROUSEL_WIDTH } from '@/components/common/InfoCard/constants';
 import { styles } from '@/components/common/InfoCard/styles';
 import { InfoCardProps } from '@/components/common/InfoCard/types';
+import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useMateContext } from '@/stores/useMateStore';

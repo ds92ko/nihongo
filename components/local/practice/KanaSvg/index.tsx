@@ -1,5 +1,5 @@
 import kanaMap from '@/assets/paths';
-import { KanaPath } from '@/components/local/practice';
+import KanaPath from '@/components/local/practice/KanaPath';
 import {
   AnimatedSvg,
   ANIMATION_DURATION,
