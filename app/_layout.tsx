@@ -7,8 +7,7 @@ export default function RootLayout() {
     'PyeojinGothic-Regular': require('@/assets/fonts/PyeojinGothic-Regular.ttf'),
     'PyeojinGothic-Medium': require('@/assets/fonts/PyeojinGothic-Medium.ttf'),
     'PyeojinGothic-Bold': require('@/assets/fonts/PyeojinGothic-Bold.ttf'),
-    'Cafe24Meongi-B': require('@/assets/fonts/Cafe24Meongi-B.ttf'),
-    'Cafe24Meongi-W': require('@/assets/fonts/Cafe24Meongi-W.ttf')
+    'Cafe24Meongi-B': require('@/assets/fonts/Cafe24Meongi-B.ttf')
   });
 
   if (!loaded) return null;
