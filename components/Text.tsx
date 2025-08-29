@@ -3,7 +3,7 @@ import { Typography } from '@/constants/Typography';
 import React from 'react';
 import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 
-type Weight = 300 | 400 | 500 | 700;
+type Weight = 400 | 500 | 700;
 
 interface TextProps extends RNTextProps {
   weight?: Weight;
@@ -12,7 +12,6 @@ interface TextProps extends RNTextProps {
 }
 
 const fontFamilyMap = {
-  300: 'PyeojinGothic-Light',
   400: 'PyeojinGothic-Regular',
   500: 'PyeojinGothic-Medium',
   700: 'PyeojinGothic-Bold'
