@@ -1,7 +1,6 @@
 import { mateImageMap } from '@/assets/images/mates';
-import ProgressBar from '@/components/ProgressBar';
-import QuizResult from '@/components/QuizResult';
-import Text from '@/components/Text';
+import { ProgressBar, Text } from '@/components/common';
+import { QuizResult } from '@/components/local/review';
 import { Colors } from '@/constants/Colors';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import useFeedbackAudio from '@/hooks/useFeedbackAudio';

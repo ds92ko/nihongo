@@ -1,5 +1,5 @@
-import PracticeScene from '@/components/PracticeScene';
-import TabBar from '@/components/TabBar';
+import { TabBar } from '@/components/common';
+import { PracticeScene } from '@/components/local/practice';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
 import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';

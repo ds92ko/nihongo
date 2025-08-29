@@ -1,7 +1,7 @@
 import { mateImageMap } from '@/assets/images/mates';
-import Modal, { ModalProps } from '@/components/Modal';
-import Switch from '@/components/Switch';
-import Text from '@/components/Text';
+import { Modal, Text } from '@/components/common';
+import { ModalProps } from '@/components/common/Modal/types';
+import { Switch } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
 import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';

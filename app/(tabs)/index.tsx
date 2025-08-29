@@ -1,7 +1,6 @@
 import { mateImageMap } from '@/assets/images/mates';
-import ProgressBar from '@/components/ProgressBar';
-import SloganBanner from '@/components/SloganBanner';
-import Text from '@/components/Text';
+import { ProgressBar, Text } from '@/components/common';
+import { SloganBanner } from '@/components/local/home';
 import { Colors } from '@/constants/Colors';
 import { useMateContext } from '@/stores/useMateStore';
 import { useStatsContext } from '@/stores/useStatsStore';

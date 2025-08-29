@@ -1,13 +1,12 @@
-import MistakeScene from '@/components/MistakeScene';
-import QuizScreen from '@/components/QuizScene';
-import TabBar from '@/components/TabBar';
+import { TabBar } from '@/components/common';
+import { MistakeScene, QuizScene } from '@/components/local/review';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
 import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
-  quiz: () => <QuizScreen />,
+  quiz: () => <QuizScene />,
   mistake: () => <MistakeScene />
 });
 

@@ -1,5 +1,4 @@
-import KanaCanvas from '@/components/KanaCanvas';
-import KanaList from '@/components/KanaList';
+import { KanaCanvas, KanaList } from '@/components/local/practice';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { useKanaContext } from '@/stores/useKanaStore';

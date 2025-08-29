@@ -1,4 +1,4 @@
-import KanaHeader from '@/components/KanaHeader';
+import { KanaHeader } from '@/components/local/practice';
 import { Stack } from 'expo-router';
 
 export default function PracticeLayout() {

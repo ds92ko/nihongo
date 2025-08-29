@@ -1,6 +1,6 @@
-import HomeHeader from '@/components/HomeHeader';
-import SettingHeader from '@/components/SettingHeader';
-import Text from '@/components/Text';
+import { Text } from '@/components/common';
+import { HomeHeader } from '@/components/local/home';
+import { SettingHeader } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useTabActions } from '@/stores/useTabStore';
