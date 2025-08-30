@@ -1,10 +1,7 @@
-import { Text } from '@/components/common';
+import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizHeader/styles';
-import { Colors } from '@/constants/Colors';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useQuizContext } from '@/stores/useQuizStore';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Link } from 'expo-router';
 import { SafeAreaView, View } from 'react-native';
 
 const QuizHeader = () => {
@@ -14,17 +11,14 @@ const QuizHeader = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
-        <Link
-          style={styles.button}
+        <IconButton
+          icon={{ type: 'material', name: 'keyboard-arrow-left' }}
           href={'/review'}
           onPress={playPopAudio}
-        >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={20}
-            color={Colors.textPrimary}
-          />
-        </Link>
+          variant="white"
+          shape="square"
+          size="small"
+        />
         <View style={styles.title}>
           <Text
             weight={700}

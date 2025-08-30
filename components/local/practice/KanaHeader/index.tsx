@@ -1,14 +1,12 @@
-import { Text } from '@/components/common';
+import { IconButton, Text } from '@/components/common';
+import { ICON_BUTTON_PROPS } from '@/components/local/practice/KanaHeader/constants';
 import { styles } from '@/components/local/practice/KanaHeader/styles';
-import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useTabActions } from '@/stores/useTabStore';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { Link } from 'expo-router';
 import { SafeAreaView, View } from 'react-native';
 
 const KanaHeader = ({ route }: NativeStackHeaderProps) => {
@@ -30,17 +28,12 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
-        <Link
-          style={styles.button}
+        <IconButton
+          icon={{ type: 'material', name: 'keyboard-arrow-left' }}
           href="/practice"
           onPress={handleGoToPractice}
-        >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={20}
-            color={Colors.textPrimary}
-          />
-        </Link>
+          {...ICON_BUTTON_PROPS}
+        />
         <View style={styles.kana}>
           <Text
             weight={700}
@@ -56,36 +49,26 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
           </Text>
         </View>
         <View style={styles.buttons}>
-          <Link
-            style={[styles.button, !prevRow && styles.disabledButton]}
+          <IconButton
+            icon={{ type: 'material', name: 'keyboard-arrow-up' }}
             href={{
               pathname: '/practice/[kana]',
               params: { kana: prevRow?.kana[0] || kana }
             }}
             onPress={playPopAudio}
             disabled={!prevRow}
-          >
-            <MaterialIcons
-              name="keyboard-arrow-up"
-              size={20}
-              color={prevRow ? Colors.textPrimary : Colors.textSecondary}
-            />
-          </Link>
-          <Link
-            style={[styles.button, !nextRow && styles.disabledButton]}
+            {...ICON_BUTTON_PROPS}
+          />
+          <IconButton
+            icon={{ type: 'material', name: 'keyboard-arrow-down' }}
             href={{
               pathname: '/practice/[kana]',
               params: { kana: nextRow?.kana[0] || kana }
             }}
             onPress={playPopAudio}
             disabled={!nextRow}
-          >
-            <MaterialIcons
-              name="keyboard-arrow-down"
-              size={20}
-              color={nextRow ? Colors.textPrimary : Colors.textSecondary}
-            />
-          </Link>
+            {...ICON_BUTTON_PROPS}
+          />
         </View>
       </View>
     </SafeAreaView>

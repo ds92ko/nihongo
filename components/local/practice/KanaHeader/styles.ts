@@ -25,17 +25,5 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8
-  },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    aspectRatio: 1,
-    borderRadius: 8,
-    padding: 8,
-    backgroundColor: Colors.white
-  },
-  disabledButton: {
-    backgroundColor: Colors.neutralLight
   }
 });

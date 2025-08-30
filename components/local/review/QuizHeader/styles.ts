@@ -17,14 +17,5 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingRight: 36
-  },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    aspectRatio: 1,
-    backgroundColor: Colors.white,
-    borderRadius: 8,
-    padding: 8
   }
 });

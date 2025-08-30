@@ -1,14 +1,11 @@
-import { Text } from '@/components/common';
+import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizResult/styles';
 import { getFeedbackImageSource } from '@/components/local/review/QuizResult/utils';
-import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Link } from 'expo-router';
 import { Image, Pressable, ScrollView, View } from 'react-native';
 
@@ -112,28 +109,18 @@ const QuizResult = () => {
                     [{pronunciation}]
                   </Text>
                 </View>
-                <Pressable
-                  style={[styles.iconButton, playing && styles.disabledIconButton]}
-                  disabled={playing}
+                <IconButton
+                  icon={{ type: 'material', name: `headset${playing ? '-off' : ''}` }}
                   onPress={() => playKanaAudio(character)}
-                >
-                  <MaterialIcons
-                    name={playing ? 'headset-off' : 'headset'}
-                    size={20}
-                    color={playing ? Colors.textSecondary : Colors.textPrimary}
-                  />
-                </Pressable>
-                <Link
+                  disabled={playing}
+                  size="small"
+                />
+                <IconButton
+                  icon={{ type: 'material-community', name: 'lead-pencil' }}
                   href={{ pathname: '/practice/[kana]', params: { kana: character } }}
-                  style={styles.iconButton}
                   onPress={playPopAudio}
-                >
-                  <MaterialCommunityIcons
-                    name="lead-pencil"
-                    size={20}
-                    color={Colors.textPrimary}
-                  />
-                </Link>
+                  size="small"
+                />
               </View>
             );
           })}

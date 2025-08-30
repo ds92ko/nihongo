@@ -59,17 +59,5 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 8
-  },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    aspectRatio: 1,
-    padding: 12,
-    borderRadius: '50%',
-    backgroundColor: Colors.primary30
-  },
-  disabledButton: {
-    backgroundColor: Colors.primary10
   }
 });

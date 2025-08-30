@@ -68,17 +68,5 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     gap: 8
-  },
-  iconButton: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    aspectRatio: 1,
-    padding: 8,
-    borderRadius: '50%',
-    backgroundColor: Colors.primary30
-  },
-  disabledIconButton: {
-    backgroundColor: Colors.primary10
   }
 });

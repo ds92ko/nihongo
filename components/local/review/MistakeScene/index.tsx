@@ -1,4 +1,4 @@
-import { Accordion, EmptyState, InfoCard, Text } from '@/components/common';
+import { Accordion, EmptyState, IconButton, InfoCard, Text } from '@/components/common';
 import {
   MISTAKE_HEIGHT,
   MISTAKES_GAP,
@@ -6,7 +6,6 @@ import {
   tips
 } from '@/components/local/review/MistakeScene/constants';
 import { styles } from '@/components/local/review/MistakeScene/styles';
-import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
@@ -16,9 +15,6 @@ import {
   useMistakeActions,
   useMistakeContext
 } from '@/stores/useMistakeStore';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Link } from 'expo-router';
 import { Pressable, ScrollView, View } from 'react-native';
 
 const MistakeScene = () => {
@@ -163,41 +159,26 @@ const MistakeScene = () => {
                         )}
                       </View>
                       <View style={styles.mistakeControl}>
-                        <Pressable
-                          style={styles.iconButton}
+                        <IconButton
+                          icon={{ type: 'material', name: 'sync' }}
                           onPress={() => handleToggleMode(mistake)}
-                        >
-                          <MaterialIcons
-                            name="sync"
-                            size={20}
-                            color={Colors.textPrimary}
-                          />
-                        </Pressable>
-                        <Pressable
-                          style={[styles.iconButton, playing && styles.disabledIconButton]}
+                          size="small"
+                        />
+                        <IconButton
+                          icon={{ type: 'material', name: `headset${playing ? '-off' : ''}` }}
                           onPress={() => playKanaAudio(mistake.character)}
                           disabled={playing}
-                        >
-                          <MaterialIcons
-                            name={playing ? 'headset-off' : 'headset'}
-                            size={20}
-                            color={playing ? Colors.textSecondary : Colors.textPrimary}
-                          />
-                        </Pressable>
-                        <Link
+                          size="small"
+                        />
+                        <IconButton
+                          icon={{ type: 'material-community', name: 'lead-pencil' }}
                           href={{
                             pathname: '/practice/[kana]',
                             params: { kana: mistake.character }
                           }}
-                          style={styles.iconButton}
                           onPress={playPopAudio}
-                        >
-                          <MaterialCommunityIcons
-                            name="lead-pencil"
-                            size={20}
-                            color={Colors.textPrimary}
-                          />
-                        </Link>
+                          size="small"
+                        />
                       </View>
                     </View>
                   ))}

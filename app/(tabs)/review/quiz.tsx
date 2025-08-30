@@ -1,5 +1,5 @@
 import { mateImageMap } from '@/assets/images/mates';
-import { ProgressBar, Text } from '@/components/common';
+import { IconButton, ProgressBar, Text } from '@/components/common';
 import { QuizResult } from '@/components/local/review';
 import { Colors } from '@/constants/Colors';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
@@ -10,7 +10,6 @@ import { useMateContext } from '@/stores/useMateStore';
 import { useMistakeActions } from '@/stores/useMistakeStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import { useStatsActions } from '@/stores/useStatsStore';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRef, useState } from 'react';
 import { Animated, Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
 
@@ -30,8 +29,8 @@ export default function QuizScreen() {
   const { addMistake, removeMistake } = useMistakeActions();
   const { setQuizStats } = useStatsActions();
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
-  const scales = useRef(question?.answers.map(() => new Animated.Value(1))).current ?? [];
-  const shakes = useRef(question?.answers.map(() => new Animated.Value(0))).current ?? [];
+  const scales = useRef((question?.answers ?? []).map(() => new Animated.Value(1))).current;
+  const shakes = useRef((question?.answers ?? []).map(() => new Animated.Value(0))).current;
   const correctAnswer = type === 'character' ? question?.pronunciation : question?.character;
   const feedbackImageArr = selectedAnswer === correctAnswer ? correctImage : incorrectImage;
   const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
@@ -88,21 +87,15 @@ export default function QuizScreen() {
         ]}
       >
         {type === 'pronunciation' && (
-          <Pressable
-            style={[
-              styles.button,
-              styles.questionButton,
-              (playing || Boolean(selectedAnswer)) && styles.disabledButton
-            ]}
-            disabled={playing || Boolean(selectedAnswer)}
+          <IconButton
+            icon={{
+              type: 'material',
+              name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
+            }}
+            style={styles.questionButton}
             onPress={() => playKanaAudio(question.character)}
-          >
-            <MaterialIcons
-              name={playing || Boolean(selectedAnswer) ? 'headset-off' : 'headset'}
-              size={20}
-              color={playing || Boolean(selectedAnswer) ? Colors.textSecondary : Colors.textPrimary}
-            />
-          </Pressable>
+            disabled={playing || Boolean(selectedAnswer)}
+          />
         )}
         {selectedAnswer && (
           <Image
@@ -184,24 +177,15 @@ export default function QuizScreen() {
                   {type === 'pronunciation' ? answer : `[${answer}]`}
                 </Text>
                 {type === 'character' && (
-                  <Pressable
-                    style={[
-                      styles.button,
-                      (playing || Boolean(selectedAnswer)) && styles.disabledButton
-                    ]}
+                  <IconButton
+                    icon={{
+                      type: 'material',
+                      name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
+                    }}
                     disabled={playing || isCorrect || isIncorrect}
                     onPress={() => playKanaAudio(kana)}
-                  >
-                    <MaterialIcons
-                      name={playing || Boolean(selectedAnswer) ? 'headset-off' : 'headset'}
-                      size={20}
-                      color={
-                        playing || Boolean(selectedAnswer)
-                          ? Colors.textSecondary
-                          : Colors.textPrimary
-                      }
-                    />
-                  </Pressable>
+                    size="small"
+                  />
                 )}
               </Pressable>
             </Animated.View>
@@ -264,22 +248,9 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center'
   },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    aspectRatio: 1,
-    padding: 8,
-    borderRadius: '50%',
-    backgroundColor: Colors.primary30
-  },
-  disabledButton: {
-    backgroundColor: 'transparent'
-  },
   questionButton: {
     position: 'absolute',
     top: 12,
-    right: 12,
-    padding: 12
+    right: 12
   }
 });

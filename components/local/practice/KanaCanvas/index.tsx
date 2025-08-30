@@ -1,4 +1,5 @@
 import kanaMap from '@/assets/paths';
+import { IconButton } from '@/components/common';
 import { styles } from '@/components/local/practice/KanaCanvas/styles';
 import { KanaCanvasProps, Paths } from '@/components/local/practice/KanaCanvas/types';
 import KanaSvg from '@/components/local/practice/KanaSvg';
@@ -7,10 +8,8 @@ import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import { useStatsActions } from '@/stores/useStatsStore';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { PanResponder, Pressable, View } from 'react-native';
+import { PanResponder, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 const KanaCanvas = ({ kana }: KanaCanvasProps) => {
@@ -31,20 +30,16 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: e => {
         const { locationX, locationY } = e.nativeEvent;
-
         setPaths(prev => [...prev, [{ x: locationX, y: locationY }]]);
       },
       onPanResponderMove: e => {
         const { locationX, locationY } = e.nativeEvent;
-
         setPaths(prev => {
           const lastPath = prev.at(-1);
-
           if (lastPath) {
             lastPath.push({ x: locationX, y: locationY });
             return [...prev.slice(0, -1), lastPath];
           }
-
           return prev;
         });
       },
@@ -52,11 +47,6 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
       onPanResponderEnd: () => setPanResponderEnded(true)
     })
   ).current;
-
-  const handleToggleGrid = () => {
-    playPopAudio();
-    setIsVisibleGrid();
-  };
 
   const handlePlay = useCallback(() => {
     playKanaAudio(kana);
@@ -69,18 +59,43 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     setPaths([]);
   }, [handlePlay]);
 
-  const handleClear = () => {
-    if (autoDelete) {
-      setAutoDelete(false);
-      return;
+  const buttons = [
+    {
+      icon: { type: 'material', name: `grid-${isVisibleGrid ? 'on' : 'off'}` },
+      onPress: () => {
+        playPopAudio();
+        setIsVisibleGrid();
+      }
+    },
+    {
+      icon: { type: 'material', name: `headset${playing ? '-off' : ''}` },
+      onPress: handlePlay,
+      disabled: playing
+    },
+    {
+      icon: { type: 'material', name: `play-${playing ? 'disabled' : 'arrow'}` },
+      onPress: handleRestart,
+      disabled: playing
+    },
+    {
+      icon: {
+        type: 'material-community',
+        name: `delete-${autoDelete ? 'clock-outline' : paths.length ? 'outline' : 'off-outline'}`
+      },
+      onPress: () => {
+        if (autoDelete) {
+          setAutoDelete(false);
+          return;
+        }
+        if (!paths.length) {
+          setAutoDelete(true);
+          return;
+        }
+        playPopAudio();
+        setPaths([]);
+      }
     }
-    if (!paths.length) {
-      setAutoDelete(true);
-      return;
-    }
-    playPopAudio();
-    setPaths([]);
-  };
+  ] as const;
 
   useEffect(() => {
     const pathLength = [...kana].flatMap(char => kanaMap[char] || []).length;
@@ -158,54 +173,13 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
         </View>
       </View>
       <View style={styles.buttons}>
-        <Pressable
-          style={styles.button}
-          onPress={handleToggleGrid}
-        >
-          <MaterialIcons
-            name={isVisibleGrid ? 'grid-off' : 'grid-on'}
-            size={20}
-            color={Colors.textPrimary}
+        {buttons.map(({ icon, onPress }) => (
+          <IconButton
+            key={`${icon.type}-${icon.name}`}
+            icon={icon}
+            onPress={onPress}
           />
-        </Pressable>
-        <Pressable
-          style={[styles.button, playing && styles.disabledButton]}
-          onPress={handlePlay}
-          disabled={playing}
-        >
-          <MaterialIcons
-            name={playing ? 'headset-off' : 'headset'}
-            size={20}
-            color={playing ? Colors.textSecondary : Colors.textPrimary}
-          />
-        </Pressable>
-        <Pressable
-          style={[styles.button, playing && styles.disabledButton]}
-          onPress={handleRestart}
-          disabled={playing}
-        >
-          <MaterialIcons
-            name={playing ? 'play-disabled' : 'play-arrow'}
-            size={20}
-            color={playing ? Colors.textSecondary : Colors.textPrimary}
-          />
-        </Pressable>
-        <Pressable
-          style={styles.button}
-          onPress={handleClear}
-        >
-          <MaterialCommunityIcons
-            name={
-              autoDelete
-                ? 'delete-clock-outline'
-                : paths.length
-                  ? 'delete-outline'
-                  : 'delete-off-outline'
-            }
-            size={20}
-            color={autoDelete || paths.length ? Colors.textPrimary : Colors.textSecondary}
-          />
-        </Pressable>
+        ))}
       </View>
     </View>
   );
