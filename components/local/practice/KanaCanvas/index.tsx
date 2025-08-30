@@ -6,6 +6,7 @@ import KanaSvg from '@/components/local/practice/KanaSvg';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import usePopAudio from '@/hooks/usePopAudio';
+import useVoiceAudio from '@/hooks/useVoiceAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import { useStatsActions } from '@/stores/useStatsStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,7 +17,19 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
   const { kanaType, isVisibleGrid } = useKanaContext();
   const { setIsVisibleGrid } = useKanaActions();
   const { playKanaAudio, playing } = useKanaAudio();
-  const { playPopAudio } = usePopAudio();
+  const { playPopAudio, popPlayerStatus } = usePopAudio();
+  const {
+    audioRecorder,
+    recorderState,
+    playerStatus,
+    startRecording,
+    stopRecording,
+    playVoice,
+    pauseVoice
+  } = useVoiceAudio({
+    playPopAudio,
+    popPlayerStatus
+  });
   const { setPracticeStats } = useStatsActions();
   const firstRender = useRef(true);
   const [restartTrigger, setRestartTrigger] = useState(0);
@@ -68,14 +81,24 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
       }
     },
     {
+      icon: { type: 'material', name: recorderState.isRecording ? 'record-voice-over' : 'mic' },
+      onPress: recorderState.isRecording ? stopRecording : startRecording,
+      disabled: playing || playerStatus.playing
+    },
+    {
+      icon: { type: 'material', name: playerStatus.playing ? 'multitrack-audio' : 'voicemail' },
+      onPress: playerStatus.playing ? pauseVoice : playVoice,
+      disabled: playing || !audioRecorder.uri || !playerStatus.isLoaded || recorderState.isRecording
+    },
+    {
       icon: { type: 'material', name: `headset${playing ? '-off' : ''}` },
       onPress: handlePlay,
-      disabled: playing
+      disabled: playing || recorderState.isRecording || playerStatus.playing
     },
     {
       icon: { type: 'material', name: `play-${playing ? 'disabled' : 'arrow'}` },
       onPress: handleRestart,
-      disabled: playing
+      disabled: playing || recorderState.isRecording || playerStatus.playing
     },
     {
       icon: {
@@ -173,11 +196,11 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
         </View>
       </View>
       <View style={styles.buttons}>
-        {buttons.map(({ icon, onPress }) => (
+        {buttons.map(({ icon, ...props }) => (
           <IconButton
             key={`${icon.type}-${icon.name}`}
             icon={icon}
-            onPress={onPress}
+            {...props}
           />
         ))}
       </View>
