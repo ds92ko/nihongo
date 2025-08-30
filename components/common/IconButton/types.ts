@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { LinkProps } from 'expo-router';
-import { PressableProps, StyleProp, ViewStyle } from 'react-native';
+import { PressableProps, StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 type MaterialIconNames = keyof typeof MaterialIcons.glyphMap;
 interface MaterialIconType {
@@ -18,15 +18,23 @@ type IconType = {
   color?: string;
 } & (MaterialIconType | MaterialCommunityIconType);
 
-interface IconPressableProps extends PressableProps {
-  href?: never;
-}
-type IconLinkProps = LinkProps;
-
-export type IconButtonProps = {
-  style?: StyleProp<ViewStyle>;
-  size?: 'small' | 'medium' | 'large';
+interface IconButtonBaseProps {
   icon: IconType;
   variant?: 'primary' | 'white';
   shape?: 'rounded' | 'square';
-} & (IconPressableProps | IconLinkProps);
+  size?: 'small' | 'medium' | 'large';
+}
+
+type IconLinkProps = {
+  href: LinkProps['href'];
+  style?: StyleProp<TextStyle>;
+} & LinkProps &
+  IconButtonBaseProps;
+
+type IconPressableProps = {
+  href?: never;
+  style?: StyleProp<ViewStyle>;
+} & PressableProps &
+  IconButtonBaseProps;
+
+export type IconButtonProps = IconLinkProps | IconPressableProps;

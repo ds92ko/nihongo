@@ -3,7 +3,7 @@ import { IconButtonProps } from '@/components/common/IconButton/types';
 import { Colors } from '@/constants/Colors';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
-import { Pressable, PressableProps } from 'react-native';
+import { Pressable } from 'react-native';
 
 const IconButton = ({
   onPress,
@@ -20,35 +20,28 @@ const IconButton = ({
     styles[size],
     styles[shape],
     styles[variant],
-    disabled && (variant === 'white' ? styles.disabledWhite : styles.disabledPrimary),
-    style
+    disabled && (variant === 'white' ? styles.disabledWhite : styles.disabledPrimary)
   ];
   const iconProps = {
     size: 20,
     color: icon.color || (disabled ? Colors.textSecondary : Colors.textPrimary)
   };
 
-  const IconPressable = ({ onPress, disabled }: PressableProps) => (
-    <Pressable
-      style={buttonStyle}
-      onPress={onPress}
-      disabled={disabled}
-    >
-      <>
-        {icon.type === 'material' && (
-          <MaterialIcons
-            name={icon.name}
-            {...iconProps}
-          />
-        )}
-        {icon.type === 'material-community' && (
-          <MaterialCommunityIcons
-            name={icon.name}
-            {...iconProps}
-          />
-        )}
-      </>
-    </Pressable>
+  const RenderIcon = () => (
+    <>
+      {icon.type === 'material' && (
+        <MaterialIcons
+          name={icon.name}
+          {...iconProps}
+        />
+      )}
+      {icon.type === 'material-community' && (
+        <MaterialCommunityIcons
+          name={icon.name}
+          {...iconProps}
+        />
+      )}
+    </>
   );
 
   return href ? (
@@ -56,15 +49,18 @@ const IconButton = ({
       href={href}
       onPress={onPress}
       disabled={disabled}
-      asChild
+      style={[...buttonStyle, style]}
     >
-      <IconPressable />
+      <RenderIcon />
     </Link>
   ) : (
-    <IconPressable
+    <Pressable
       onPress={onPress}
       disabled={disabled}
-    />
+      style={[...buttonStyle, style]}
+    >
+      <RenderIcon />
+    </Pressable>
   );
 };
 
