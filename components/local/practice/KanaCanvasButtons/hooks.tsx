@@ -1,5 +1,6 @@
 import kanaMap from '@/assets/paths';
 import { useKanaCanvasContext } from '@/components/local/practice/KanaCanvas/provider';
+import { RECORDING_DURATION } from '@/components/local/practice/KanaCanvasButtons/constants';
 import {
   UseAutoRestart,
   UseKanaCanvasButtons
@@ -22,7 +23,7 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
     stopRecording,
     playVoice,
     pauseVoice
-  } = useVoiceAudio();
+  } = useVoiceAudio(RECORDING_DURATION);
   const { setPracticeStats } = useStatsActions();
 
   const onPlay = useCallback(() => {
@@ -75,7 +76,7 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
     }
   ] as const;
 
-  return { buttons, onRestart };
+  return { buttons, onRestart, isRecording: recorderState.isRecording };
 };
 
 export const useAutoRestart = ({ autoDelete, onRestart }: UseAutoRestart) => {

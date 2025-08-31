@@ -9,7 +9,7 @@ import {
 } from 'expo-audio';
 import { Alert, Linking } from 'react-native';
 
-const useVoiceAudio = () => {
+const useVoiceAudio = (recordingDuration: number) => {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(audioRecorder);
   const audioPlayer = useAudioPlayer();
@@ -52,7 +52,7 @@ const useVoiceAudio = () => {
     });
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
-    setTimeout(stopRecording, 1500);
+    setTimeout(stopRecording, recordingDuration);
   };
 
   const playVoice = () => {

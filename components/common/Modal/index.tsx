@@ -14,7 +14,7 @@ const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) =>
     SoundManager.playClick();
   };
 
-  const onPressClose = () => setVisible(false);
+  const onPressClose = () => setVisible?.(false);
 
   return (
     <RNModal
@@ -27,16 +27,18 @@ const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) =>
           <View style={styles.content}>
             <View style={styles.header}>
               <View style={styles.title}>{title}</View>
-              <Pressable
-                onPressIn={onPressIn}
-                onPress={onPressClose}
-              >
-                <Ionicons
-                  name="close"
-                  size={24}
-                  color={Colors.textPrimary}
-                />
-              </Pressable>
+              {setVisible && (
+                <Pressable
+                  onPressIn={onPressIn}
+                  onPress={onPressClose}
+                >
+                  <Ionicons
+                    name="close"
+                    size={24}
+                    color={Colors.textPrimary}
+                  />
+                </Pressable>
+              )}
             </View>
             <ScrollView style={styles.body}>{children}</ScrollView>
             {buttons && <View style={styles.footer}>{buttons}</View>}
