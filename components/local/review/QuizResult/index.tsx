@@ -1,6 +1,7 @@
 import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizResult/styles';
 import { getFeedbackImageSource } from '@/components/local/review/QuizResult/utils';
+import useHaptics from '@/hooks/useHaptic';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
@@ -10,6 +11,7 @@ import { Link } from 'expo-router';
 import { Image, Pressable, ScrollView, View } from 'react-native';
 
 const QuizResult = () => {
+  const { hapticFeedback } = useHaptics();
   const { mate } = useMateContext();
   const { kanaType } = useKanaContext();
   const { type, progress } = useQuizContext();
@@ -20,6 +22,11 @@ const QuizResult = () => {
       answer === (type === 'character' ? pronunciation : character)
   );
   const accuracy = parseFloat(((correctAnswers.length / progress.length) * 100).toFixed(1));
+
+  const onPressIn = () => {
+    hapticFeedback();
+    SoundManager.playClick();
+  };
 
   return (
     <View style={styles.container}>
@@ -127,9 +134,9 @@ const QuizResult = () => {
       <View style={styles.buttons}>
         <Pressable
           style={styles.button}
+          onPressIn={onPressIn}
           onPress={() => {
             if (!type) return;
-            SoundManager.playClick();
             startQuiz(kanaType, type);
           }}
         >
@@ -144,7 +151,7 @@ const QuizResult = () => {
         <Link
           href="/review"
           style={styles.button}
-          onPress={SoundManager.playClick}
+          onPressIn={onPressIn}
         >
           <Text
             weight={700}

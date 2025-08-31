@@ -2,15 +2,21 @@ import { INNER_WIDTH, THUMB_SIZE } from '@/components/local/setting/Switch/const
 import { styles } from '@/components/local/setting/Switch/styles';
 import { SwitchProps } from '@/components/local/setting/Switch/types';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import React, { useEffect, useState } from 'react';
 import { Animated, Pressable } from 'react-native';
 
 const Switch = ({ value, onValueChange }: SwitchProps) => {
+  const { hapticFeedback } = useHaptics();
   const [animValue] = useState(new Animated.Value(value ? 1 : 0));
 
-  const handleChange = () => {
+  const onPressIn = () => {
+    hapticFeedback();
     SoundManager.playClick();
+  };
+
+  const onPress = () => {
     onValueChange(!value);
   };
 
@@ -33,7 +39,10 @@ const Switch = ({ value, onValueChange }: SwitchProps) => {
   }, [value, animValue]);
 
   return (
-    <Pressable onPress={handleChange}>
+    <Pressable
+      onPressIn={onPressIn}
+      onPress={onPress}
+    >
       <Animated.View
         style={[
           styles.track,

@@ -5,6 +5,7 @@ import { styles } from '@/components/common/InfoCard/styles';
 import { InfoCardProps } from '@/components/common/InfoCard/types';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { useMateContext } from '@/stores/useMateStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,13 +14,16 @@ import { useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
 
 const InfoCard = ({ tips }: InfoCardProps) => {
+  const { hapticFeedback } = useHaptics();
   const { mate } = useMateContext();
   const [visible, setVisible] = useState(true);
 
-  const handleClose = () => {
+  const onPressIn = () => {
+    hapticFeedback();
     SoundManager.playClick();
-    setVisible(false);
   };
+
+  const onPressClose = () => setVisible(false);
 
   return (
     visible && (
@@ -38,7 +42,10 @@ const InfoCard = ({ tips }: InfoCardProps) => {
               Tip!
             </Text>
           </View>
-          <Pressable onPress={handleClose}>
+          <Pressable
+            onPressIn={onPressIn}
+            onPress={onPressClose}
+          >
             <Ionicons
               name="close"
               size={24}

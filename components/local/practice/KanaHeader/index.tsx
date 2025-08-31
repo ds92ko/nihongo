@@ -18,9 +18,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
   const prevRow = currentTab?.rows?.[currentRowIndex - 1];
   const nextRow = currentTab?.rows?.[currentRowIndex + 1];
 
-  const handleGoToPractice = () => {
-    setTabIndex(currentTabIndex);
-  };
+  const onPress = () => setTabIndex(currentTabIndex);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -28,7 +26,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
         <IconButton
           icon={{ type: 'material', name: 'keyboard-arrow-left' }}
           href="/practice"
-          onPress={handleGoToPractice}
+          onPress={onPress}
           {...ICON_BUTTON_PROPS}
         />
         <View style={styles.kana}>

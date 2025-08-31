@@ -3,8 +3,9 @@ import { IconButton, ProgressBar, Text } from '@/components/common';
 import { QuizResult } from '@/components/local/review';
 import { Colors } from '@/constants/Colors';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
-import useFeedbackAudio from '@/hooks/useFeedbackAudio';
+import useHaptics from '@/hooks/useHaptic';
 import useKanaAudio from '@/hooks/useKanaAudio';
+import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
 import { useMistakeActions } from '@/stores/useMistakeStore';
@@ -20,11 +21,11 @@ const correctImage = ['blushing', 'excited', 'good', 'happy', 'love', 'ok', 'sin
 const incorrectImage = ['confused', 'huh', 'mocking', 'no', 'sad', 'shocked', 'shy', 'sick'];
 
 export default function QuizScreen() {
+  const { hapticFeedback } = useHaptics();
   const { kanaType } = useKanaContext();
   const { type, progress, question } = useQuizContext();
   const { setProgress, setQuestion } = useQuizActions();
   const { playKanaAudio, playing } = useKanaAudio();
-  const { playFeedbackAudio } = useFeedbackAudio();
   const { mate } = useMateContext();
   const { addMistake, removeMistake } = useMistakeActions();
   const { setQuizStats } = useStatsActions();
@@ -35,10 +36,12 @@ export default function QuizScreen() {
   const feedbackImageArr = selectedAnswer === correctAnswer ? correctImage : incorrectImage;
   const feedbackImageName = feedbackImageArr[Math.floor(Math.random() * feedbackImageArr.length)];
 
-  const handleAnswer = (answer: string) => {
+  const onPressIn = () => hapticFeedback('medium');
+
+  const onSelectAnswer = (answer: string) => {
     if (!question || selectedAnswer) return;
 
-    playFeedbackAudio(answer === correctAnswer ? 'correct' : 'incorrect');
+    SoundManager[answer === correctAnswer ? 'playCorrect' : 'playIncorrect']();
     setSelectedAnswer(answer);
     setProgress(progress.map(p => (p.character === question.character ? { ...p, answer } : p)));
     setQuizStats(
@@ -167,7 +170,8 @@ export default function QuizScreen() {
                   isCorrect && styles.correct,
                   isIncorrect && styles.incorrect
                 ]}
-                onPress={() => handleAnswer(answer)}
+                onPressIn={onPressIn}
+                onPress={() => onSelectAnswer(answer)}
               >
                 <Text
                   weight={isCorrect || isIncorrect ? 700 : 500}

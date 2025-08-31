@@ -56,16 +56,16 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     })
   ).current;
 
-  const handlePlay = useCallback(() => {
+  const onPlay = useCallback(() => {
     playKanaAudio(kana);
     setPracticeStats(kanaType, 'listening', kana);
   }, [kana, kanaType, playKanaAudio, setPracticeStats]);
 
-  const handleRestart = useCallback(() => {
-    handlePlay();
+  const onRestart = useCallback(() => {
+    onPlay();
     setRestartTrigger(prev => prev + 1);
     setPaths([]);
-  }, [handlePlay]);
+  }, [onPlay]);
 
   const buttons = [
     {
@@ -85,12 +85,12 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     },
     {
       icon: { type: 'material', name: `headset${playing ? '-off' : ''}` },
-      onPress: handlePlay,
+      onPress: onPlay,
       disabled: playing || recorderState.isRecording || playerStatus.playing
     },
     {
       icon: { type: 'material', name: `play-${playing ? 'disabled' : 'arrow'}` },
-      onPress: handleRestart,
+      onPress: onRestart,
       disabled: playing || recorderState.isRecording || playerStatus.playing
     },
     {
@@ -116,7 +116,7 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     const pathLength = [...kana].flatMap(char => kanaMap[char] || []).length;
 
     if (pathLength !== paths.length) return;
-    if (autoDelete && panResponderEnded) handleRestart();
+    if (autoDelete && panResponderEnded) onRestart();
     setPracticeStats(kanaType, 'writing', kana);
   }, [
     kanaType,
@@ -125,8 +125,8 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     setPracticeStats,
     autoDelete,
     panResponderEnded,
-    handlePlay,
-    handleRestart
+    onPlay,
+    onRestart
   ]);
 
   useEffect(() => {

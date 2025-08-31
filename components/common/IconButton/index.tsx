@@ -31,6 +31,11 @@ const IconButton = ({
     color: icon.color || (disabled ? Colors.textSecondary : Colors.textPrimary)
   };
 
+  const onPressIn = () => {
+    hapticFeedback(effect ? 'light' : 'heavy');
+    if (effect) SoundManager.playClick();
+  };
+
   const RenderIcon = () => (
     <>
       {icon.type === 'material' && (
@@ -51,10 +56,7 @@ const IconButton = ({
   return href ? (
     <Link
       href={href}
-      onPressIn={() => {
-        hapticFeedback(effect ? 'light' : 'heavy');
-        if (effect) SoundManager.playClick();
-      }}
+      onPressIn={onPressIn}
       onPress={onPress}
       disabled={disabled}
       style={[...buttonStyle, style]}
@@ -63,10 +65,7 @@ const IconButton = ({
     </Link>
   ) : (
     <Pressable
-      onPressIn={() => {
-        hapticFeedback(effect ? 'light' : 'heavy');
-        if (effect) SoundManager.playClick();
-      }}
+      onPressIn={onPressIn}
       onPress={onPress}
       disabled={disabled}
       style={[...buttonStyle, style]}

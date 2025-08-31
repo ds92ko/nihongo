@@ -2,12 +2,14 @@ import { styles } from '@/components/common/Accordion/styles';
 import { AccordionProps } from '@/components/common/Accordion/types';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
 import { Animated, Pressable, View } from 'react-native';
 
 const Accordion = ({ title, suffix, children, maxHeight, defaultExpanded }: AccordionProps) => {
+  const { hapticFeedback } = useHaptics();
   const [expanded, setExpanded] = useState(defaultExpanded);
   const animation = useRef(new Animated.Value(Number(defaultExpanded))).current;
 
@@ -16,8 +18,12 @@ const Accordion = ({ title, suffix, children, maxHeight, defaultExpanded }: Acco
     outputRange: [0, maxHeight]
   });
 
-  const toggle = () => {
+  const onPressIn = () => {
+    hapticFeedback();
     SoundManager.playClick();
+  };
+
+  const onPress = () => {
     Animated.timing(animation, {
       toValue: expanded ? 0 : 1,
       duration: 300,
@@ -30,7 +36,8 @@ const Accordion = ({ title, suffix, children, maxHeight, defaultExpanded }: Acco
     <View>
       <Pressable
         style={styles.title}
-        onPress={toggle}
+        onPressIn={onPressIn}
+        onPress={onPress}
       >
         <View style={styles.titleText}>
           <Text

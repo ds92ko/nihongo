@@ -9,6 +9,7 @@ import {
 import { styles } from '@/components/local/review/QuizScene/styles';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
@@ -19,15 +20,23 @@ import { useEffect } from 'react';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
 const QuizScene = () => {
+  const { hapticFeedback } = useHaptics();
   const { kanaType } = useKanaContext();
   const { target } = useQuizContext();
   const { startQuiz, setTarget, resetTarget } = useQuizActions();
   const disabled = Object.values(target).every(v => !v.length);
 
-  const handleSelect = ({ key, value }: { key: KanaSoundType; value: string[] }) => {
+  const onPressIn = () => {
+    hapticFeedback();
     SoundManager.playClick();
-    setTarget({ [key]: value });
   };
+
+  const onSelect = ({ key, value }: { key: KanaSoundType; value: string[] }) =>
+    setTarget({ [key]: value });
+
+  const onStartCharacterQuiz = () => startQuiz(kanaType, 'character');
+
+  const onStartPronunciationQuiz = () => startQuiz(kanaType, 'pronunciation');
 
   useEffect(() => resetTarget(), [kanaType, resetTarget]);
 
@@ -76,8 +85,9 @@ const QuizScene = () => {
                   <View style={styles.rows}>
                     <Pressable
                       style={[styles.row, allSelected && styles.activeRow, styles.allRow]}
+                      onPressIn={onPressIn}
                       onPress={() =>
-                        handleSelect({
+                        onSelect({
                           key: item.key,
                           value: allSelected ? [] : item.rows.map(row => row.label)
                         })
@@ -107,8 +117,9 @@ const QuizScene = () => {
                         <Pressable
                           key={j}
                           style={[styles.row, isSelected && styles.activeRow]}
+                          onPressIn={onPressIn}
                           onPress={() => {
-                            handleSelect({
+                            onSelect({
                               key: item.key,
                               value: isSelected
                                 ? target[item.key].filter(label => label !== row.label)
@@ -146,10 +157,8 @@ const QuizScene = () => {
         <Link
           href="/review/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
-          onPress={() => {
-            SoundManager.playClick();
-            startQuiz(kanaType, 'character');
-          }}
+          onPressIn={onPressIn}
+          onPress={onStartCharacterQuiz}
           disabled={disabled}
         >
           <Text
@@ -163,10 +172,8 @@ const QuizScene = () => {
         <Link
           href="/review/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
-          onPress={() => {
-            SoundManager.playClick();
-            startQuiz(kanaType, 'pronunciation');
-          }}
+          onPressIn={onPressIn}
+          onPress={onStartPronunciationQuiz}
           disabled={disabled}
         >
           <Text

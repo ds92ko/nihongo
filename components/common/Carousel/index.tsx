@@ -2,6 +2,7 @@ import { styles } from '@/components/common/Carousel/styles';
 import { CarouselProps } from '@/components/common/Carousel/types';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
@@ -10,23 +11,28 @@ import { useSharedValue } from 'react-native-reanimated';
 import RNRCCarousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 
 const Carousel = ({ data, width }: CarouselProps) => {
+  const { hapticFeedback } = useHaptics();
   const carouselRef = useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
   const [height, setHeight] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
 
-  const handleLayout = (e: LayoutChangeEvent) => {
+  const onPressIn = () => {
+    hapticFeedback();
+    SoundManager.playClick();
+  };
+
+  const onLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
     setHeight(prev => Math.max(prev, height));
   };
 
-  const handleToggleAutoPlay = () => {
-    SoundManager.playClick();
+  const onToggleAutoPlay = () => {
     setAutoPlay(prev => !prev);
   };
 
-  const handlePagination = (index: number) => {
-    SoundManager.playClick();
+  const onPressPagination = (index: number) => {
+    onPressIn();
     carouselRef.current?.scrollTo({
       count: index - progress.value,
       animated: true
@@ -54,7 +60,7 @@ const Carousel = ({ data, width }: CarouselProps) => {
         }}
         renderItem={({ item, index }) => (
           <View
-            onLayout={handleLayout}
+            onLayout={onLayout}
             style={styles.carousel}
           >
             <View style={styles.carouselNumber}>
@@ -76,7 +82,10 @@ const Carousel = ({ data, width }: CarouselProps) => {
         )}
       />
       <View style={styles.pagination}>
-        <Pressable onPress={handleToggleAutoPlay}>
+        <Pressable
+          onPressIn={onPressIn}
+          onPress={onToggleAutoPlay}
+        >
           <Ionicons
             name={autoPlay ? 'pause' : 'play'}
             size={16}
@@ -91,7 +100,7 @@ const Carousel = ({ data, width }: CarouselProps) => {
           activeDotStyle={styles.activeDot}
           containerStyle={styles.pagination}
           horizontal
-          onPress={handlePagination}
+          onPress={onPressPagination}
         />
       </View>
     </View>

@@ -1,11 +1,21 @@
 import { styles } from '@/components/common/Modal/styles';
 import { ModalProps } from '@/components/common/Modal/types';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, Modal as RNModal, SafeAreaView, ScrollView, View } from 'react-native';
 
 const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) => {
+  const { hapticFeedback } = useHaptics();
+
+  const onPressIn = () => {
+    hapticFeedback();
+    SoundManager.playClick();
+  };
+
+  const onPressClose = () => setVisible(false);
+
   return (
     <RNModal
       animationType="fade"
@@ -18,10 +28,8 @@ const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) =>
             <View style={styles.header}>
               <View style={styles.title}>{title}</View>
               <Pressable
-                onPress={() => {
-                  SoundManager.playClick();
-                  setVisible(false);
-                }}
+                onPressIn={onPressIn}
+                onPress={onPressClose}
               >
                 <Ionicons
                   name="close"

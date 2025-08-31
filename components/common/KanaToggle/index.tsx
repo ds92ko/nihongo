@@ -1,6 +1,7 @@
 import { INNER_WIDTH, THUMB_SIZE } from '@/components/common/KanaToggle/constants';
 import { styles } from '@/components/common/KanaToggle/styles';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -8,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Animated, Pressable, View } from 'react-native';
 
 const KanaToggle = () => {
+  const { hapticFeedback } = useHaptics();
   const { kanaType } = useKanaContext();
   const { setKanaType } = useKanaActions();
   const [animValue] = useState(new Animated.Value(kanaType === 'hiragana' ? 0 : 1));
@@ -17,6 +19,11 @@ const KanaToggle = () => {
     outputRange: [0, INNER_WIDTH - THUMB_SIZE],
     extrapolate: 'clamp'
   });
+
+  const onPressIn = () => {
+    hapticFeedback();
+    SoundManager.playClick();
+  };
 
   useEffect(() => {
     Animated.timing(animValue, {
@@ -29,10 +36,8 @@ const KanaToggle = () => {
   return (
     <Pressable
       style={styles.track}
-      onPress={() => {
-        SoundManager.playClick();
-        setKanaType();
-      }}
+      onPressIn={onPressIn}
+      onPress={setKanaType}
     >
       <Animated.View
         style={[

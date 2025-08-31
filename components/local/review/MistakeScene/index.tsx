@@ -6,6 +6,7 @@ import {
   tips
 } from '@/components/local/review/MistakeScene/constants';
 import { styles } from '@/components/local/review/MistakeScene/styles';
+import useHaptics from '@/hooks/useHaptic';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
@@ -18,6 +19,7 @@ import {
 import { Pressable, ScrollView, View } from 'react-native';
 
 const MistakeScene = () => {
+  const { hapticFeedback } = useHaptics();
   const { kanaType } = useKanaContext();
   const { playKanaAudio, playing } = useKanaAudio();
   const { mistakes } = useMistakeContext();
@@ -36,12 +38,14 @@ const MistakeScene = () => {
     }, {})
   ).sort((a, b) => Number(b[0]) - Number(a[0]));
 
-  const handleToggleAllMode = (mode: MistakeMode) => {
+  const onPressIn = () => {
+    hapticFeedback();
     SoundManager.playClick();
-    setMistakeModes(kanaType, mode);
   };
 
-  const handleToggleMode = ({ mode, ...mistake }: Mistake) => {
+  const onToggleModes = (mode: MistakeMode) => setMistakeModes(kanaType, mode);
+
+  const onToggleMode = ({ mode, ...mistake }: Mistake) => {
     setMistake(kanaType, {
       ...mistake,
       mode: mode === 'both' ? 'character' : mode === 'character' ? 'pronunciation' : 'both'
@@ -60,7 +64,8 @@ const MistakeScene = () => {
               isEmpty && styles.disabledButton
             ]}
             disabled={isEmpty}
-            onPress={() => handleToggleAllMode('both')}
+            onPressIn={onPressIn}
+            onPress={() => onToggleModes('both')}
           >
             <Text
               weight={isBothMode ? 700 : 500}
@@ -77,7 +82,8 @@ const MistakeScene = () => {
               isEmpty && styles.disabledButton
             ]}
             disabled={isEmpty}
-            onPress={() => handleToggleAllMode('character')}
+            onPressIn={onPressIn}
+            onPress={() => onToggleModes('character')}
           >
             <Text
               weight={isCharacterMode ? 700 : 500}
@@ -94,7 +100,8 @@ const MistakeScene = () => {
               isEmpty && styles.disabledButton
             ]}
             disabled={isEmpty}
-            onPress={() => handleToggleAllMode('pronunciation')}
+            onPressIn={onPressIn}
+            onPress={() => onToggleModes('pronunciation')}
           >
             <Text
               weight={isPronunciationMode ? 700 : 500}
@@ -159,7 +166,7 @@ const MistakeScene = () => {
                       <View style={styles.mistakeControl}>
                         <IconButton
                           icon={{ type: 'material', name: 'sync' }}
-                          onPress={() => handleToggleMode(mistake)}
+                          onPress={() => onToggleMode(mistake)}
                           size="small"
                         />
                         <IconButton

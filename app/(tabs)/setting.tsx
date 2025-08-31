@@ -3,6 +3,7 @@ import { Modal, Text } from '@/components/common';
 import { ModalProps } from '@/components/common/Modal/types';
 import { Switch } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';
 import { useMistakeActions, useMistakeContext } from '@/stores/useMistakeStore';
@@ -33,6 +34,7 @@ interface Dialog {
 }
 
 export default function SettingScreen() {
+  const { hapticFeedback } = useHaptics();
   const { mate } = useMateContext();
   const { setMate } = useMateActions();
   const { soundEffectOff, kanaSoundOff, hapticOff } = useSettingContext();
@@ -44,8 +46,12 @@ export default function SettingScreen() {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialog, setDialog] = useState<Omit<ModalProps, 'visible' | 'setVisible'> | null>(null);
 
-  const openDialog = ({ type, title, contents, confirm }: Dialog) => {
+  const onPressIn = () => {
+    hapticFeedback();
     SoundManager.playClick();
+  };
+
+  const openDialog = ({ type, title, contents, confirm }: Dialog) => {
     setDialog({
       title: (
         <>
@@ -74,10 +80,8 @@ export default function SettingScreen() {
           <Pressable
             key="cancel"
             style={styles.dialogButton}
-            onPress={() => {
-              SoundManager.playClick();
-              setDialogVisible(false);
-            }}
+            onPressIn={onPressIn}
+            onPress={() => setDialogVisible(false)}
           >
             <Text
               weight={500}
@@ -94,8 +98,8 @@ export default function SettingScreen() {
             styles.dialogButton,
             { backgroundColor: type === 'confirm' ? Colors.warning : Colors.info }
           ]}
+          onPressIn={onPressIn}
           onPress={() => {
-            SoundManager.playClick();
             setDialogVisible(false);
             confirm?.onPress();
           }}
@@ -142,10 +146,8 @@ export default function SettingScreen() {
                     styles.mate,
                     { backgroundColor: key === mate ? Colors.primary30 : Colors.neutralLight }
                   ]}
-                  onPress={() => {
-                    SoundManager.playClick();
-                    setMate(key);
-                  }}
+                  onPressIn={onPressIn}
+                  onPress={() => setMate(key)}
                 >
                   <Image
                     source={mateImageMap[key][key === mate ? 'happy' : 'peace']}
@@ -173,10 +175,8 @@ export default function SettingScreen() {
           <View style={styles.cardContent}>
             <Pressable
               style={styles.settingItem}
-              onPress={() => {
-                SoundManager.playClick();
-                toggleKanaSound();
-              }}
+              onPressIn={onPressIn}
+              onPress={toggleKanaSound}
             >
               <Text
                 weight={500}
@@ -192,10 +192,8 @@ export default function SettingScreen() {
             </Pressable>
             <Pressable
               style={styles.settingItem}
-              onPress={() => {
-                SoundManager.playClick();
-                toggleSoundEffect();
-              }}
+              onPressIn={onPressIn}
+              onPress={toggleSoundEffect}
             >
               <Text
                 weight={500}
@@ -211,10 +209,8 @@ export default function SettingScreen() {
             </Pressable>
             <Pressable
               style={styles.settingItem}
-              onPress={() => {
-                SoundManager.playClick();
-                toggleHaptic();
-              }}
+              onPressIn={onPressIn}
+              onPress={toggleHaptic}
             >
               <Text
                 weight={500}
@@ -247,6 +243,7 @@ export default function SettingScreen() {
           <View style={styles.cardContent}>
             <Pressable
               style={styles.settingItem}
+              onPressIn={onPressIn}
               onPress={() => {
                 const isEmpty = !Object.keys(practice).length;
 
@@ -283,6 +280,7 @@ export default function SettingScreen() {
             </Pressable>
             <Pressable
               style={styles.settingItem}
+              onPressIn={onPressIn}
               onPress={() => {
                 const isEmpty = !Object.keys(quiz).length;
 
@@ -319,6 +317,7 @@ export default function SettingScreen() {
             </Pressable>
             <Pressable
               style={styles.settingItem}
+              onPressIn={onPressIn}
               onPress={() => {
                 const isEmpty = !mistakes.hiragana.length && !mistakes.katakana.length;
 

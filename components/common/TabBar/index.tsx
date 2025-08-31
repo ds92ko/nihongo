@@ -2,12 +2,19 @@ import KanaToggle from '@/components/common/KanaToggle';
 import { styles } from '@/components/common/TabBar/styles';
 import { TabBarProps } from '@/components/common/TabBar/types';
 import Text from '@/components/common/Text';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { Pressable, SafeAreaView, View } from 'react-native';
 import { Route } from 'react-native-tab-view';
 
 const TabBar = <T extends Route>({ navigationState, jumpTo }: TabBarProps<T>) => {
+  const { hapticFeedback } = useHaptics();
   const { index } = navigationState;
+
+  const onPressIn = () => {
+    hapticFeedback();
+    SoundManager.playClick();
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -16,10 +23,8 @@ const TabBar = <T extends Route>({ navigationState, jumpTo }: TabBarProps<T>) =>
           {navigationState.routes.map((route, idx) => (
             <Pressable
               key={route.key}
-              onPress={() => {
-                SoundManager.playClick();
-                jumpTo(route.key);
-              }}
+              onPressIn={onPressIn}
+              onPress={() => jumpTo(route.key)}
               style={[styles.tab, idx === index && styles.activeTab]}
             >
               <Text
