@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    gap: 16
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8
   }
 });

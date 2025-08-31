@@ -33,6 +33,15 @@ const useVoiceAudio = () => {
     return true;
   };
 
+  const stopRecording = async () => {
+    await audioRecorder.stop();
+    setAudioModeAsync({
+      playsInSilentMode: false,
+      allowsRecording: false
+    });
+    audioPlayer.replace(audioRecorder.uri);
+  };
+
   const startRecording = async () => {
     const hasPermission = await checkPermissions();
     if (!hasPermission) return;
@@ -44,15 +53,6 @@ const useVoiceAudio = () => {
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
     setTimeout(stopRecording, 1500);
-  };
-
-  const stopRecording = async () => {
-    await audioRecorder.stop();
-    setAudioModeAsync({
-      playsInSilentMode: false,
-      allowsRecording: false
-    });
-    audioPlayer.replace(audioRecorder.uri);
   };
 
   const playVoice = () => {

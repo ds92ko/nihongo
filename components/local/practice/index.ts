@@ -1,4 +1,6 @@
 export { default as KanaCanvas } from '@/components/local/practice/KanaCanvas';
+export { default as KanaCanvasButtons } from '@/components/local/practice/KanaCanvasButtons';
+export { default as KanaDrawPad } from '@/components/local/practice/KanaDrawPad';
 export { default as KanaHeader } from '@/components/local/practice/KanaHeader';
 export { default as KanaList } from '@/components/local/practice/KanaList';
 export { default as KanaPath } from '@/components/local/practice/KanaPath';
