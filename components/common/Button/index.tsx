@@ -10,6 +10,7 @@ import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { Link } from 'expo-router';
 import { Pressable } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 const Button = ({
   onPress,
@@ -17,17 +18,22 @@ const Button = ({
   href,
   children,
   style,
+  animatedStyle,
   size = 'medium',
   variant = 'primary',
   active = false,
   fill = false
 }: ButtonProps) => {
   const { hapticFeedback } = useHaptics();
-  const buttonStyle = [
+  const scale = useSharedValue(1);
+  const animated = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }]
+  }));
+  const animatedStyles = [fill && styles.fill, animated, animatedStyle];
+  const buttonStyles = [
     styles.button,
     styles[size],
     styles[variant],
-    fill && styles.fill,
     active && styles[ACTIVE_STYLE_MAP[variant]],
     disabled && styles.disabled
   ];
@@ -35,6 +41,11 @@ const Button = ({
   const onPressIn = () => {
     hapticFeedback();
     SoundManager.playClick();
+    scale.value = withSpring(0.9, { damping: 10, stiffness: 200 });
+  };
+
+  const onPressOut = () => {
+    scale.value = withSpring(1, { damping: 10, stiffness: 200 });
   };
 
   const RenderText = () => (
@@ -48,24 +59,30 @@ const Button = ({
   );
 
   return href ? (
-    <Link
-      href={href}
-      onPressIn={onPressIn}
-      onPress={onPress}
-      disabled={disabled}
-      style={[...buttonStyle, style]}
-    >
-      <RenderText />
-    </Link>
+    <Animated.View style={[...animatedStyles]}>
+      <Link
+        href={href}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        onPress={onPress}
+        disabled={disabled}
+        style={[...buttonStyles, style]}
+      >
+        <RenderText />
+      </Link>
+    </Animated.View>
   ) : (
-    <Pressable
-      onPressIn={onPressIn}
-      onPress={onPress}
-      disabled={disabled}
-      style={[...buttonStyle, style]}
-    >
-      <RenderText />
-    </Pressable>
+    <Animated.View style={[...animatedStyles]}>
+      <Pressable
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        onPress={onPress}
+        disabled={disabled}
+        style={[...buttonStyles, style]}
+      >
+        <RenderText />
+      </Pressable>
+    </Animated.View>
   );
 };
 

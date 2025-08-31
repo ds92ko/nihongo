@@ -1,9 +1,11 @@
 import { LinkProps } from 'expo-router';
 import { PressableProps, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { AnimatedStyle } from 'react-native-reanimated';
 
 interface ButtonBaseProps {
   variant?: 'primary' | 'primary10' | 'neutralLight' | 'success' | 'error' | 'warning' | 'info';
   size?: 'small' | 'medium' | 'large';
+  animatedStyle?: StyleProp<AnimatedStyle<StyleProp<ViewStyle>>>;
   active?: boolean;
   fill?: boolean;
   children: string;

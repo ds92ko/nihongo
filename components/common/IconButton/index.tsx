@@ -6,6 +6,7 @@ import SoundManager from '@/managers/SoundManager';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { Pressable } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 const IconButton = ({
   onPress,
@@ -13,13 +14,19 @@ const IconButton = ({
   href,
   icon,
   style,
+  animatedStyle,
   size = 'medium',
   shape = 'rounded',
   variant = 'primary',
   effect = true
 }: IconButtonProps) => {
   const { hapticFeedback } = useHaptics();
-  const buttonStyle = [
+  const scale = useSharedValue(1);
+  const animated = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }]
+  }));
+  const animatedStyles = [animated, animatedStyle];
+  const buttonStyles = [
     styles.button,
     styles[size],
     styles[shape],
@@ -34,6 +41,11 @@ const IconButton = ({
   const onPressIn = () => {
     hapticFeedback(effect ? 'light' : 'heavy');
     if (effect) SoundManager.playClick();
+    scale.value = withSpring(0.9, { damping: 10, stiffness: 200 });
+  };
+
+  const onPressOut = () => {
+    scale.value = withSpring(1, { damping: 10, stiffness: 200 });
   };
 
   const RenderIcon = () => (
@@ -54,24 +66,30 @@ const IconButton = ({
   );
 
   return href ? (
-    <Link
-      href={href}
-      onPressIn={onPressIn}
-      onPress={onPress}
-      disabled={disabled}
-      style={[...buttonStyle, style]}
-    >
-      <RenderIcon />
-    </Link>
+    <Animated.View style={animatedStyles}>
+      <Link
+        href={href}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        onPress={onPress}
+        disabled={disabled}
+        style={[...buttonStyles, style]}
+      >
+        <RenderIcon />
+      </Link>
+    </Animated.View>
   ) : (
-    <Pressable
-      onPressIn={onPressIn}
-      onPress={onPress}
-      disabled={disabled}
-      style={[...buttonStyle, style]}
-    >
-      <RenderIcon />
-    </Pressable>
+    <Animated.View style={animatedStyles}>
+      <Pressable
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        onPress={onPress}
+        disabled={disabled}
+        style={[...buttonStyles, style]}
+      >
+        <RenderIcon />
+      </Pressable>
+    </Animated.View>
   );
 };
 

@@ -95,7 +95,7 @@ export default function QuizScreen() {
               type: 'material',
               name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
             }}
-            style={styles.questionButton}
+            animatedStyle={styles.questionButton}
             onPress={() => playKanaAudio(question.character)}
             disabled={playing || Boolean(selectedAnswer)}
           />
