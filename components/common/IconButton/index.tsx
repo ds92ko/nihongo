@@ -1,10 +1,9 @@
 import { styles } from '@/components/common/IconButton/styles';
 import { IconButtonProps } from '@/components/common/IconButton/types';
 import { Colors } from '@/constants/Colors';
+import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
-import { useSettingContext } from '@/stores/useSettingStore';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 import { Link } from 'expo-router';
 import { Pressable } from 'react-native';
 
@@ -19,7 +18,7 @@ const IconButton = ({
   variant = 'primary',
   effect = true
 }: IconButtonProps) => {
-  const { hapticOff } = useSettingContext();
+  const { hapticFeedback } = useHaptics();
   const buttonStyle = [
     styles.button,
     styles[size],
@@ -53,8 +52,7 @@ const IconButton = ({
     <Link
       href={href}
       onPressIn={() => {
-        if (!hapticOff)
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle[effect ? 'Light' : 'Heavy']);
+        hapticFeedback(effect ? 'light' : 'heavy');
         if (effect) SoundManager.playClick();
       }}
       onPress={onPress}
@@ -66,8 +64,7 @@ const IconButton = ({
   ) : (
     <Pressable
       onPressIn={() => {
-        if (!hapticOff)
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle[effect ? 'Light' : 'Heavy']);
+        hapticFeedback(effect ? 'light' : 'heavy');
         if (effect) SoundManager.playClick();
       }}
       onPress={onPress}
