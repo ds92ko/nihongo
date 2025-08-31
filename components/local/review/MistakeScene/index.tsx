@@ -43,7 +43,6 @@ const MistakeScene = () => {
   };
 
   const handleToggleMode = ({ mode, ...mistake }: Mistake) => {
-    playPopAudio();
     setMistake(kanaType, {
       ...mistake,
       mode: mode === 'both' ? 'character' : mode === 'character' ? 'pronunciation' : 'both'
@@ -176,7 +175,6 @@ const MistakeScene = () => {
                             pathname: '/practice/[kana]',
                             params: { kana: mistake.character }
                           }}
-                          onPress={playPopAudio}
                           size="small"
                         />
                       </View>

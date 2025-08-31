@@ -5,7 +5,6 @@ import { KanaCanvasProps, Paths } from '@/components/local/practice/KanaCanvas/t
 import KanaSvg from '@/components/local/practice/KanaSvg';
 import { Colors } from '@/constants/Colors';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import usePopAudio from '@/hooks/usePopAudio';
 import useVoiceAudio from '@/hooks/useVoiceAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import { useStatsActions } from '@/stores/useStatsStore';
@@ -17,7 +16,6 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
   const { kanaType, isVisibleGrid } = useKanaContext();
   const { setIsVisibleGrid } = useKanaActions();
   const { playKanaAudio, playing } = useKanaAudio();
-  const { playPopAudio, popPlayerStatus } = usePopAudio();
   const {
     audioRecorder,
     recorderState,
@@ -26,10 +24,7 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     stopRecording,
     playVoice,
     pauseVoice
-  } = useVoiceAudio({
-    playPopAudio,
-    popPlayerStatus
-  });
+  } = useVoiceAudio();
   const { setPracticeStats } = useStatsActions();
   const firstRender = useRef(true);
   const [restartTrigger, setRestartTrigger] = useState(0);
@@ -75,15 +70,13 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
   const buttons = [
     {
       icon: { type: 'material', name: `grid-${isVisibleGrid ? 'on' : 'off'}` },
-      onPress: () => {
-        playPopAudio();
-        setIsVisibleGrid();
-      }
+      onPress: setIsVisibleGrid
     },
     {
       icon: { type: 'material', name: recorderState.isRecording ? 'record-voice-over' : 'mic' },
       onPress: recorderState.isRecording ? stopRecording : startRecording,
-      disabled: playing || playerStatus.playing
+      disabled: playing || playerStatus.playing,
+      effect: false
     },
     {
       icon: { type: 'material', name: playerStatus.playing ? 'multitrack-audio' : 'voicemail' },
@@ -114,7 +107,6 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
           setAutoDelete(true);
           return;
         }
-        playPopAudio();
         setPaths([]);
       }
     }
@@ -132,7 +124,6 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
     paths.length,
     setPracticeStats,
     autoDelete,
-    playPopAudio,
     panResponderEnded,
     handlePlay,
     handleRestart
@@ -140,7 +131,7 @@ const KanaCanvas = ({ kana }: KanaCanvasProps) => {
 
   useEffect(() => {
     if (firstRender.current) {
-      playKanaAudio(kana, true);
+      playKanaAudio(kana);
       firstRender.current = false;
     }
   }, [kana, playKanaAudio]);

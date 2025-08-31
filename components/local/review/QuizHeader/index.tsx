@@ -1,12 +1,10 @@
 import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizHeader/styles';
-import usePopAudio from '@/hooks/usePopAudio';
 import { useQuizContext } from '@/stores/useQuizStore';
 import { SafeAreaView, View } from 'react-native';
 
 const QuizHeader = () => {
   const { type } = useQuizContext();
-  const { playPopAudio } = usePopAudio();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -14,7 +12,6 @@ const QuizHeader = () => {
         <IconButton
           icon={{ type: 'material', name: 'keyboard-arrow-left' }}
           href={'/review'}
-          onPress={playPopAudio}
           variant="white"
           shape="square"
           size="small"

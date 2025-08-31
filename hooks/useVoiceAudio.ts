@@ -1,6 +1,5 @@
 import {
   AudioModule,
-  AudioStatus,
   RecordingPresets,
   setAudioModeAsync,
   useAudioPlayer,
@@ -10,13 +9,7 @@ import {
 } from 'expo-audio';
 import { Alert, Linking } from 'react-native';
 
-const useVoiceAudio = ({
-  playPopAudio,
-  popPlayerStatus
-}: {
-  playPopAudio: () => void;
-  popPlayerStatus: AudioStatus;
-}) => {
+const useVoiceAudio = () => {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(audioRecorder);
   const audioPlayer = useAudioPlayer();
@@ -40,7 +33,7 @@ const useVoiceAudio = ({
     return true;
   };
 
-  const recording = async () => {
+  const startRecording = async () => {
     const hasPermission = await checkPermissions();
     if (!hasPermission) return;
 
@@ -50,15 +43,10 @@ const useVoiceAudio = ({
     });
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
-  };
-
-  const startRecording = () => {
-    playPopAudio();
-    setTimeout(recording, popPlayerStatus.duration * 5000);
+    setTimeout(stopRecording, 1500);
   };
 
   const stopRecording = async () => {
-    playPopAudio();
     await audioRecorder.stop();
     setAudioModeAsync({
       playsInSilentMode: false,
@@ -68,13 +56,11 @@ const useVoiceAudio = ({
   };
 
   const playVoice = () => {
-    playPopAudio();
     audioPlayer.seekTo(0);
     audioPlayer.play();
   };
 
   const pauseVoice = () => {
-    playPopAudio();
     audioPlayer.pause();
   };
 

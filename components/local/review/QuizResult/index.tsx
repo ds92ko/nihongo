@@ -118,7 +118,6 @@ const QuizResult = () => {
                 <IconButton
                   icon={{ type: 'material-community', name: 'lead-pencil' }}
                   href={{ pathname: '/practice/[kana]', params: { kana: character } }}
-                  onPress={playPopAudio}
                   size="small"
                 />
               </View>

@@ -1,28 +1,24 @@
 import { kanaAudioMap } from '@/assets/audio/kana';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
-import usePopAudio from '@/hooks/usePopAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useSettingContext } from '@/stores/useSettingStore';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useCallback } from 'react';
 
 const useKanaAudio = () => {
-  const { playPopAudio, popPlayerStatus } = usePopAudio();
   const { kanaSoundOff } = useSettingContext();
   const { kanaType } = useKanaContext();
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
   const playKanaAudio = useCallback(
-    async (kana: string, auto?: boolean) => {
-      if (popPlayerStatus.playing || status.playing) return;
+    async (kana: string) => {
+      if (status.playing) return;
 
       const romaji = KANA_TO_ROMAJI[kanaType][kana];
       const source = kanaAudioMap[romaji];
 
       try {
-        if (!auto) playPopAudio();
-
         if (!kanaSoundOff) {
           player.replace(source);
           player.play();
@@ -31,10 +27,10 @@ const useKanaAudio = () => {
         console.error(err);
       }
     },
-    [popPlayerStatus.playing, status.playing, kanaType, playPopAudio, kanaSoundOff, player]
+    [status.playing, kanaType, kanaSoundOff, player]
   );
 
-  return { playKanaAudio, playing: popPlayerStatus.playing || status.playing };
+  return { playKanaAudio, playing: status.playing };
 };
 
 export default useKanaAudio;
