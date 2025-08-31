@@ -7,7 +7,7 @@ import {
 } from '@/components/local/review/MistakeScene/constants';
 import { styles } from '@/components/local/review/MistakeScene/styles';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import {
   Mistake,
@@ -20,7 +20,6 @@ import { Pressable, ScrollView, View } from 'react-native';
 const MistakeScene = () => {
   const { kanaType } = useKanaContext();
   const { playKanaAudio, playing } = useKanaAudio();
-  const { playPopAudio } = usePopAudio();
   const { mistakes } = useMistakeContext();
   const { setMistake, setMistakeModes } = useMistakeActions();
 
@@ -38,7 +37,7 @@ const MistakeScene = () => {
   ).sort((a, b) => Number(b[0]) - Number(a[0]));
 
   const handleToggleAllMode = (mode: MistakeMode) => {
-    playPopAudio();
+    SoundManager.playClick();
     setMistakeModes(kanaType, mode);
   };
 

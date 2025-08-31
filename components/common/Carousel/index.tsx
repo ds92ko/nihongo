@@ -2,7 +2,7 @@ import { styles } from '@/components/common/Carousel/styles';
 import { CarouselProps } from '@/components/common/Carousel/types';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
 import { LayoutChangeEvent, Pressable, View } from 'react-native';
@@ -10,7 +10,6 @@ import { useSharedValue } from 'react-native-reanimated';
 import RNRCCarousel, { ICarouselInstance, Pagination } from 'react-native-reanimated-carousel';
 
 const Carousel = ({ data, width }: CarouselProps) => {
-  const { playPopAudio } = usePopAudio();
   const carouselRef = useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
   const [height, setHeight] = useState(0);
@@ -22,12 +21,12 @@ const Carousel = ({ data, width }: CarouselProps) => {
   };
 
   const handleToggleAutoPlay = () => {
-    playPopAudio();
+    SoundManager.playClick();
     setAutoPlay(prev => !prev);
   };
 
   const handlePagination = (index: number) => {
-    playPopAudio();
+    SoundManager.playClick();
     carouselRef.current?.scrollTo({
       count: index - progress.value,
       animated: true

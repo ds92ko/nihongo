@@ -2,13 +2,12 @@ import { styles } from '@/components/common/Accordion/styles';
 import { AccordionProps } from '@/components/common/Accordion/types';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRef, useState } from 'react';
 import { Animated, Pressable, View } from 'react-native';
 
 const Accordion = ({ title, suffix, children, maxHeight, defaultExpanded }: AccordionProps) => {
-  const { playPopAudio } = usePopAudio();
   const [expanded, setExpanded] = useState(defaultExpanded);
   const animation = useRef(new Animated.Value(Number(defaultExpanded))).current;
 
@@ -18,7 +17,7 @@ const Accordion = ({ title, suffix, children, maxHeight, defaultExpanded }: Acco
   });
 
   const toggle = () => {
-    playPopAudio();
+    SoundManager.playClick();
     Animated.timing(animation, {
       toValue: expanded ? 0 : 1,
       duration: 300,

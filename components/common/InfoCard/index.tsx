@@ -5,7 +5,7 @@ import { styles } from '@/components/common/InfoCard/styles';
 import { InfoCardProps } from '@/components/common/InfoCard/types';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { useMateContext } from '@/stores/useMateStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -14,11 +14,10 @@ import { Image, Pressable, View } from 'react-native';
 
 const InfoCard = ({ tips }: InfoCardProps) => {
   const { mate } = useMateContext();
-  const { playPopAudio } = usePopAudio();
   const [visible, setVisible] = useState(true);
 
   const handleClose = () => {
-    playPopAudio();
+    SoundManager.playClick();
     setVisible(false);
   };
 

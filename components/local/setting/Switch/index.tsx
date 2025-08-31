@@ -2,16 +2,15 @@ import { INNER_WIDTH, THUMB_SIZE } from '@/components/local/setting/Switch/const
 import { styles } from '@/components/local/setting/Switch/styles';
 import { SwitchProps } from '@/components/local/setting/Switch/types';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import React, { useEffect, useState } from 'react';
 import { Animated, Pressable } from 'react-native';
 
 const Switch = ({ value, onValueChange }: SwitchProps) => {
   const [animValue] = useState(new Animated.Value(value ? 1 : 0));
-  const { playPopAudio } = usePopAudio();
 
   const handleChange = () => {
-    playPopAudio();
+    SoundManager.playClick();
     onValueChange(!value);
   };
 

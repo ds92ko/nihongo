@@ -2,14 +2,21 @@ import { Text } from '@/components/common';
 import { HomeHeader } from '@/components/local/home';
 import { SettingHeader } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import useHaptics from '@/hooks/useHaptic';
+import SoundManager from '@/managers/SoundManager';
 import { useTabActions } from '@/stores/useTabStore';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   const { setTabIndex, setAnimationEnabled } = useTabActions();
-  const { playPopAudio } = usePopAudio();
+  const { hapticFeedback } = useHaptics();
+
+  const onTabPress = (onPress?: () => void) => {
+    hapticFeedback();
+    SoundManager.playClick();
+    onPress?.();
+  };
 
   return (
     <Tabs
@@ -44,7 +51,7 @@ export default function TabLayout() {
           )
         }}
         listeners={() => ({
-          tabPress: playPopAudio
+          tabPress: () => onTabPress()
         })}
       />
       <Tabs.Screen
@@ -68,12 +75,12 @@ export default function TabLayout() {
           )
         }}
         listeners={({ navigation }) => ({
-          tabPress: () => {
-            playPopAudio();
-            setAnimationEnabled(false);
-            setTabIndex(0);
-            navigation.navigate('practice');
-          },
+          tabPress: () =>
+            onTabPress(() => {
+              setAnimationEnabled(false);
+              setTabIndex(0);
+              navigation.navigate('practice');
+            }),
           focus: () => {
             setAnimationEnabled(true);
           }
@@ -100,12 +107,12 @@ export default function TabLayout() {
           )
         }}
         listeners={({ navigation }) => ({
-          tabPress: () => {
-            playPopAudio();
-            setAnimationEnabled(false);
-            setTabIndex(0);
-            navigation.navigate('review');
-          },
+          tabPress: () =>
+            onTabPress(() => {
+              setAnimationEnabled(false);
+              setTabIndex(0);
+              navigation.navigate('review');
+            }),
           focus: () => {
             setAnimationEnabled(true);
           }
@@ -132,7 +139,7 @@ export default function TabLayout() {
           )
         }}
         listeners={() => ({
-          tabPress: playPopAudio
+          tabPress: () => onTabPress()
         })}
       />
     </Tabs>

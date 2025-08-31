@@ -12,7 +12,7 @@ const styleMap: Record<string, Haptics.ImpactFeedbackStyle> = {
 const useHaptics = () => {
   const hapticOff = useSettingStore.getState().context.hapticOff;
 
-  const hapticFeedback = (style: keyof typeof styleMap) => {
+  const hapticFeedback = (style: keyof typeof styleMap = 'light') => {
     if (hapticOff) return;
     Haptics.impactAsync(styleMap[style]);
   };

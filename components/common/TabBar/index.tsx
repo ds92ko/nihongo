@@ -2,13 +2,12 @@ import KanaToggle from '@/components/common/KanaToggle';
 import { styles } from '@/components/common/TabBar/styles';
 import { TabBarProps } from '@/components/common/TabBar/types';
 import Text from '@/components/common/Text';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { Pressable, SafeAreaView, View } from 'react-native';
 import { Route } from 'react-native-tab-view';
 
 const TabBar = <T extends Route>({ navigationState, jumpTo }: TabBarProps<T>) => {
   const { index } = navigationState;
-  const { playPopAudio } = usePopAudio();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -18,7 +17,7 @@ const TabBar = <T extends Route>({ navigationState, jumpTo }: TabBarProps<T>) =>
             <Pressable
               key={route.key}
               onPress={() => {
-                playPopAudio();
+                SoundManager.playClick();
                 jumpTo(route.key);
               }}
               style={[styles.tab, idx === index && styles.activeTab]}

@@ -3,7 +3,7 @@ import { Modal, Text } from '@/components/common';
 import { ModalProps } from '@/components/common/Modal/types';
 import { Switch } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';
 import { useMistakeActions, useMistakeContext } from '@/stores/useMistakeStore';
 import { useSettingActions, useSettingContext } from '@/stores/useSettingStore';
@@ -37,7 +37,6 @@ export default function SettingScreen() {
   const { setMate } = useMateActions();
   const { soundEffectOff, kanaSoundOff, hapticOff } = useSettingContext();
   const { toggleSoundEffect, toggleKanaSound, toggleHaptic } = useSettingActions();
-  const { playPopAudio } = usePopAudio();
   const { mistakes } = useMistakeContext();
   const { resetMistakes } = useMistakeActions();
   const { practice, quiz } = useStatsContext();
@@ -46,7 +45,7 @@ export default function SettingScreen() {
   const [dialog, setDialog] = useState<Omit<ModalProps, 'visible' | 'setVisible'> | null>(null);
 
   const openDialog = ({ type, title, contents, confirm }: Dialog) => {
-    playPopAudio();
+    SoundManager.playClick();
     setDialog({
       title: (
         <>
@@ -76,7 +75,7 @@ export default function SettingScreen() {
             key="cancel"
             style={styles.dialogButton}
             onPress={() => {
-              playPopAudio();
+              SoundManager.playClick();
               setDialogVisible(false);
             }}
           >
@@ -96,7 +95,7 @@ export default function SettingScreen() {
             { backgroundColor: type === 'confirm' ? Colors.warning : Colors.info }
           ]}
           onPress={() => {
-            playPopAudio();
+            SoundManager.playClick();
             setDialogVisible(false);
             confirm?.onPress();
           }}
@@ -144,7 +143,7 @@ export default function SettingScreen() {
                     { backgroundColor: key === mate ? Colors.primary30 : Colors.neutralLight }
                   ]}
                   onPress={() => {
-                    playPopAudio();
+                    SoundManager.playClick();
                     setMate(key);
                   }}
                 >
@@ -175,7 +174,7 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPress={() => {
-                playPopAudio();
+                SoundManager.playClick();
                 toggleKanaSound();
               }}
             >
@@ -194,7 +193,7 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPress={() => {
-                playPopAudio();
+                SoundManager.playClick();
                 toggleSoundEffect();
               }}
             >
@@ -213,7 +212,7 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPress={() => {
-                playPopAudio();
+                SoundManager.playClick();
                 toggleHaptic();
               }}
             >

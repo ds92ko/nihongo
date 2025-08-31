@@ -2,7 +2,7 @@ import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizResult/styles';
 import { getFeedbackImageSource } from '@/components/local/review/QuizResult/utils';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
@@ -15,7 +15,6 @@ const QuizResult = () => {
   const { type, progress } = useQuizContext();
   const { startQuiz } = useQuizActions();
   const { playKanaAudio, playing } = useKanaAudio();
-  const { playPopAudio } = usePopAudio();
   const correctAnswers = progress.filter(
     ({ answer, character, pronunciation }) =>
       answer === (type === 'character' ? pronunciation : character)
@@ -130,7 +129,7 @@ const QuizResult = () => {
           style={styles.button}
           onPress={() => {
             if (!type) return;
-            playPopAudio();
+            SoundManager.playClick();
             startQuiz(kanaType, type);
           }}
         >
@@ -145,7 +144,7 @@ const QuizResult = () => {
         <Link
           href="/review"
           style={styles.button}
-          onPress={playPopAudio}
+          onPress={SoundManager.playClick}
         >
           <Text
             weight={700}

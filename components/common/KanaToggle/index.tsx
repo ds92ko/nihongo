@@ -1,7 +1,7 @@
 import { INNER_WIDTH, THUMB_SIZE } from '@/components/common/KanaToggle/constants';
 import { styles } from '@/components/common/KanaToggle/styles';
 import { Colors } from '@/constants/Colors';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,6 @@ import { Animated, Pressable, View } from 'react-native';
 const KanaToggle = () => {
   const { kanaType } = useKanaContext();
   const { setKanaType } = useKanaActions();
-  const { playPopAudio } = usePopAudio();
   const [animValue] = useState(new Animated.Value(kanaType === 'hiragana' ? 0 : 1));
 
   const translateX = animValue.interpolate({
@@ -31,7 +30,7 @@ const KanaToggle = () => {
     <Pressable
       style={styles.track}
       onPress={() => {
-        playPopAudio();
+        SoundManager.playClick();
         setKanaType();
       }}
     >

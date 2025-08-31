@@ -9,7 +9,7 @@ import {
 import { styles } from '@/components/local/review/QuizScene/styles';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
-import usePopAudio from '@/hooks/usePopAudio';
+import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import { KanaSoundType } from '@/types/kana';
@@ -22,11 +22,10 @@ const QuizScene = () => {
   const { kanaType } = useKanaContext();
   const { target } = useQuizContext();
   const { startQuiz, setTarget, resetTarget } = useQuizActions();
-  const { playPopAudio } = usePopAudio();
   const disabled = Object.values(target).every(v => !v.length);
 
   const handleSelect = ({ key, value }: { key: KanaSoundType; value: string[] }) => {
-    playPopAudio();
+    SoundManager.playClick();
     setTarget({ [key]: value });
   };
 
@@ -148,7 +147,7 @@ const QuizScene = () => {
           href="/review/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
-            playPopAudio();
+            SoundManager.playClick();
             startQuiz(kanaType, 'character');
           }}
           disabled={disabled}
@@ -165,7 +164,7 @@ const QuizScene = () => {
           href="/review/quiz"
           style={[styles.button, disabled && styles.disabledButton]}
           onPress={() => {
-            playPopAudio();
+            SoundManager.playClick();
             startQuiz(kanaType, 'pronunciation');
           }}
           disabled={disabled}
