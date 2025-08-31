@@ -1,4 +1,4 @@
-import { Accordion, InfoCard, Text } from '@/components/common';
+import { Accordion, Button, InfoCard, Text } from '@/components/common';
 import {
   PER_ROW,
   ROW_HEIGHT,
@@ -15,7 +15,6 @@ import { useKanaContext } from '@/stores/useKanaStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import { KanaSoundType } from '@/types/kana';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Link } from 'expo-router';
 import { useEffect } from 'react';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 
@@ -154,36 +153,24 @@ const QuizScene = () => {
         />
       </ScrollView>
       <View style={styles.buttons}>
-        <Link
+        <Button
           href="/review/quiz"
-          style={[styles.button, disabled && styles.disabledButton]}
-          onPressIn={onPressIn}
           onPress={onStartCharacterQuiz}
           disabled={disabled}
+          active
+          fill
         >
-          <Text
-            weight={700}
-            variant="body2"
-            color="white"
-          >
-            읽기 퀴즈
-          </Text>
-        </Link>
-        <Link
+          읽기 퀴즈
+        </Button>
+        <Button
           href="/review/quiz"
-          style={[styles.button, disabled && styles.disabledButton]}
-          onPressIn={onPressIn}
           onPress={onStartPronunciationQuiz}
           disabled={disabled}
+          active
+          fill
         >
-          <Text
-            weight={700}
-            variant="body2"
-            color="white"
-          >
-            표기 퀴즈
-          </Text>
-        </Link>
+          표기 퀴즈
+        </Button>
       </View>
     </View>
   );

@@ -1,17 +1,13 @@
-import { IconButton, Text } from '@/components/common';
+import { Button, IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizResult/styles';
 import { getFeedbackImageSource } from '@/components/local/review/QuizResult/utils';
-import useHaptics from '@/hooks/useHaptic';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useMateContext } from '@/stores/useMateStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
-import { Link } from 'expo-router';
-import { Image, Pressable, ScrollView, View } from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 
 const QuizResult = () => {
-  const { hapticFeedback } = useHaptics();
   const { mate } = useMateContext();
   const { kanaType } = useKanaContext();
   const { type, progress } = useQuizContext();
@@ -22,11 +18,6 @@ const QuizResult = () => {
       answer === (type === 'character' ? pronunciation : character)
   );
   const accuracy = parseFloat(((correctAnswers.length / progress.length) * 100).toFixed(1));
-
-  const onPressIn = () => {
-    hapticFeedback();
-    SoundManager.playClick();
-  };
 
   return (
     <View style={styles.container}>
@@ -132,35 +123,23 @@ const QuizResult = () => {
         </View>
       </ScrollView>
       <View style={styles.buttons}>
-        <Pressable
-          style={styles.button}
-          onPressIn={onPressIn}
+        <Button
           onPress={() => {
             if (!type) return;
             startQuiz(kanaType, type);
           }}
+          active
+          fill
         >
-          <Text
-            weight={700}
-            variant="body2"
-            color="white"
-          >
-            복습하기
-          </Text>
-        </Pressable>
-        <Link
+          복습하기
+        </Button>
+        <Button
           href="/review"
-          style={styles.button}
-          onPressIn={onPressIn}
+          active
+          fill
         >
-          <Text
-            weight={700}
-            variant="body2"
-            color="white"
-          >
-            퀴즈 종료
-          </Text>
-        </Link>
+          퀴즈 종료
+        </Button>
       </View>
     </View>
   );

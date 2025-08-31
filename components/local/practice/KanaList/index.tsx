@@ -1,19 +1,9 @@
-import { Text } from '@/components/common';
+import { Button, Text } from '@/components/common';
 import { styles } from '@/components/local/practice/KanaList/styles';
 import { KanaListProps } from '@/components/local/practice/KanaList/types';
-import useHaptics from '@/hooks/useHaptic';
-import SoundManager from '@/managers/SoundManager';
-import { Link } from 'expo-router';
 import { FlatList, View } from 'react-native';
 
 const KanaList = ({ data, kana }: KanaListProps) => {
-  const { hapticFeedback } = useHaptics();
-
-  const onPressIn = () => {
-    hapticFeedback();
-    SoundManager.playClick();
-  };
-
   return (
     <FlatList
       data={data}
@@ -31,20 +21,17 @@ const KanaList = ({ data, kana }: KanaListProps) => {
             </Text>
           </View>
           {item.kana.map((k, j) => (
-            <Link
+            <Button
               key={j}
-              style={[styles.cell, !k && styles.emptyCell, k === kana && styles.activeCell]}
               href={{ pathname: '/practice/[kana]', params: { kana: k } }}
-              onPressIn={onPressIn}
+              disabled={!k}
+              style={!k && styles.emptyCell}
+              variant="primary10"
+              active={k === kana}
+              fill
             >
-              <Text
-                weight={k === kana ? 700 : 500}
-                variant="body2"
-                color={k === kana ? 'textPrimary' : 'textSecondary'}
-              >
-                {k}
-              </Text>
-            </Link>
+              {k}
+            </Button>
           ))}
         </View>
       )}

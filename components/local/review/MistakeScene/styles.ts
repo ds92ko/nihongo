@@ -21,21 +21,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8
   },
-  button: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: Colors.primary10
-  },
-  activeButton: {
-    backgroundColor: Colors.primary30
-  },
-  disabledButton: {
-    backgroundColor: Colors.neutralLight
-  },
   groups: {
     gap: 16
   },

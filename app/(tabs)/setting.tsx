@@ -1,5 +1,5 @@
 import { mateImageMap } from '@/assets/images/mates';
-import { Modal, Text } from '@/components/common';
+import { Button, Modal, Text } from '@/components/common';
 import { ModalProps } from '@/components/common/Modal/types';
 import { Switch } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
@@ -77,41 +77,27 @@ export default function SettingScreen() {
       ),
       buttons: [
         confirm ? (
-          <Pressable
+          <Button
             key="cancel"
-            style={styles.dialogButton}
-            onPressIn={onPressIn}
+            variant={'neutralLight'}
             onPress={() => setDialogVisible(false)}
+            fill
           >
-            <Text
-              weight={500}
-              variant="body2"
-              color="textNeutral"
-            >
-              취소
-            </Text>
-          </Pressable>
+            취소
+          </Button>
         ) : null,
-        <Pressable
+        <Button
           key="confirm"
-          style={[
-            styles.dialogButton,
-            { backgroundColor: type === 'confirm' ? Colors.warning : Colors.info }
-          ]}
-          onPressIn={onPressIn}
+          variant={type === 'confirm' ? 'warning' : 'info'}
           onPress={() => {
             setDialogVisible(false);
             confirm?.onPress();
           }}
+          active
+          fill
         >
-          <Text
-            weight={700}
-            variant="body2"
-            color="white"
-          >
-            {confirm?.label || '확인'}
-          </Text>
-        </Pressable>
+          {confirm?.label || '확인'}
+        </Button>
       ]
     });
     setDialogVisible(true);
@@ -608,19 +594,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 30
-  },
-  dialogButton: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    textAlign: 'center',
-    backgroundColor: Colors.neutralLight
-  },
-  confirmButton: {
-    backgroundColor: Colors.warning
   }
 });

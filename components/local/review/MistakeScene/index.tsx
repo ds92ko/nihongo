@@ -1,4 +1,4 @@
-import { Accordion, EmptyState, IconButton, InfoCard, Text } from '@/components/common';
+import { Accordion, Button, EmptyState, IconButton, InfoCard, Text } from '@/components/common';
 import {
   MISTAKE_HEIGHT,
   MISTAKES_GAP,
@@ -6,9 +6,7 @@ import {
   tips
 } from '@/components/local/review/MistakeScene/constants';
 import { styles } from '@/components/local/review/MistakeScene/styles';
-import useHaptics from '@/hooks/useHaptic';
 import useKanaAudio from '@/hooks/useKanaAudio';
-import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import {
   Mistake,
@@ -16,10 +14,9 @@ import {
   useMistakeActions,
   useMistakeContext
 } from '@/stores/useMistakeStore';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 const MistakeScene = () => {
-  const { hapticFeedback } = useHaptics();
   const { kanaType } = useKanaContext();
   const { playKanaAudio, playing } = useKanaAudio();
   const { mistakes } = useMistakeContext();
@@ -38,11 +35,6 @@ const MistakeScene = () => {
     }, {})
   ).sort((a, b) => Number(b[0]) - Number(a[0]));
 
-  const onPressIn = () => {
-    hapticFeedback();
-    SoundManager.playClick();
-  };
-
   const onToggleModes = (mode: MistakeMode) => setMistakeModes(kanaType, mode);
 
   const onToggleMode = ({ mode, ...mistake }: Mistake) => {
@@ -57,60 +49,30 @@ const MistakeScene = () => {
       <ScrollView contentContainerStyle={styles.content}>
         <InfoCard tips={tips} />
         <View style={styles.controls}>
-          <Pressable
-            style={[
-              styles.button,
-              isBothMode && styles.activeButton,
-              isEmpty && styles.disabledButton
-            ]}
-            disabled={isEmpty}
-            onPressIn={onPressIn}
+          <Button
             onPress={() => onToggleModes('both')}
-          >
-            <Text
-              weight={isBothMode ? 700 : 500}
-              variant="body2"
-              color={isEmpty ? 'neutral' : isBothMode ? 'textPrimary' : 'textSecondary'}
-            >
-              문자 + 발음
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.button,
-              isCharacterMode && styles.activeButton,
-              isEmpty && styles.disabledButton
-            ]}
+            variant="primary10"
             disabled={isEmpty}
-            onPressIn={onPressIn}
+            active={isBothMode}
+          >
+            문자 + 발음
+          </Button>
+          <Button
             onPress={() => onToggleModes('character')}
-          >
-            <Text
-              weight={isCharacterMode ? 700 : 500}
-              variant="body2"
-              color={isEmpty ? 'neutral' : isCharacterMode ? 'textPrimary' : 'textSecondary'}
-            >
-              문자
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.button,
-              isPronunciationMode && styles.activeButton,
-              isEmpty && styles.disabledButton
-            ]}
+            variant="primary10"
             disabled={isEmpty}
-            onPressIn={onPressIn}
-            onPress={() => onToggleModes('pronunciation')}
+            active={isCharacterMode}
           >
-            <Text
-              weight={isPronunciationMode ? 700 : 500}
-              variant="body2"
-              color={isEmpty ? 'neutral' : isPronunciationMode ? 'textPrimary' : 'textSecondary'}
-            >
-              발음
-            </Text>
-          </Pressable>
+            문자
+          </Button>
+          <Button
+            onPress={() => onToggleModes('pronunciation')}
+            variant="primary10"
+            disabled={isEmpty}
+            active={isPronunciationMode}
+          >
+            발음
+          </Button>
         </View>
         {isEmpty ? (
           <EmptyState>오답 노트가 비어있어요.</EmptyState>

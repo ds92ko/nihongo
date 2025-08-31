@@ -1,5 +1,5 @@
 import { mateImageMap } from '@/assets/images/mates';
-import { ProgressBar, Text } from '@/components/common';
+import { Button, ProgressBar, Text } from '@/components/common';
 import { SloganBanner } from '@/components/local/home';
 import { Colors } from '@/constants/Colors';
 import { useMateContext } from '@/stores/useMateStore';
@@ -9,7 +9,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
-import { Dimensions, Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
 
 dayjs.locale('ja');
 
@@ -219,15 +219,12 @@ export default function Index() {
               오늘의 숙제
             </Text>
           </View>
-          <Pressable style={styles.goalSetting}>
-            <Text
-              weight={700}
-              variant="small"
-              color="white"
-            >
-              목표 설정
-            </Text>
-          </Pressable>
+          <Button
+            size="small"
+            active
+          >
+            목표 설정
+          </Button>
         </View>
         <View style={styles.mission}>
           <View style={styles.missionHeader}>
@@ -636,12 +633,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0
-  },
-  goalSetting: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    backgroundColor: Colors.primary
   },
   missionBody: {
     flexDirection: 'row',

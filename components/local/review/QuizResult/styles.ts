@@ -79,16 +79,5 @@ export const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 12,
     paddingHorizontal: 16
-  },
-  button: {
-    flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    textAlign: 'center',
-    backgroundColor: Colors.primary
   }
 });

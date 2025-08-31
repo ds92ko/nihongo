@@ -1,4 +1,5 @@
 export { default as Accordion } from '@/components/common/Accordion';
+export { default as Button } from '@/components/common/Button';
 export { default as Carousel } from '@/components/common/Carousel';
 export { default as EmptyState } from '@/components/common/EmptyState';
 export { default as IconButton } from '@/components/common/IconButton';
