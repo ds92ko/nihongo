@@ -1,6 +1,7 @@
 import { mateImageMap } from '@/assets/images/mates';
-import { Button, Modal, Text } from '@/components/common';
-import { ModalProps } from '@/components/common/Modal/types';
+import { Text } from '@/components/common';
+import Dialog from '@/components/common/Dialog';
+import { DialogContext } from '@/components/common/Dialog/types';
 import { Switch } from '@/components/local/setting';
 import { Colors } from '@/constants/Colors';
 import useHaptics from '@/hooks/useHaptic';
@@ -23,16 +24,6 @@ const MATE_SIZE = Math.floor(
   (width - (CONTAINER_PADDING + CARD_PADDING) - MATES_GAP * (PER_ROW - 1)) / PER_ROW
 );
 
-interface Dialog {
-  type?: 'alert' | 'confirm';
-  title: string;
-  contents: string[];
-  confirm?: {
-    label: string;
-    onPress: () => void;
-  };
-}
-
 export default function SettingScreen() {
   const { hapticFeedback } = useHaptics();
   const { mate } = useMateContext();
@@ -44,61 +35,34 @@ export default function SettingScreen() {
   const { practice, quiz } = useStatsContext();
   const { resetPracticeStats, resetQuizStats } = useStatsActions();
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [dialog, setDialog] = useState<Omit<ModalProps, 'visible' | 'setVisible'> | null>(null);
+  const [dialog, setDialog] = useState<DialogContext | null>(null);
 
   const onPressIn = () => {
     hapticFeedback();
     SoundManager.playClick();
   };
 
-  const openDialog = ({ type, title, contents, confirm }: Dialog) => {
+  const openDialog = ({
+    type,
+    isEmpty,
+    onPress
+  }: {
+    type: '연습 기록' | '퀴즈 기록' | '오답 노트';
+    isEmpty: boolean;
+    onPress: () => void;
+  }) => {
     setDialog({
-      title: (
-        <>
-          <Ionicons
-            name={type === 'confirm' ? 'warning-outline' : 'information-circle-outline'}
-            size={24}
-            color={type === 'confirm' ? Colors.warning : Colors.info}
-          />
-          <Text weight={700}>{title}</Text>
-        </>
-      ),
-      children: (
-        <>
-          {contents.map((content, index) => (
-            <Text
-              key={index}
-              variant="body2"
-            >
-              {content}
-            </Text>
-          ))}
-        </>
-      ),
-      buttons: [
-        confirm ? (
-          <Button
-            key="cancel"
-            variant={'neutralLight'}
-            onPress={() => setDialogVisible(false)}
-            fill
-          >
-            취소
-          </Button>
-        ) : null,
-        <Button
-          key="confirm"
-          variant={type === 'confirm' ? 'warning' : 'info'}
-          onPress={() => {
-            setDialogVisible(false);
-            confirm?.onPress();
-          }}
-          active
-          fill
-        >
-          {confirm?.label || '확인'}
-        </Button>
-      ]
+      variant: isEmpty ? 'info' : 'warning',
+      title: `${type} 데이터${isEmpty ? '가 없어요.' : '를 초기화할까요?'}`,
+      contents: isEmpty
+        ? [`${type} 데이터가 존재하지 않아 초기화할 수 없어요.`]
+        : [`초기화하면 ${type}의 모든 데이터가 삭제됩니다.`, '삭제된 데이터는 복구할 수 없어요.'],
+      confirm: isEmpty
+        ? undefined
+        : {
+            label: '초기화',
+            onPress
+          }
     });
     setDialogVisible(true);
   };
@@ -230,26 +194,13 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPressIn={onPressIn}
-              onPress={() => {
-                const isEmpty = !Object.keys(practice).length;
-
+              onPress={() =>
                 openDialog({
-                  type: isEmpty ? 'alert' : 'confirm',
-                  title: isEmpty ? '연습 기록이 비어있어요.' : '연습 기록을 초기화할까요?',
-                  contents: isEmpty
-                    ? ['초기화할 연습 기록이 없어요.']
-                    : [
-                        '초기화하면 연습 기록의 모든 데이터가 삭제됩니다.',
-                        '삭제된 데이터는 복구할 수 없어요.'
-                      ],
-                  confirm: isEmpty
-                    ? undefined
-                    : {
-                        label: '초기화',
-                        onPress: resetPracticeStats
-                      }
-                });
-              }}
+                  type: '연습 기록',
+                  isEmpty: !Object.keys(practice).length,
+                  onPress: resetPracticeStats
+                })
+              }
             >
               <Text
                 weight={500}
@@ -267,26 +218,13 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPressIn={onPressIn}
-              onPress={() => {
-                const isEmpty = !Object.keys(quiz).length;
-
+              onPress={() =>
                 openDialog({
-                  type: isEmpty ? 'alert' : 'confirm',
-                  title: isEmpty ? '퀴즈 기록이 비어있어요.' : '퀴즈 기록을 초기화할까요?',
-                  contents: isEmpty
-                    ? ['초기화할 퀴즈 기록이 없어요.']
-                    : [
-                        '초기화하면 퀴즈 기록의 모든 데이터가 삭제됩니다.',
-                        '삭제된 데이터는 복구할 수 없어요.'
-                      ],
-                  confirm: isEmpty
-                    ? undefined
-                    : {
-                        label: '초기화',
-                        onPress: resetQuizStats
-                      }
-                });
-              }}
+                  type: '퀴즈 기록',
+                  isEmpty: !Object.keys(quiz).length,
+                  onPress: resetQuizStats
+                })
+              }
             >
               <Text
                 weight={500}
@@ -304,26 +242,13 @@ export default function SettingScreen() {
             <Pressable
               style={styles.settingItem}
               onPressIn={onPressIn}
-              onPress={() => {
-                const isEmpty = !mistakes.hiragana.length && !mistakes.katakana.length;
-
+              onPress={() =>
                 openDialog({
-                  type: isEmpty ? 'alert' : 'confirm',
-                  title: isEmpty ? '오답 노트가 비어있어요.' : '오답 노트를 초기화할까요?',
-                  contents: isEmpty
-                    ? ['초기화할 오답 노트가 없어요.']
-                    : [
-                        '초기화하면 오답 노트의 모든 데이터가 삭제됩니다.',
-                        '삭제된 데이터는 복구할 수 없어요.'
-                      ],
-                  confirm: isEmpty
-                    ? undefined
-                    : {
-                        label: '초기화',
-                        onPress: resetMistakes
-                      }
-                });
-              }}
+                  type: '오답 노트',
+                  isEmpty: !mistakes.hiragana.length && !mistakes.katakana.length,
+                  onPress: resetMistakes
+                })
+              }
             >
               <Text
                 weight={500}
@@ -534,14 +459,14 @@ export default function SettingScreen() {
         </View>
       </ScrollView>
       {dialog && (
-        <Modal
+        <Dialog
           visible={dialogVisible}
           setVisible={setDialogVisible}
+          variant={dialog.variant}
           title={dialog.title}
-          buttons={dialog.buttons}
-        >
-          {dialog.children}
-        </Modal>
+          contents={dialog.contents}
+          confirm={dialog.confirm}
+        />
       )}
     </>
   );
