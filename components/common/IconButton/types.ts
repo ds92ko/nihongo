@@ -23,6 +23,7 @@ interface IconButtonBaseProps {
   variant?: 'primary' | 'white';
   shape?: 'rounded' | 'square';
   size?: 'small' | 'medium' | 'large';
+  effect?: boolean;
 }
 
 type IconLinkProps = {
