@@ -35,8 +35,8 @@ interface Dialog {
 export default function SettingScreen() {
   const { mate } = useMateContext();
   const { setMate } = useMateActions();
-  const { soundEffectOff, kanaSoundOff } = useSettingContext();
-  const { toggleSoundEffect, toggleKanaSound } = useSettingActions();
+  const { soundEffectOff, kanaSoundOff, hapticOff } = useSettingContext();
+  const { toggleSoundEffect, toggleKanaSound, toggleHaptic } = useSettingActions();
   const { playPopAudio } = usePopAudio();
   const { mistakes } = useMistakeContext();
   const { resetMistakes } = useMistakeActions();
@@ -208,6 +208,25 @@ export default function SettingScreen() {
               <Switch
                 value={!soundEffectOff}
                 onValueChange={toggleSoundEffect}
+              />
+            </Pressable>
+            <Pressable
+              style={styles.settingItem}
+              onPress={() => {
+                playPopAudio();
+                toggleHaptic();
+              }}
+            >
+              <Text
+                weight={500}
+                variant="caption"
+                color="textSecondary"
+              >
+                진동
+              </Text>
+              <Switch
+                value={!hapticOff}
+                onValueChange={toggleHaptic}
               />
             </Pressable>
           </View>
