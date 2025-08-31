@@ -24,10 +24,11 @@ export const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 8
   },
   title: {
+    flexShrink: 1,
     flexDirection: 'row',
     gap: 4
   },
