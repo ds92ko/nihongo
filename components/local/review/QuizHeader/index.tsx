@@ -15,6 +15,11 @@ const QuizHeader = ({ route, navigation }: NativeStackHeaderProps) => {
   const onPress = () => {
     const remaining = progress.filter(p => !p.answer).length;
 
+    if (!remaining) {
+      navigation.navigate('index');
+      return;
+    }
+
     openDialog({
       variant: 'warning',
       title: '아직 퀴즈가 끝나지 않았어요!',
