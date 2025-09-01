@@ -3,7 +3,7 @@ import { KanaType } from '@/types/kana';
 import dayjs from 'dayjs';
 import { create } from 'zustand';
 
-type PracticeType = 'listening' | 'writing';
+type PracticeType = 'reading' | 'writing' | 'listening' | 'speaking';
 
 interface PracticeStat {
   type: KanaType;
@@ -48,8 +48,10 @@ interface StatsStore {
 }
 
 const DEFAULT_PRACTICE_STATS: PracticeStats = {
+  reading: [],
+  writing: [],
   listening: [],
-  writing: []
+  speaking: []
 };
 
 const DEFAULT_QUIZ_STATS: QuizStats = {

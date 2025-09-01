@@ -87,8 +87,10 @@ export default function Index() {
   const today = dayjs().format('YYYY-MM-DD');
   const todayPractice = practice[today];
   const todayQuiz = quiz[today];
-  const todayListening = todayPractice?.listening.length || 0;
+  const todayReading = todayPractice?.reading.length || 0;
   const todayWriting = todayPractice?.writing.length || 0;
+  const todayListening = todayPractice?.listening.length || 0;
+  const todaySpeaking = todayPractice?.speaking.length || 0;
   const todayCharacter = todayQuiz?.character.length || 0;
   const todayPronunciation = todayQuiz?.pronunciation.length || 0;
 
@@ -229,8 +231,8 @@ export default function Index() {
         <View style={styles.mission}>
           <View style={styles.missionHeader}>
             <View style={styles.missionTitle}>
-              <MaterialIcons
-                name="headset"
+              <MaterialCommunityIcons
+                name="book-open-page-variant"
                 size={16}
                 color={Colors.practice}
               />
@@ -238,13 +240,13 @@ export default function Index() {
                 weight={700}
                 variant="caption"
               >
-                듣기 연습하기
+                읽기 연습하기
               </Text>
             </View>
             <MaterialCommunityIcons
               name="marker-check"
               size={28}
-              color={todayListening >= dailyGoal ? Colors.practice : Colors.neutralLight}
+              color={todayReading >= dailyGoal ? Colors.practice : Colors.neutralLight}
               style={styles.completeCheck}
             />
           </View>
@@ -273,7 +275,7 @@ export default function Index() {
                 </View>
               </View>
               <ProgressBar
-                progress={todayListening}
+                progress={todayReading}
                 max={dailyGoal}
                 height={16}
                 progressColor="practice"
@@ -287,7 +289,7 @@ export default function Index() {
                 variant="h2"
                 color={Colors.textPractice}
               >
-                {parseFloat(((Math.min(todayListening, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+                {parseFloat(((Math.min(todayReading, dailyGoal) / dailyGoal) * 100).toFixed(1))}
               </Text>
               <Text
                 weight={500}
@@ -362,6 +364,154 @@ export default function Index() {
                 color={Colors.textPractice}
               >
                 {parseFloat(((Math.min(todayWriting, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.unit}
+                color={Colors.textSecondary}
+              >
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.mission}>
+          <View style={styles.missionHeader}>
+            <View style={styles.missionTitle}>
+              <MaterialIcons
+                name="headset"
+                size={16}
+                color={Colors.practice}
+              />
+              <Text
+                weight={700}
+                variant="caption"
+              >
+                듣기 연습하기
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="marker-check"
+              size={28}
+              color={todayListening >= dailyGoal ? Colors.practice : Colors.neutralLight}
+              style={styles.completeCheck}
+            />
+          </View>
+          <View style={styles.missionBody}>
+            <View style={styles.missionContent}>
+              <View style={styles.missionGoal}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  하루 목표 가나
+                </Text>
+                <View style={styles.goal}>
+                  <Text
+                    weight={500}
+                    variant="caption"
+                  >
+                    {dailyGoal}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
+              <ProgressBar
+                progress={todayListening}
+                max={dailyGoal}
+                height={16}
+                progressColor="practice"
+                barColor="practiceLight"
+                text="none"
+              />
+            </View>
+            <View style={styles.missionPercentage}>
+              <Text
+                weight={700}
+                variant="h2"
+                color={Colors.textPractice}
+              >
+                {parseFloat(((Math.min(todayListening, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+              </Text>
+              <Text
+                weight={500}
+                variant="caption"
+                style={styles.unit}
+                color={Colors.textSecondary}
+              >
+                %
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.mission}>
+          <View style={styles.missionHeader}>
+            <View style={styles.missionTitle}>
+              <MaterialIcons
+                name="mic"
+                size={16}
+                color={Colors.practice}
+              />
+              <Text
+                weight={700}
+                variant="caption"
+              >
+                말하기 연습하기
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="marker-check"
+              size={28}
+              color={todaySpeaking >= dailyGoal ? Colors.practice : Colors.neutralLight}
+              style={styles.completeCheck}
+            />
+          </View>
+          <View style={styles.missionBody}>
+            <View style={styles.missionContent}>
+              <View style={styles.missionGoal}>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  하루 목표 가나
+                </Text>
+                <View style={styles.goal}>
+                  <Text
+                    weight={500}
+                    variant="caption"
+                  >
+                    {dailyGoal}
+                  </Text>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    개
+                  </Text>
+                </View>
+              </View>
+              <ProgressBar
+                progress={todaySpeaking}
+                max={dailyGoal}
+                height={16}
+                progressColor="practice"
+                barColor="practiceLight"
+                text="none"
+              />
+            </View>
+            <View style={styles.missionPercentage}>
+              <Text
+                weight={700}
+                variant="h2"
+                color={Colors.textPractice}
+              >
+                {parseFloat(((Math.min(todaySpeaking, dailyGoal) / dailyGoal) * 100).toFixed(1))}
               </Text>
               <Text
                 weight={500}

@@ -26,6 +26,11 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
   } = useVoiceAudio(RECORDING_DURATION);
   const { setPracticeStats } = useStatsActions();
 
+  const onRecord = () => {
+    startRecording();
+    setPracticeStats(kanaType, 'speaking', kana);
+  };
+
   const onPlay = useCallback(() => {
     playKanaAudio(kana);
     setPracticeStats(kanaType, 'listening', kana);
@@ -35,7 +40,8 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
     onPlay();
     setRestartTrigger(prev => prev + 1);
     setPaths([]);
-  }, [onPlay, setRestartTrigger, setPaths]);
+    setPracticeStats(kanaType, 'reading', kana);
+  }, [kana, kanaType, onPlay, setPaths, setPracticeStats, setRestartTrigger]);
 
   const buttons = [
     {
@@ -44,7 +50,7 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
     },
     {
       icon: { type: 'material', name: recorderState.isRecording ? 'record-voice-over' : 'mic' },
-      onPress: recorderState.isRecording ? stopRecording : startRecording,
+      onPress: recorderState.isRecording ? stopRecording : onRecord,
       disabled: playing || playerStatus.playing,
       effect: false
     },
