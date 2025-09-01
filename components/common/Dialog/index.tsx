@@ -1,60 +1,60 @@
 import Button from '@/components/common/Button';
 import { DIALOG_ICON_MAP } from '@/components/common/Dialog/constants';
-import { DialogProps } from '@/components/common/Dialog/types';
 import Modal from '@/components/common/Modal';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
+import { useDialogActions, useDialogContext } from '@/stores/useDialogStore';
 import { Ionicons } from '@expo/vector-icons';
 
-const Dialog = ({
-  visible,
-  setVisible,
-  variant,
-  title,
-  contents,
-  cancel,
-  confirm
-}: DialogProps) => {
+const Dialog = () => {
+  const { dialog } = useDialogContext();
+  const { closeDialog } = useDialogActions();
+
+  if (!dialog) return null;
+
   return (
     <Modal
-      visible={visible}
-      setVisible={setVisible}
+      visible={dialog.visible}
+      closeModal={closeDialog}
       title={
         <>
           <Ionicons
-            name={DIALOG_ICON_MAP[variant]}
+            name={DIALOG_ICON_MAP[dialog.variant]}
             size={24}
-            color={Colors[variant]}
+            color={Colors[dialog.variant]}
           />
-          <Text weight={700}>{title}</Text>
+          <Text weight={700}>{dialog.title}</Text>
         </>
       }
       buttons={[
-        confirm ? (
+        dialog.confirm ? (
           <Button
             key="cancel"
             variant={'neutralLight'}
-            onPress={() => setVisible(false)}
+            onPress={() => {
+              closeDialog();
+              dialog.cancel?.onPress?.();
+            }}
             fill
           >
-            {cancel?.label || '취소'}
+            {dialog.cancel?.label || '취소'}
           </Button>
         ) : null,
         <Button
           key="confirm"
-          variant={variant}
+          variant={dialog.variant}
           onPress={() => {
-            setVisible(false);
-            confirm?.onPress();
+            closeDialog();
+            dialog.confirm?.onPress?.();
           }}
           active
           fill
         >
-          {confirm?.label || '확인'}
+          {dialog.confirm?.label || '확인'}
         </Button>
       ]}
     >
-      {contents.map((content, index) => (
+      {dialog.contents.map((content, index) => (
         <Text
           key={index}
           variant="body2"

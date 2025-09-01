@@ -1,3 +1,4 @@
+import Dialog from '@/components/common/Dialog';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 
@@ -12,13 +13,16 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false
-        }}
-      />
-    </Stack>
+    <>
+      <Stack>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false
+          }}
+        />
+      </Stack>
+      <Dialog />
+    </>
   );
 }

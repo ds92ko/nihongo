@@ -6,7 +6,7 @@ import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, Modal as RNModal, SafeAreaView, ScrollView, View } from 'react-native';
 
-const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) => {
+const Modal = ({ visible, closeModal, title, children, buttons }: ModalProps) => {
   const { hapticFeedback } = useHaptics();
 
   const onPressIn = () => {
@@ -14,7 +14,7 @@ const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) =>
     SoundManager.playClick();
   };
 
-  const onPressClose = () => setVisible?.(false);
+  const onPressClose = () => closeModal?.();
 
   return (
     <RNModal
@@ -27,7 +27,7 @@ const Modal = ({ visible, setVisible, title, children, buttons }: ModalProps) =>
           <View style={styles.content}>
             <View style={styles.header}>
               <View style={styles.title}>{title}</View>
-              {setVisible && (
+              {closeModal && (
                 <Pressable
                   onPressIn={onPressIn}
                   onPress={onPressClose}

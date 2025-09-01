@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 export interface ModalProps {
   visible: boolean;
-  setVisible?: (visible: boolean) => void;
+  closeModal?: () => void;
   title: ReactNode;
   children: ReactNode;
   buttons?: ReactNode[];
