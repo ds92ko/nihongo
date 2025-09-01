@@ -19,10 +19,7 @@ const QuizHeader = ({ route, navigation }: NativeStackHeaderProps) => {
       contents: [`${remaining}문제만 더 풀면 완주할 수 있어요.`, '힘내서 마지막까지 도전해볼까요?'],
       cancel: {
         label: '나가기',
-        onPress: () => {
-          console.log('나가기');
-          navigation.navigate('index');
-        }
+        onPress: () => navigation.navigate('index')
       },
       confirm: {
         label: '계속하기'
