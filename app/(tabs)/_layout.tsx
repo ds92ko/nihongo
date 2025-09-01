@@ -6,6 +6,7 @@ import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { useTabActions } from '@/stores/useTabStore';
 import Entypo from '@expo/vector-icons/Entypo';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
@@ -56,23 +57,38 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="practice"
-        options={{
-          headerShown: false,
-          tabBarLabel: ({ color }) => (
-            <Text
-              variant="tiny"
-              color={color}
-            >
-              연습
-            </Text>
-          ),
-          tabBarIcon: ({ color }) => (
-            <Entypo
-              name="pencil"
-              size={24}
-              color={color}
-            />
-          )
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const commonOptions = {
+            headerShown: false
+          };
+
+          if (routeName === '[kana]') {
+            return {
+              ...commonOptions,
+              tabBarStyle: {
+                display: 'none'
+              }
+            };
+          }
+          return {
+            ...commonOptions,
+            tabBarLabel: ({ color }) => (
+              <Text
+                variant="tiny"
+                color={color}
+              >
+                연습
+              </Text>
+            ),
+            tabBarIcon: ({ color }) => (
+              <Entypo
+                name="pencil"
+                size={24}
+                color={color}
+              />
+            )
+          };
         }}
         listeners={({ navigation }) => ({
           tabPress: () =>
@@ -88,23 +104,38 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="review"
-        options={{
-          headerShown: false,
-          tabBarLabel: ({ color }) => (
-            <Text
-              variant="tiny"
-              color={color}
-            >
-              퀴즈
-            </Text>
-          ),
-          tabBarIcon: ({ color }) => (
-            <Entypo
-              name="open-book"
-              size={24}
-              color={color}
-            />
-          )
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const commonOptions = {
+            headerShown: false
+          };
+
+          if (routeName === 'quiz') {
+            return {
+              ...commonOptions,
+              tabBarStyle: {
+                display: 'none'
+              }
+            };
+          }
+          return {
+            ...commonOptions,
+            tabBarLabel: ({ color }) => (
+              <Text
+                variant="tiny"
+                color={color}
+              >
+                퀴즈
+              </Text>
+            ),
+            tabBarIcon: ({ color }) => (
+              <Entypo
+                name="open-book"
+                size={24}
+                color={color}
+              />
+            )
+          };
         }}
         listeners={({ navigation }) => ({
           tabPress: () =>

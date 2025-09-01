@@ -17,7 +17,7 @@ export default function ReviewLayout() {
       <Stack.Screen
         name="quiz"
         options={{
-          header: QuizHeader
+          header: props => <QuizHeader {...props} />
         }}
       />
     </Stack>

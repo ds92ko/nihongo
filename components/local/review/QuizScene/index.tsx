@@ -154,7 +154,7 @@ const QuizScene = () => {
       </ScrollView>
       <View style={styles.buttons}>
         <Button
-          href="/review/quiz"
+          href={{ pathname: '/review/quiz', params: { type: 'character' } }}
           onPress={onStartCharacterQuiz}
           disabled={disabled}
           active
@@ -163,7 +163,7 @@ const QuizScene = () => {
           읽기 퀴즈
         </Button>
         <Button
-          href="/review/quiz"
+          href={{ pathname: '/review/quiz', params: { type: 'pronunciation' } }}
           onPress={onStartPronunciationQuiz}
           disabled={disabled}
           active

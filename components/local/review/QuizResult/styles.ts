@@ -3,11 +3,16 @@ import { Colors } from '@/constants/Colors';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
+  safe: {
     flex: 1,
     backgroundColor: Colors.white
   },
+  container: {
+    flex: 1,
+    justifyContent: 'space-between'
+  },
   result: {
+    flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 24,
     gap: 16

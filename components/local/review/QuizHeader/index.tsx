@@ -1,10 +1,11 @@
 import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizHeader/styles';
-import { useQuizContext } from '@/stores/useQuizStore';
+import { QuizType } from '@/stores/useQuizStore';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { SafeAreaView, View } from 'react-native';
 
-const QuizHeader = () => {
-  const { type } = useQuizContext();
+const QuizHeader = ({ route }: NativeStackHeaderProps) => {
+  const { type } = route.params as { type: QuizType };
 
   return (
     <SafeAreaView style={styles.safe}>
