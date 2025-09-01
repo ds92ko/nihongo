@@ -1,3 +1,4 @@
+import { MODAL_CONTAINER_PADDING } from '@/components/common/Modal/constants';
 import { styles } from '@/components/common/Modal/styles';
 import { ModalProps } from '@/components/common/Modal/types';
 import { Colors } from '@/constants/Colors';
@@ -5,8 +6,10 @@ import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, Modal as RNModal, SafeAreaView, ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Modal = ({ visible, closeModal, title, children, buttons }: ModalProps) => {
+  const insets = useSafeAreaInsets();
   const { hapticFeedback } = useHaptics();
 
   const onPressIn = () => {
@@ -23,7 +26,15 @@ const Modal = ({ visible, closeModal, title, children, buttons }: ModalProps) =>
       visible={visible}
     >
       <SafeAreaView style={styles.safe}>
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            {
+              paddingTop: MODAL_CONTAINER_PADDING + insets.top,
+              paddingBottom: MODAL_CONTAINER_PADDING + insets.bottom
+            }
+          ]}
+        >
           <View style={styles.content}>
             <View style={styles.header}>
               <View style={styles.title}>{title}</View>

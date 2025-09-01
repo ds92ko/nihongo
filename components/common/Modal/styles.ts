@@ -1,3 +1,4 @@
+import { MODAL_CONTAINER_PADDING } from '@/components/common/Modal/constants';
 import { Colors } from '@/constants/Colors';
 import { StyleSheet } from 'react-native';
 
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 32,
+    paddingHorizontal: MODAL_CONTAINER_PADDING,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'

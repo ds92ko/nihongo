@@ -1,0 +1,1 @@
+export const MODAL_CONTAINER_PADDING = 32;
