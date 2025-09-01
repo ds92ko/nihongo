@@ -1,20 +1,17 @@
 import kanaMap from '@/assets/paths';
 import { useKanaCanvasContext } from '@/components/local/practice/KanaCanvas/provider';
 import { RECORDING_DURATION } from '@/components/local/practice/KanaCanvasButtons/constants';
-import {
-  UseAutoRestart,
-  UseKanaCanvasButtons
-} from '@/components/local/practice/KanaCanvasButtons/types';
+import { UseAutoRestart } from '@/components/local/practice/KanaCanvasButtons/types';
 import useVoiceAudio from '@/hooks/useVoiceAudio';
 import { useKanaActions, useKanaContext } from '@/stores/useKanaStore';
 import { useStatsActions } from '@/stores/useStatsStore';
 import { useCallback, useEffect } from 'react';
 
-export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanvasButtons) => {
+export const useKanaCanvasButtons = () => {
   const { kana, paths, setPaths, setRestartTrigger, playKanaAudio, playing } =
     useKanaCanvasContext();
-  const { kanaType, isVisibleGrid } = useKanaContext();
-  const { setIsVisibleGrid } = useKanaActions();
+  const { kanaType, isVisibleGrid, isAutoDelete } = useKanaContext();
+  const { setIsVisibleGrid, setIsAutoDelete } = useKanaActions();
   const {
     audioRecorder,
     recorderState,
@@ -72,11 +69,11 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
     {
       icon: {
         type: 'material-community',
-        name: `delete-${autoDelete ? 'clock-outline' : paths.length ? 'outline' : 'off-outline'}`
+        name: `delete-${isAutoDelete ? 'clock-outline' : paths.length ? 'outline' : 'off-outline'}`
       },
       onPress: () => {
-        if (autoDelete) return setAutoDelete(false);
-        if (!paths.length) return setAutoDelete(true);
+        if (isAutoDelete) return setIsAutoDelete(false);
+        if (!paths.length) return setIsAutoDelete(true);
         setPaths([]);
       }
     }
@@ -85,16 +82,16 @@ export const useKanaCanvasButtons = ({ autoDelete, setAutoDelete }: UseKanaCanva
   return { buttons, onRestart, isRecording: recorderState.isRecording };
 };
 
-export const useAutoRestart = ({ autoDelete, onRestart }: UseAutoRestart) => {
+export const useAutoRestart = ({ onRestart }: UseAutoRestart) => {
   const { kana, paths, panResponderEnded } = useKanaCanvasContext();
-  const { kanaType } = useKanaContext();
+  const { kanaType, isAutoDelete } = useKanaContext();
   const { setPracticeStats } = useStatsActions();
 
   useEffect(() => {
     const pathLength = [...kana].flatMap(char => kanaMap[char] || []).length;
 
     if (pathLength !== paths.length) return;
-    if (autoDelete && panResponderEnded) onRestart();
+    if (isAutoDelete && panResponderEnded) onRestart();
     setPracticeStats(kanaType, 'writing', kana);
-  }, [autoDelete, kana, kanaType, onRestart, panResponderEnded, paths.length, setPracticeStats]);
+  }, [isAutoDelete, kana, kanaType, onRestart, panResponderEnded, paths.length, setPracticeStats]);
 };
