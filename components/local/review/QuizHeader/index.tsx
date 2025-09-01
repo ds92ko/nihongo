@@ -49,7 +49,7 @@ const QuizHeader = ({ route, navigation }: NativeStackHeaderProps) => {
             weight={700}
             variant="h4"
           >
-            {type === 'character' ? '읽기' : '표기'} 퀴즈
+            {type === 'character' ? '글자' : '발음'} 퀴즈
           </Text>
         </View>
       </View>

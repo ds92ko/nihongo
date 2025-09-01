@@ -160,7 +160,7 @@ const QuizScene = () => {
           active
           fill
         >
-          읽기 퀴즈
+          글자 퀴즈
         </Button>
         <Button
           href={{ pathname: '/review/quiz', params: { type: 'pronunciation' } }}
@@ -169,7 +169,7 @@ const QuizScene = () => {
           active
           fill
         >
-          표기 퀴즈
+          발음 퀴즈
         </Button>
       </View>
     </View>

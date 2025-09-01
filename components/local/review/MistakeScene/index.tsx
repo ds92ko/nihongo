@@ -55,7 +55,7 @@ const MistakeScene = () => {
             disabled={isEmpty}
             active={isBothMode}
           >
-            문자 + 발음
+            글자 + 발음
           </Button>
           <Button
             onPress={() => onToggleModes('character')}
@@ -63,7 +63,7 @@ const MistakeScene = () => {
             disabled={isEmpty}
             active={isCharacterMode}
           >
-            문자
+            글자
           </Button>
           <Button
             onPress={() => onToggleModes('pronunciation')}

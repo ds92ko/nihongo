@@ -238,7 +238,7 @@ export default function Index() {
                   weight={700}
                   variant="caption"
                 >
-                  읽기 연습하기
+                  글자 10개 읽기 연습
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -250,28 +250,12 @@ export default function Index() {
             </View>
             <View style={styles.missionBody}>
               <View style={styles.missionContent}>
-                <View style={styles.missionGoal}>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    하루 목표 가나
-                  </Text>
-                  <View style={styles.goal}>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                    >
-                      {dailyGoal}
-                    </Text>
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
-                      개
-                    </Text>
-                  </View>
-                </View>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  획순 애니메이션을 보면서 글자를 배워요.
+                </Text>
                 <ProgressBar
                   progress={todayReading}
                   max={dailyGoal}
@@ -312,7 +296,7 @@ export default function Index() {
                   weight={700}
                   variant="caption"
                 >
-                  쓰기 연습하기
+                  글자 10개 쓰기 연습
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -324,28 +308,12 @@ export default function Index() {
             </View>
             <View style={styles.missionBody}>
               <View style={styles.missionContent}>
-                <View style={styles.missionGoal}>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    하루 목표 가나
-                  </Text>
-                  <View style={styles.goal}>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                    >
-                      {dailyGoal}
-                    </Text>
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
-                      개
-                    </Text>
-                  </View>
-                </View>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  캔버스에 글자를 따라 쓰며 연습해요.
+                </Text>
                 <ProgressBar
                   progress={todayWriting}
                   max={dailyGoal}
@@ -386,7 +354,7 @@ export default function Index() {
                   weight={700}
                   variant="caption"
                 >
-                  듣기 연습하기
+                  글자 10개 듣기 연습
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -398,28 +366,12 @@ export default function Index() {
             </View>
             <View style={styles.missionBody}>
               <View style={styles.missionContent}>
-                <View style={styles.missionGoal}>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    하루 목표 가나
-                  </Text>
-                  <View style={styles.goal}>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                    >
-                      {dailyGoal}
-                    </Text>
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
-                      개
-                    </Text>
-                  </View>
-                </View>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  성우의 발음을 들으면서 소리를 익혀요.
+                </Text>
                 <ProgressBar
                   progress={todayListening}
                   max={dailyGoal}
@@ -460,7 +412,7 @@ export default function Index() {
                   weight={700}
                   variant="caption"
                 >
-                  말하기 연습하기
+                  글자 10개 말하기 연습
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -472,28 +424,12 @@ export default function Index() {
             </View>
             <View style={styles.missionBody}>
               <View style={styles.missionContent}>
-                <View style={styles.missionGoal}>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    하루 목표 가나
-                  </Text>
-                  <View style={styles.goal}>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                    >
-                      {dailyGoal}
-                    </Text>
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
-                      개
-                    </Text>
-                  </View>
-                </View>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  발음을 녹음해서 성우의 발음과 비교해요.
+                </Text>
                 <ProgressBar
                   progress={todaySpeaking}
                   max={dailyGoal}
@@ -534,7 +470,7 @@ export default function Index() {
                   weight={700}
                   variant="caption"
                 >
-                  읽기 퀴즈풀기
+                  글자 퀴즈 정답 10개
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -546,28 +482,12 @@ export default function Index() {
             </View>
             <View style={styles.missionBody}>
               <View style={styles.missionContent}>
-                <View style={styles.missionGoal}>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    하루 목표 가나
-                  </Text>
-                  <View style={styles.goal}>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                    >
-                      {dailyGoal}
-                    </Text>
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
-                      개
-                    </Text>
-                  </View>
-                </View>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  글자를 보고 알맞은 발음 표기를 맞혀요.
+                </Text>
                 <ProgressBar
                   progress={todayCharacter}
                   max={dailyGoal}
@@ -608,7 +528,7 @@ export default function Index() {
                   weight={700}
                   variant="caption"
                 >
-                  표기 퀴즈풀기
+                  발음 퀴즈 정답 10개
                 </Text>
               </View>
               <MaterialCommunityIcons
@@ -620,28 +540,12 @@ export default function Index() {
             </View>
             <View style={styles.missionBody}>
               <View style={styles.missionContent}>
-                <View style={styles.missionGoal}>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    하루 목표 가나
-                  </Text>
-                  <View style={styles.goal}>
-                    <Text
-                      weight={500}
-                      variant="caption"
-                    >
-                      {dailyGoal}
-                    </Text>
-                    <Text
-                      variant="caption"
-                      color="textSecondary"
-                    >
-                      개
-                    </Text>
-                  </View>
-                </View>
+                <Text
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  발음 표기를 보고 알맞은 글자를 맞혀요.
+                </Text>
                 <ProgressBar
                   progress={todayPronunciation}
                   max={dailyGoal}
@@ -793,21 +697,13 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 8
   },
-  missionGoal: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4
-  },
-  goal: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
   missionPercentage: {
+    flexShrink: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     gap: 2,
-    minWidth: 75
+    width: 75
   },
   missionComplete: { opacity: 0.5 }
 });
