@@ -2,7 +2,8 @@ import { TabBar } from '@/components/common';
 import { PracticeScene } from '@/components/local/practice';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
-import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
@@ -18,12 +19,13 @@ const routes = [
 ];
 
 export default function PracticeScreen() {
+  const insets = useSafeAreaInsets();
   const layout = useWindowDimensions();
   const { tabIndex, animationEnabled } = useTabContext();
   const { setTabIndex } = useTabActions();
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={[styles.safe, { paddingTop: insets.top }]}>
       <TabView
         lazy
         swipeEnabled
@@ -34,7 +36,7 @@ export default function PracticeScreen() {
         renderTabBar={TabBar}
         animationEnabled={animationEnabled}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

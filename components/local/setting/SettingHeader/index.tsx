@@ -1,13 +1,17 @@
 import { Text } from '@/components/common';
 import { styles } from '@/components/local/setting/SettingHeader/styles';
-import { SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const SettingHeader = () => (
-  <SafeAreaView style={styles.safe}>
-    <View style={styles.header}>
-      <Text weight={700}>설정</Text>
+const SettingHeader = () => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View style={[styles.safe, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <Text weight={700}>설정</Text>
+      </View>
     </View>
-  </SafeAreaView>
-);
-
+  );
+};
 export default SettingHeader;

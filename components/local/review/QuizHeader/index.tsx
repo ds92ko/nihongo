@@ -3,9 +3,11 @@ import { styles } from '@/components/local/review/QuizHeader/styles';
 import { useDialogActions } from '@/stores/useDialogStore';
 import { QuizType, useQuizContext } from '@/stores/useQuizStore';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const QuizHeader = ({ route, navigation }: NativeStackHeaderProps) => {
+  const insets = useSafeAreaInsets();
   const { type } = route.params as { type: QuizType };
   const { progress } = useQuizContext();
   const { openDialog } = useDialogActions();
@@ -28,27 +30,25 @@ const QuizHeader = ({ route, navigation }: NativeStackHeaderProps) => {
   };
 
   return (
-    <>
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.header}>
-          <IconButton
-            icon={{ type: 'material', name: 'keyboard-arrow-left' }}
-            onPress={onPress}
-            variant="white"
-            shape="square"
-            size="small"
-          />
-          <View style={styles.title}>
-            <Text
-              weight={700}
-              variant="h4"
-            >
-              {type === 'character' ? '읽기' : '표기'} 퀴즈
-            </Text>
-          </View>
+    <View style={[styles.safe, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <IconButton
+          icon={{ type: 'material', name: 'keyboard-arrow-left' }}
+          onPress={onPress}
+          variant="white"
+          shape="square"
+          size="small"
+        />
+        <View style={styles.title}>
+          <Text
+            weight={700}
+            variant="h4"
+          >
+            {type === 'character' ? '읽기' : '표기'} 퀴즈
+          </Text>
         </View>
-      </SafeAreaView>
-    </>
+      </View>
+    </View>
   );
 };
 

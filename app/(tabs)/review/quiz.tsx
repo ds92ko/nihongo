@@ -12,15 +12,8 @@ import { useMistakeActions } from '@/stores/useMistakeStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
 import { useStatsActions } from '@/stores/useStatsStore';
 import { useRef, useState } from 'react';
-import {
-  Animated,
-  Dimensions,
-  Image,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  View
-} from 'react-native';
+import { Animated, Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 const FEEDBACK_IMAGE_SIZE = width * 0.35;
@@ -29,6 +22,7 @@ const correctImage = ['blushing', 'excited', 'good', 'happy', 'love', 'ok', 'sin
 const incorrectImage = ['confused', 'huh', 'mocking', 'no', 'sad', 'shocked', 'shy', 'sick'];
 
 export default function QuizScreen() {
+  const insets = useSafeAreaInsets();
   const { hapticFeedback } = useHaptics();
   const { kanaType } = useKanaContext();
   const { type, progress, question } = useQuizContext();
@@ -75,7 +69,7 @@ export default function QuizScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={[styles.safe, { paddingBottom: insets.bottom }]}>
       {question ? (
         <View style={styles.container}>
           <ProgressBar
@@ -210,7 +204,7 @@ export default function QuizScreen() {
       ) : (
         <QuizResult />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

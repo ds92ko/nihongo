@@ -6,9 +6,11 @@ import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useTabActions } from '@/stores/useTabStore';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const KanaHeader = ({ route }: NativeStackHeaderProps) => {
+  const insets = useSafeAreaInsets();
   const { setTabIndex } = useTabActions();
   const { kanaType } = useKanaContext();
   const { kana } = route.params as { kana: string };
@@ -21,7 +23,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
   const onPress = () => setTabIndex(currentTabIndex);
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={[styles.safe, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <IconButton
           icon={{ type: 'material', name: 'keyboard-arrow-left' }}
@@ -64,7 +66,7 @@ const KanaHeader = ({ route }: NativeStackHeaderProps) => {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -8,8 +8,10 @@ import { useTabActions } from '@/stores/useTabStore';
 import Entypo from '@expo/vector-icons/Entypo';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
   const { setTabIndex, setAnimationEnabled } = useTabActions();
   const { hapticFeedback } = useHaptics();
 
@@ -25,7 +27,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.neutralDark,
         tabBarStyle: {
-          height: 80,
+          height: 53 + insets.bottom,
+          paddingBottom: insets.bottom,
           backgroundColor: Colors.white
         },
         animation: 'none'

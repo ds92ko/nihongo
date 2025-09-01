@@ -4,15 +4,17 @@ import { KANA_TABS } from '@/constants/KanaTabs';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function KanaScreen() {
+  const insets = useSafeAreaInsets();
   const { kanaType } = useKanaContext();
   const { kana } = useLocalSearchParams<{ kana: string }>();
   const row = KANA_TABS[kanaType].flatMap(tab => tab.rows).find(row => row.kana.includes(kana));
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={[styles.safe, { paddingBottom: insets.bottom }]}>
       <View style={styles.container}>
         <View style={styles.rowContent}>
           {row && (
@@ -24,7 +26,7 @@ export default function KanaScreen() {
         </View>
         <KanaCanvas kana={kana} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

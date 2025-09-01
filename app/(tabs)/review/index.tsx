@@ -2,7 +2,8 @@ import { TabBar } from '@/components/common';
 import { MistakeScene, QuizScene } from '@/components/local/review';
 import { Colors } from '@/constants/Colors';
 import { useTabActions, useTabContext } from '@/stores/useTabStore';
-import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SceneMap, TabView } from 'react-native-tab-view';
 
 const renderScene = SceneMap({
@@ -16,12 +17,13 @@ const routes = [
 ];
 
 export default function ReviewScreen() {
+  const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { tabIndex, animationEnabled } = useTabContext();
   const { setTabIndex } = useTabActions();
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={[styles.safe, { paddingTop: insets.top }]}>
       <TabView
         lazy
         swipeEnabled
@@ -32,7 +34,7 @@ export default function ReviewScreen() {
         renderTabBar={TabBar}
         animationEnabled={animationEnabled}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
