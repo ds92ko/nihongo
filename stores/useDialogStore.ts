@@ -1,8 +1,9 @@
+import { Status } from '@/types/status';
 import { create } from 'zustand';
 
 interface Dialog {
   visible: boolean;
-  variant: 'success' | 'error' | 'warning' | 'info';
+  variant: Status;
   title: string;
   contents: string[];
   cancel?: {

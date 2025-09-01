@@ -9,16 +9,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
-import {
-  Dimensions,
-  Image,
-  Button as RNButton,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View
-} from 'react-native';
-import Toast from 'react-native-toast-message';
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 dayjs.locale('ja');
 
@@ -106,16 +97,6 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <RNButton
-          title="토스트 오픈!"
-          onPress={() => {
-            Toast.show({
-              type: 'error',
-              text1: '환영합니다!',
-              text2: '오늘도 힘차게 공부해봐요!'
-            });
-          }}
-        />
         <SloganBanner />
         <View style={styles.streaks}>
           <View style={[styles.streak, { backgroundColor: Colors.practiceLight }]}>

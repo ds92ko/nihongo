@@ -1,8 +1,8 @@
 import Button from '@/components/common/Button';
-import { DIALOG_ICON_MAP } from '@/components/common/Dialog/constants';
 import Modal from '@/components/common/Modal';
 import Text from '@/components/common/Text';
 import { Colors } from '@/constants/Colors';
+import { STATUS_ICON_MAP } from '@/constants/Status';
 import { useDialogActions, useDialogContext } from '@/stores/useDialogStore';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,7 +19,7 @@ const Dialog = () => {
       title={
         <>
           <Ionicons
-            name={DIALOG_ICON_MAP[dialog.variant]}
+            name={STATUS_ICON_MAP[dialog.variant]}
             size={24}
             color={Colors[dialog.variant]}
           />

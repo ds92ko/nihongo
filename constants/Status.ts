@@ -1,4 +1,4 @@
-export const DIALOG_ICON_MAP = {
+export const STATUS_ICON_MAP = {
   success: 'checkmark-circle-outline',
   error: 'close-circle-outline',
   warning: 'warning-outline',

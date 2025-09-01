@@ -1,9 +1,12 @@
+import { Status } from '@/types/status';
 import { LinkProps } from 'expo-router';
 import { PressableProps, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { AnimatedStyle } from 'react-native-reanimated';
 
+type ButtonVariant = 'primary' | 'primary10' | 'neutralLight' | Status;
+
 interface ButtonBaseProps {
-  variant?: 'primary' | 'primary10' | 'neutralLight' | 'success' | 'error' | 'warning' | 'info';
+  variant?: ButtonVariant;
   size?: 'small' | 'medium' | 'large';
   animatedStyle?: StyleProp<AnimatedStyle<StyleProp<ViewStyle>>>;
   active?: boolean;

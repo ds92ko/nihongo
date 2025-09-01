@@ -1,6 +1,7 @@
 export { default as Accordion } from '@/components/common/Accordion';
 export { default as Button } from '@/components/common/Button';
 export { default as Carousel } from '@/components/common/Carousel';
+export { default as Dialog } from '@/components/common/Dialog';
 export { default as EmptyState } from '@/components/common/EmptyState';
 export { default as IconButton } from '@/components/common/IconButton';
 export { default as InfoCard } from '@/components/common/InfoCard';
@@ -9,3 +10,4 @@ export { default as Modal } from '@/components/common/Modal';
 export { default as ProgressBar } from '@/components/common/ProgressBar';
 export { default as TabBar } from '@/components/common/TabBar';
 export { default as Text } from '@/components/common/Text';
+export { default as Toast } from '@/components/common/Toast';
