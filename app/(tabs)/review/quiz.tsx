@@ -74,141 +74,143 @@ export default function QuizScreen() {
     }, 1000);
   };
 
-  return question ? (
+  return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
-        <ProgressBar
-          progress={progress.filter(p => p.answer).length}
-          max={progress.length}
-        />
-        <View
-          style={[
-            styles.question,
-            {
-              backgroundColor: !selectedAnswer
-                ? Colors.white
-                : selectedAnswer === correctAnswer
-                  ? Colors.successLight
-                  : Colors.errorLight,
-              borderColor: !selectedAnswer
-                ? Colors.neutral
-                : selectedAnswer === correctAnswer
-                  ? Colors.success
-                  : Colors.error
-            }
-          ]}
-        >
-          {type === 'pronunciation' && (
-            <IconButton
-              icon={{
-                type: 'material',
-                name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
-              }}
-              animatedStyle={styles.questionButton}
-              onPress={() => playKanaAudio(question.character)}
-              disabled={playing || Boolean(selectedAnswer)}
-            />
-          )}
-          {selectedAnswer && (
-            <Image
-              source={mateImageMap[mate][feedbackImageName]}
-              style={styles.feedbackImage}
-            />
-          )}
-          <Text
-            weight={700}
-            variant="display1"
+      {question ? (
+        <View style={styles.container}>
+          <ProgressBar
+            progress={progress.filter(p => p.answer).length}
+            max={progress.length}
+          />
+          <View
+            style={[
+              styles.question,
+              {
+                backgroundColor: !selectedAnswer
+                  ? Colors.white
+                  : selectedAnswer === correctAnswer
+                    ? Colors.successLight
+                    : Colors.errorLight,
+                borderColor: !selectedAnswer
+                  ? Colors.neutral
+                  : selectedAnswer === correctAnswer
+                    ? Colors.success
+                    : Colors.error
+              }
+            ]}
           >
-            {type === 'character' ? question.character : `[${question.pronunciation}]`}
-          </Text>
-        </View>
-        <View style={styles.answers}>
-          {question.answers?.map((kana, index) => {
-            const answer = type === 'character' ? KANA_TO_ROMAJI[kanaType][kana] : kana;
-            const isCorrect = Boolean(selectedAnswer && answer === correctAnswer);
-            const isIncorrect = Boolean(answer === selectedAnswer && answer !== correctAnswer);
-
-            if (selectedAnswer) {
-              if (isCorrect) {
-                Animated.sequence([
-                  Animated.spring(scales[index], { toValue: 1.03, useNativeDriver: true }),
-                  Animated.spring(scales[index], { toValue: 1, useNativeDriver: true })
-                ]).start();
-              }
-              if (isIncorrect) {
-                Animated.sequence([
-                  Animated.timing(shakes[index], {
-                    toValue: 10,
-                    duration: 50,
-                    useNativeDriver: true
-                  }),
-                  Animated.timing(shakes[index], {
-                    toValue: -10,
-                    duration: 50,
-                    useNativeDriver: true
-                  }),
-                  Animated.timing(shakes[index], {
-                    toValue: 5,
-                    duration: 50,
-                    useNativeDriver: true
-                  }),
-                  Animated.timing(shakes[index], {
-                    toValue: -5,
-                    duration: 50,
-                    useNativeDriver: true
-                  }),
-                  Animated.timing(shakes[index], {
-                    toValue: 0,
-                    duration: 50,
-                    useNativeDriver: true
-                  })
-                ]).start();
-              }
-            }
-
-            return (
-              <Animated.View
-                key={answer}
-                style={{
-                  transform: [{ scale: scales[index] ?? 1 }, { translateX: shakes[index] ?? 0 }]
+            {type === 'pronunciation' && (
+              <IconButton
+                icon={{
+                  type: 'material',
+                  name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
                 }}
-              >
-                <Pressable
-                  style={[
-                    styles.answer,
-                    isCorrect && styles.correct,
-                    isIncorrect && styles.incorrect
-                  ]}
-                  onPressIn={onPressIn}
-                  onPress={() => onSelectAnswer(answer)}
+                animatedStyle={styles.questionButton}
+                onPress={() => playKanaAudio(question.character)}
+                disabled={playing || Boolean(selectedAnswer)}
+              />
+            )}
+            {selectedAnswer && (
+              <Image
+                source={mateImageMap[mate][feedbackImageName]}
+                style={styles.feedbackImage}
+              />
+            )}
+            <Text
+              weight={700}
+              variant="display1"
+            >
+              {type === 'character' ? question.character : `[${question.pronunciation}]`}
+            </Text>
+          </View>
+          <View style={styles.answers}>
+            {question.answers?.map((kana, index) => {
+              const answer = type === 'character' ? KANA_TO_ROMAJI[kanaType][kana] : kana;
+              const isCorrect = Boolean(selectedAnswer && answer === correctAnswer);
+              const isIncorrect = Boolean(answer === selectedAnswer && answer !== correctAnswer);
+
+              if (selectedAnswer) {
+                if (isCorrect) {
+                  Animated.sequence([
+                    Animated.spring(scales[index], { toValue: 1.03, useNativeDriver: true }),
+                    Animated.spring(scales[index], { toValue: 1, useNativeDriver: true })
+                  ]).start();
+                }
+                if (isIncorrect) {
+                  Animated.sequence([
+                    Animated.timing(shakes[index], {
+                      toValue: 10,
+                      duration: 50,
+                      useNativeDriver: true
+                    }),
+                    Animated.timing(shakes[index], {
+                      toValue: -10,
+                      duration: 50,
+                      useNativeDriver: true
+                    }),
+                    Animated.timing(shakes[index], {
+                      toValue: 5,
+                      duration: 50,
+                      useNativeDriver: true
+                    }),
+                    Animated.timing(shakes[index], {
+                      toValue: -5,
+                      duration: 50,
+                      useNativeDriver: true
+                    }),
+                    Animated.timing(shakes[index], {
+                      toValue: 0,
+                      duration: 50,
+                      useNativeDriver: true
+                    })
+                  ]).start();
+                }
+              }
+
+              return (
+                <Animated.View
+                  key={answer}
+                  style={{
+                    transform: [{ scale: scales[index] ?? 1 }, { translateX: shakes[index] ?? 0 }]
+                  }}
                 >
-                  <Text
-                    weight={isCorrect || isIncorrect ? 700 : 500}
-                    color={isCorrect || isIncorrect ? 'white' : 'textSecondary'}
-                    style={[styles.answerText, { paddingLeft: type === 'character' ? 44 : 0 }]}
+                  <Pressable
+                    style={[
+                      styles.answer,
+                      isCorrect && styles.correct,
+                      isIncorrect && styles.incorrect
+                    ]}
+                    onPressIn={onPressIn}
+                    onPress={() => onSelectAnswer(answer)}
                   >
-                    {type === 'pronunciation' ? answer : `[${answer}]`}
-                  </Text>
-                  {type === 'character' && (
-                    <IconButton
-                      icon={{
-                        type: 'material',
-                        name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
-                      }}
-                      disabled={playing || isCorrect || isIncorrect}
-                      onPress={() => playKanaAudio(kana)}
-                      size="small"
-                    />
-                  )}
-                </Pressable>
-              </Animated.View>
-            );
-          })}
+                    <Text
+                      weight={isCorrect || isIncorrect ? 700 : 500}
+                      color={isCorrect || isIncorrect ? 'white' : 'textSecondary'}
+                      style={[styles.answerText, { paddingLeft: type === 'character' ? 44 : 0 }]}
+                    >
+                      {type === 'pronunciation' ? answer : `[${answer}]`}
+                    </Text>
+                    {type === 'character' && (
+                      <IconButton
+                        icon={{
+                          type: 'material',
+                          name: `headset${playing || Boolean(selectedAnswer) ? '-off' : ''}`
+                        }}
+                        disabled={playing || isCorrect || isIncorrect}
+                        onPress={() => playKanaAudio(kana)}
+                        size="small"
+                      />
+                    )}
+                  </Pressable>
+                </Animated.View>
+              );
+            })}
+          </View>
         </View>
-      </View>
+      ) : (
+        <QuizResult />
+      )}
     </SafeAreaView>
-  ) : (
-    <QuizResult />
   );
 }
 

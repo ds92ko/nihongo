@@ -9,7 +9,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
-import { Dimensions, Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 dayjs.locale('ja');
 
@@ -95,592 +95,591 @@ export default function Index() {
   const todayPronunciation = todayQuiz?.pronunciation.length || 0;
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <SloganBanner />
-      <View style={styles.streaks}>
-        <View style={[styles.streak, { backgroundColor: Colors.practiceLight }]}>
-          <View style={styles.streakIcon}>
-            <Entypo
-              name="pencil"
-              size={32}
-              color={Colors.practice}
-            />
-          </View>
-          <View style={styles.streakText}>
-            <Text
-              weight={700}
-              variant="caption"
-            >
-              연속 연습
-            </Text>
-            <View style={styles.dateCount}>
-              <Text
-                weight={700}
-                variant="h3"
-                color={Colors.textPractice}
-              >
-                {practiceStreak}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                일
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={[styles.streak, { backgroundColor: Colors.quizLight }]}>
-          <View style={styles.streakIcon}>
-            <Entypo
-              name="open-book"
-              size={32}
-              color={Colors.quiz}
-            />
-          </View>
-          <View style={styles.streakText}>
-            <Text
-              weight={700}
-              variant="caption"
-            >
-              연속 퀴즈
-            </Text>
-            <View style={styles.dateCount}>
-              <Text
-                weight={700}
-                variant="h3"
-                color={Colors.textQuiz}
-              >
-                {quizStreak}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                일
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View style={styles.weekly}>
-        <View style={styles.weekdays}>
-          {weekly.map(({ day, practice, quiz }) => (
-            <View
-              key={day}
-              style={styles.weekday}
-            >
-              <Text
-                weight={700}
-                variant="small"
-                color={Colors.textSecondary}
-              >
-                {day}
-              </Text>
-              <View style={styles.stamp}>
-                <Entypo
-                  name="pencil"
-                  size={18}
-                  color={practice ? Colors.practice : Colors.neutralLight}
-                />
-              </View>
-              <View style={styles.stamp}>
-                <Entypo
-                  name="open-book"
-                  size={18}
-                  color={quiz ? Colors.quiz : Colors.neutralLight}
-                />
-              </View>
-            </View>
-          ))}
-        </View>
-        <Image
-          source={mateImageMap[mate][weeklyImage[studyStreak]]}
-          style={styles.weeklyImage}
-        />
-      </View>
-      <View style={styles.missions}>
-        <View style={styles.missionsHeader}>
-          <View style={styles.missionTitle}>
-            <MaterialIcons
-              name="assignment"
-              size={20}
-              color={Colors.primary}
-            />
-            <Text
-              weight={700}
-              variant="body2"
-            >
-              오늘의 숙제
-            </Text>
-          </View>
-          <Button
-            size="small"
-            active
-          >
-            목표 설정
-          </Button>
-        </View>
-        <View style={styles.mission}>
-          <View style={styles.missionHeader}>
-            <View style={styles.missionTitle}>
-              <MaterialCommunityIcons
-                name="book-open-page-variant"
-                size={16}
+    <SafeAreaView style={styles.safe}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <SloganBanner />
+        <View style={styles.streaks}>
+          <View style={[styles.streak, { backgroundColor: Colors.practiceLight }]}>
+            <View style={styles.streakIcon}>
+              <Entypo
+                name="pencil"
+                size={32}
                 color={Colors.practice}
               />
+            </View>
+            <View style={styles.streakText}>
               <Text
                 weight={700}
                 variant="caption"
               >
-                읽기 연습하기
+                연속 연습
               </Text>
-            </View>
-            <MaterialCommunityIcons
-              name="marker-check"
-              size={28}
-              color={todayReading >= dailyGoal ? Colors.practice : Colors.neutralLight}
-              style={styles.completeCheck}
-            />
-          </View>
-          <View style={styles.missionBody}>
-            <View style={styles.missionContent}>
-              <View style={styles.missionGoal}>
+              <View style={styles.dateCount}>
                 <Text
-                  variant="caption"
-                  color="textSecondary"
+                  weight={700}
+                  variant="h3"
+                  color={Colors.textPractice}
                 >
-                  하루 목표 가나
+                  {practiceStreak}
                 </Text>
-                <View style={styles.goal}>
-                  <Text
-                    weight={500}
-                    variant="caption"
-                  >
-                    {dailyGoal}
-                  </Text>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    개
-                  </Text>
-                </View>
-              </View>
-              <ProgressBar
-                progress={todayReading}
-                max={dailyGoal}
-                height={16}
-                progressColor="practice"
-                barColor="practiceLight"
-                text="none"
-              />
-            </View>
-            <View style={styles.missionPercentage}>
-              <Text
-                weight={700}
-                variant="h2"
-                color={Colors.textPractice}
-              >
-                {parseFloat(((Math.min(todayReading, dailyGoal) / dailyGoal) * 100).toFixed(1))}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                %
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.mission}>
-          <View style={styles.missionHeader}>
-            <View style={styles.missionTitle}>
-              <MaterialCommunityIcons
-                name="lead-pencil"
-                size={16}
-                color={Colors.practice}
-              />
-              <Text
-                weight={700}
-                variant="caption"
-              >
-                쓰기 연습하기
-              </Text>
-            </View>
-            <MaterialCommunityIcons
-              name="marker-check"
-              size={28}
-              color={todayWriting >= dailyGoal ? Colors.practice : Colors.neutralLight}
-              style={styles.completeCheck}
-            />
-          </View>
-          <View style={styles.missionBody}>
-            <View style={styles.missionContent}>
-              <View style={styles.missionGoal}>
                 <Text
+                  weight={500}
                   variant="caption"
-                  color="textSecondary"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
                 >
-                  하루 목표 가나
+                  일
                 </Text>
-                <View style={styles.goal}>
-                  <Text
-                    weight={500}
-                    variant="caption"
-                  >
-                    {dailyGoal}
-                  </Text>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    개
-                  </Text>
-                </View>
               </View>
-              <ProgressBar
-                progress={todayWriting}
-                max={dailyGoal}
-                height={16}
-                progressColor="practice"
-                barColor="practiceLight"
-                text="none"
-              />
-            </View>
-            <View style={styles.missionPercentage}>
-              <Text
-                weight={700}
-                variant="h2"
-                color={Colors.textPractice}
-              >
-                {parseFloat(((Math.min(todayWriting, dailyGoal) / dailyGoal) * 100).toFixed(1))}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                %
-              </Text>
             </View>
           </View>
-        </View>
-        <View style={styles.mission}>
-          <View style={styles.missionHeader}>
-            <View style={styles.missionTitle}>
-              <MaterialIcons
-                name="headset"
-                size={16}
-                color={Colors.practice}
-              />
-              <Text
-                weight={700}
-                variant="caption"
-              >
-                듣기 연습하기
-              </Text>
-            </View>
-            <MaterialCommunityIcons
-              name="marker-check"
-              size={28}
-              color={todayListening >= dailyGoal ? Colors.practice : Colors.neutralLight}
-              style={styles.completeCheck}
-            />
-          </View>
-          <View style={styles.missionBody}>
-            <View style={styles.missionContent}>
-              <View style={styles.missionGoal}>
-                <Text
-                  variant="caption"
-                  color="textSecondary"
-                >
-                  하루 목표 가나
-                </Text>
-                <View style={styles.goal}>
-                  <Text
-                    weight={500}
-                    variant="caption"
-                  >
-                    {dailyGoal}
-                  </Text>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    개
-                  </Text>
-                </View>
-              </View>
-              <ProgressBar
-                progress={todayListening}
-                max={dailyGoal}
-                height={16}
-                progressColor="practice"
-                barColor="practiceLight"
-                text="none"
-              />
-            </View>
-            <View style={styles.missionPercentage}>
-              <Text
-                weight={700}
-                variant="h2"
-                color={Colors.textPractice}
-              >
-                {parseFloat(((Math.min(todayListening, dailyGoal) / dailyGoal) * 100).toFixed(1))}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                %
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.mission}>
-          <View style={styles.missionHeader}>
-            <View style={styles.missionTitle}>
-              <MaterialIcons
-                name="mic"
-                size={16}
-                color={Colors.practice}
-              />
-              <Text
-                weight={700}
-                variant="caption"
-              >
-                말하기 연습하기
-              </Text>
-            </View>
-            <MaterialCommunityIcons
-              name="marker-check"
-              size={28}
-              color={todaySpeaking >= dailyGoal ? Colors.practice : Colors.neutralLight}
-              style={styles.completeCheck}
-            />
-          </View>
-          <View style={styles.missionBody}>
-            <View style={styles.missionContent}>
-              <View style={styles.missionGoal}>
-                <Text
-                  variant="caption"
-                  color="textSecondary"
-                >
-                  하루 목표 가나
-                </Text>
-                <View style={styles.goal}>
-                  <Text
-                    weight={500}
-                    variant="caption"
-                  >
-                    {dailyGoal}
-                  </Text>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    개
-                  </Text>
-                </View>
-              </View>
-              <ProgressBar
-                progress={todaySpeaking}
-                max={dailyGoal}
-                height={16}
-                progressColor="practice"
-                barColor="practiceLight"
-                text="none"
-              />
-            </View>
-            <View style={styles.missionPercentage}>
-              <Text
-                weight={700}
-                variant="h2"
-                color={Colors.textPractice}
-              >
-                {parseFloat(((Math.min(todaySpeaking, dailyGoal) / dailyGoal) * 100).toFixed(1))}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                %
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.mission}>
-          <View style={styles.missionHeader}>
-            <View style={styles.missionTitle}>
-              <MaterialCommunityIcons
-                name="syllabary-hiragana"
-                size={16}
+          <View style={[styles.streak, { backgroundColor: Colors.quizLight }]}>
+            <View style={styles.streakIcon}>
+              <Entypo
+                name="open-book"
+                size={32}
                 color={Colors.quiz}
               />
+            </View>
+            <View style={styles.streakText}>
               <Text
                 weight={700}
                 variant="caption"
               >
-                읽기 퀴즈풀기
+                연속 퀴즈
               </Text>
-            </View>
-            <MaterialCommunityIcons
-              name="marker-check"
-              size={28}
-              color={todayCharacter >= dailyGoal ? Colors.quiz : Colors.neutralLight}
-              style={styles.completeCheck}
-            />
-          </View>
-          <View style={styles.missionBody}>
-            <View style={styles.missionContent}>
-              <View style={styles.missionGoal}>
+              <View style={styles.dateCount}>
                 <Text
-                  variant="caption"
-                  color="textSecondary"
+                  weight={700}
+                  variant="h3"
+                  color={Colors.textQuiz}
                 >
-                  하루 목표 가나
+                  {quizStreak}
                 </Text>
-                <View style={styles.goal}>
-                  <Text
-                    weight={500}
-                    variant="caption"
-                  >
-                    {dailyGoal}
-                  </Text>
-                  <Text
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    개
-                  </Text>
-                </View>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  일
+                </Text>
               </View>
-              <ProgressBar
-                progress={todayCharacter}
-                max={dailyGoal}
-                height={16}
-                progressColor="quiz"
-                barColor="quizLight"
-                text="none"
-              />
-            </View>
-            <View style={styles.missionPercentage}>
-              <Text
-                weight={700}
-                variant="h2"
-                color={Colors.textQuiz}
-              >
-                {parseFloat(((Math.min(todayCharacter, dailyGoal) / dailyGoal) * 100).toFixed(1))}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                %
-              </Text>
             </View>
           </View>
         </View>
-        <View style={styles.mission}>
-          <View style={styles.missionHeader}>
+        <View style={styles.weekly}>
+          <View style={styles.weekdays}>
+            {weekly.map(({ day, practice, quiz }) => (
+              <View
+                key={day}
+                style={styles.weekday}
+              >
+                <Text
+                  weight={700}
+                  variant="small"
+                  color={Colors.textSecondary}
+                >
+                  {day}
+                </Text>
+                <View style={styles.stamp}>
+                  <Entypo
+                    name="pencil"
+                    size={18}
+                    color={practice ? Colors.practice : Colors.neutralLight}
+                  />
+                </View>
+                <View style={styles.stamp}>
+                  <Entypo
+                    name="open-book"
+                    size={18}
+                    color={quiz ? Colors.quiz : Colors.neutralLight}
+                  />
+                </View>
+              </View>
+            ))}
+          </View>
+          <Image
+            source={mateImageMap[mate][weeklyImage[studyStreak]]}
+            style={styles.weeklyImage}
+          />
+        </View>
+        <View style={styles.missions}>
+          <View style={styles.missionsHeader}>
             <View style={styles.missionTitle}>
-              <MaterialCommunityIcons
-                name="spellcheck"
-                size={16}
-                color={Colors.quiz}
+              <MaterialIcons
+                name="assignment"
+                size={20}
+                color={Colors.primary}
               />
               <Text
                 weight={700}
-                variant="caption"
+                variant="body2"
               >
-                표기 퀴즈풀기
+                오늘의 숙제
               </Text>
             </View>
-            <MaterialCommunityIcons
-              name="marker-check"
-              size={28}
-              color={todayPronunciation >= dailyGoal ? Colors.quiz : Colors.neutralLight}
-              style={styles.completeCheck}
-            />
+            <Button
+              size="small"
+              active
+            >
+              목표 설정
+            </Button>
           </View>
-          <View style={styles.missionBody}>
-            <View style={styles.missionContent}>
-              <View style={styles.missionGoal}>
+          <View style={styles.mission}>
+            <View style={styles.missionHeader}>
+              <View style={styles.missionTitle}>
+                <MaterialCommunityIcons
+                  name="book-open-page-variant"
+                  size={16}
+                  color={Colors.practice}
+                />
                 <Text
+                  weight={700}
                   variant="caption"
-                  color="textSecondary"
                 >
-                  하루 목표 가나
+                  읽기 연습하기
                 </Text>
-                <View style={styles.goal}>
-                  <Text
-                    weight={500}
-                    variant="caption"
-                  >
-                    {dailyGoal}
-                  </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="marker-check"
+                size={28}
+                color={todayReading >= dailyGoal ? Colors.practice : Colors.neutralLight}
+                style={styles.completeCheck}
+              />
+            </View>
+            <View style={styles.missionBody}>
+              <View style={styles.missionContent}>
+                <View style={styles.missionGoal}>
                   <Text
                     variant="caption"
                     color="textSecondary"
                   >
-                    개
+                    하루 목표 가나
                   </Text>
+                  <View style={styles.goal}>
+                    <Text
+                      weight={500}
+                      variant="caption"
+                    >
+                      {dailyGoal}
+                    </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
                 </View>
+                <ProgressBar
+                  progress={todayReading}
+                  max={dailyGoal}
+                  height={16}
+                  progressColor="practice"
+                  barColor="practiceLight"
+                  text="none"
+                />
               </View>
-              <ProgressBar
-                progress={todayPronunciation}
-                max={dailyGoal}
-                height={16}
-                progressColor="quiz"
-                barColor="quizLight"
-                text="none"
+              <View style={styles.missionPercentage}>
+                <Text
+                  weight={700}
+                  variant="h2"
+                  color={Colors.textPractice}
+                >
+                  {parseFloat(((Math.min(todayReading, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+                </Text>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  %
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.mission}>
+            <View style={styles.missionHeader}>
+              <View style={styles.missionTitle}>
+                <MaterialCommunityIcons
+                  name="lead-pencil"
+                  size={16}
+                  color={Colors.practice}
+                />
+                <Text
+                  weight={700}
+                  variant="caption"
+                >
+                  쓰기 연습하기
+                </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="marker-check"
+                size={28}
+                color={todayWriting >= dailyGoal ? Colors.practice : Colors.neutralLight}
+                style={styles.completeCheck}
               />
             </View>
-            <View style={styles.missionPercentage}>
-              <Text
-                weight={700}
-                variant="h2"
-                color={Colors.textQuiz}
-              >
-                {parseFloat(
-                  ((Math.min(todayPronunciation, dailyGoal) / dailyGoal) * 100).toFixed(1)
-                )}
-              </Text>
-              <Text
-                weight={500}
-                variant="caption"
-                style={styles.unit}
-                color={Colors.textSecondary}
-              >
-                %
-              </Text>
+            <View style={styles.missionBody}>
+              <View style={styles.missionContent}>
+                <View style={styles.missionGoal}>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    하루 목표 가나
+                  </Text>
+                  <View style={styles.goal}>
+                    <Text
+                      weight={500}
+                      variant="caption"
+                    >
+                      {dailyGoal}
+                    </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
+                </View>
+                <ProgressBar
+                  progress={todayWriting}
+                  max={dailyGoal}
+                  height={16}
+                  progressColor="practice"
+                  barColor="practiceLight"
+                  text="none"
+                />
+              </View>
+              <View style={styles.missionPercentage}>
+                <Text
+                  weight={700}
+                  variant="h2"
+                  color={Colors.textPractice}
+                >
+                  {parseFloat(((Math.min(todayWriting, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+                </Text>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  %
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.mission}>
+            <View style={styles.missionHeader}>
+              <View style={styles.missionTitle}>
+                <MaterialIcons
+                  name="headset"
+                  size={16}
+                  color={Colors.practice}
+                />
+                <Text
+                  weight={700}
+                  variant="caption"
+                >
+                  듣기 연습하기
+                </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="marker-check"
+                size={28}
+                color={todayListening >= dailyGoal ? Colors.practice : Colors.neutralLight}
+                style={styles.completeCheck}
+              />
+            </View>
+            <View style={styles.missionBody}>
+              <View style={styles.missionContent}>
+                <View style={styles.missionGoal}>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    하루 목표 가나
+                  </Text>
+                  <View style={styles.goal}>
+                    <Text
+                      weight={500}
+                      variant="caption"
+                    >
+                      {dailyGoal}
+                    </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
+                </View>
+                <ProgressBar
+                  progress={todayListening}
+                  max={dailyGoal}
+                  height={16}
+                  progressColor="practice"
+                  barColor="practiceLight"
+                  text="none"
+                />
+              </View>
+              <View style={styles.missionPercentage}>
+                <Text
+                  weight={700}
+                  variant="h2"
+                  color={Colors.textPractice}
+                >
+                  {parseFloat(((Math.min(todayListening, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+                </Text>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  %
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.mission}>
+            <View style={styles.missionHeader}>
+              <View style={styles.missionTitle}>
+                <MaterialIcons
+                  name="mic"
+                  size={16}
+                  color={Colors.practice}
+                />
+                <Text
+                  weight={700}
+                  variant="caption"
+                >
+                  말하기 연습하기
+                </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="marker-check"
+                size={28}
+                color={todaySpeaking >= dailyGoal ? Colors.practice : Colors.neutralLight}
+                style={styles.completeCheck}
+              />
+            </View>
+            <View style={styles.missionBody}>
+              <View style={styles.missionContent}>
+                <View style={styles.missionGoal}>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    하루 목표 가나
+                  </Text>
+                  <View style={styles.goal}>
+                    <Text
+                      weight={500}
+                      variant="caption"
+                    >
+                      {dailyGoal}
+                    </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
+                </View>
+                <ProgressBar
+                  progress={todaySpeaking}
+                  max={dailyGoal}
+                  height={16}
+                  progressColor="practice"
+                  barColor="practiceLight"
+                  text="none"
+                />
+              </View>
+              <View style={styles.missionPercentage}>
+                <Text
+                  weight={700}
+                  variant="h2"
+                  color={Colors.textPractice}
+                >
+                  {parseFloat(((Math.min(todaySpeaking, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+                </Text>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  %
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.mission}>
+            <View style={styles.missionHeader}>
+              <View style={styles.missionTitle}>
+                <MaterialCommunityIcons
+                  name="syllabary-hiragana"
+                  size={16}
+                  color={Colors.quiz}
+                />
+                <Text
+                  weight={700}
+                  variant="caption"
+                >
+                  읽기 퀴즈풀기
+                </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="marker-check"
+                size={28}
+                color={todayCharacter >= dailyGoal ? Colors.quiz : Colors.neutralLight}
+                style={styles.completeCheck}
+              />
+            </View>
+            <View style={styles.missionBody}>
+              <View style={styles.missionContent}>
+                <View style={styles.missionGoal}>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    하루 목표 가나
+                  </Text>
+                  <View style={styles.goal}>
+                    <Text
+                      weight={500}
+                      variant="caption"
+                    >
+                      {dailyGoal}
+                    </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
+                </View>
+                <ProgressBar
+                  progress={todayCharacter}
+                  max={dailyGoal}
+                  height={16}
+                  progressColor="quiz"
+                  barColor="quizLight"
+                  text="none"
+                />
+              </View>
+              <View style={styles.missionPercentage}>
+                <Text
+                  weight={700}
+                  variant="h2"
+                  color={Colors.textQuiz}
+                >
+                  {parseFloat(((Math.min(todayCharacter, dailyGoal) / dailyGoal) * 100).toFixed(1))}
+                </Text>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  %
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.mission}>
+            <View style={styles.missionHeader}>
+              <View style={styles.missionTitle}>
+                <MaterialCommunityIcons
+                  name="spellcheck"
+                  size={16}
+                  color={Colors.quiz}
+                />
+                <Text
+                  weight={700}
+                  variant="caption"
+                >
+                  표기 퀴즈풀기
+                </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="marker-check"
+                size={28}
+                color={todayPronunciation >= dailyGoal ? Colors.quiz : Colors.neutralLight}
+                style={styles.completeCheck}
+              />
+            </View>
+            <View style={styles.missionBody}>
+              <View style={styles.missionContent}>
+                <View style={styles.missionGoal}>
+                  <Text
+                    variant="caption"
+                    color="textSecondary"
+                  >
+                    하루 목표 가나
+                  </Text>
+                  <View style={styles.goal}>
+                    <Text
+                      weight={500}
+                      variant="caption"
+                    >
+                      {dailyGoal}
+                    </Text>
+                    <Text
+                      variant="caption"
+                      color="textSecondary"
+                    >
+                      개
+                    </Text>
+                  </View>
+                </View>
+                <ProgressBar
+                  progress={todayPronunciation}
+                  max={dailyGoal}
+                  height={16}
+                  progressColor="quiz"
+                  barColor="quizLight"
+                  text="none"
+                />
+              </View>
+              <View style={styles.missionPercentage}>
+                <Text
+                  weight={700}
+                  variant="h2"
+                  color={Colors.textQuiz}
+                >
+                  {parseFloat(
+                    ((Math.min(todayPronunciation, dailyGoal) / dailyGoal) * 100).toFixed(1)
+                  )}
+                </Text>
+                <Text
+                  weight={500}
+                  variant="caption"
+                  style={styles.unit}
+                  color={Colors.textSecondary}
+                >
+                  %
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safe: {
     flex: 1,
     backgroundColor: Colors.white
   },

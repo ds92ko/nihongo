@@ -3,10 +3,6 @@ import { Colors } from '@/constants/Colors';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: Colors.white
-  },
   container: {
     flex: 1,
     justifyContent: 'space-between'
