@@ -8,12 +8,8 @@ import {
 import { styles } from '@/components/local/review/MistakeScene/styles';
 import useKanaAudio from '@/hooks/useKanaAudio';
 import { useKanaContext } from '@/stores/useKanaStore';
-import {
-  Mistake,
-  MistakeMode,
-  useMistakeActions,
-  useMistakeContext
-} from '@/stores/useMistakeStore';
+import { useMistakeActions, useMistakeContext } from '@/stores/useMistakeStore';
+import { Mistake, MistakeMode } from '@/types/mistake';
 import { ScrollView, View } from 'react-native';
 
 const MistakeScene = () => {

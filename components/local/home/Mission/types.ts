@@ -1,5 +1,5 @@
-import { QuizType } from '@/stores/useQuizStore';
-import { PracticeType } from '@/stores/useStatsStore';
+import { PracticeType } from '@/types/practice';
+import { QuizType } from '@/types/quiz';
 
 interface PracticeMissionProps {
   category: 'practice';

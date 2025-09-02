@@ -1,4 +1,4 @@
-import { MateType } from '@/stores/useMateStore';
+import { MateType } from '@/types/mate';
 import { ImageSourcePropType } from 'react-native';
 
 export const mateImageMap: Record<MateType, Record<string, ImageSourcePropType>> = {

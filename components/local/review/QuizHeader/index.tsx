@@ -1,7 +1,8 @@
 import { IconButton, Text } from '@/components/common';
 import { styles } from '@/components/local/review/QuizHeader/styles';
 import { useDialogActions } from '@/stores/useDialogStore';
-import { QuizType, useQuizContext } from '@/stores/useQuizStore';
+import { useQuizContext } from '@/stores/useQuizStore';
+import { QuizType } from '@/types/quiz';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

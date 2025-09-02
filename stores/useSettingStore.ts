@@ -1,21 +1,5 @@
+import { SettingStore } from '@/types/setting';
 import { create } from 'zustand';
-
-interface SettingContext {
-  soundEffectOff: boolean;
-  kanaSoundOff: boolean;
-  hapticOff: boolean;
-}
-
-interface SettingActions {
-  toggleSoundEffect: () => void;
-  toggleKanaSound: () => void;
-  toggleHaptic: () => void;
-}
-
-interface SettingStore {
-  context: SettingContext;
-  actions: SettingActions;
-}
 
 const useSettingStore = create<SettingStore>(set => ({
   context: {

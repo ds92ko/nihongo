@@ -12,7 +12,7 @@ export interface KanaRow {
   kana: string[];
 }
 
-export interface KanaTab {
+interface KanaTab {
   key: KanaSoundType;
   title: string;
   rows: KanaRow[];
@@ -21,3 +21,20 @@ export interface KanaTab {
 export type KanaTabs = {
   [key in KanaType]: KanaTab[];
 };
+
+interface KanaContext {
+  kanaType: KanaType;
+  isVisibleGrid: boolean;
+  isAutoDelete: boolean;
+}
+
+interface KanaActions {
+  setKanaType: () => void;
+  setIsVisibleGrid: () => void;
+  setIsAutoDelete: (isAutoDelete: boolean) => void;
+}
+
+export interface KanaStore {
+  context: KanaContext;
+  actions: KanaActions;
+}

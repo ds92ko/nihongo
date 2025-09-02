@@ -6,16 +6,12 @@ import { STATUS_ICON_MAP } from '@/constants/Status';
 import { Ionicons } from '@expo/vector-icons';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import RNToast, {
-  BaseToastProps,
-  ToastConfig,
-  ToastConfigParams
-} from 'react-native-toast-message';
+import RNToast, { ToastConfig } from 'react-native-toast-message';
 
 const Toast = () => {
   const insets = useSafeAreaInsets();
   const config = TOAST_VARIANTS.reduce<ToastConfig>((acc, variant) => {
-    acc[variant] = ({ text1, text2 }: ToastConfigParams<BaseToastProps>) => (
+    acc[variant] = ({ text1, text2 }) => (
       <View
         style={[
           styles.toast,

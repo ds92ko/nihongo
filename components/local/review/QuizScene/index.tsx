@@ -7,13 +7,13 @@ import {
   tips
 } from '@/components/local/review/QuizScene/constants';
 import { styles } from '@/components/local/review/QuizScene/styles';
+import { OnSelectRows } from '@/components/local/review/QuizScene/types';
 import { Colors } from '@/constants/Colors';
 import { KANA_TABS } from '@/constants/KanaTabs';
 import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { useKanaContext } from '@/stores/useKanaStore';
 import { useQuizActions, useQuizContext } from '@/stores/useQuizStore';
-import { KanaSoundType } from '@/types/kana';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect } from 'react';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
@@ -30,8 +30,7 @@ const QuizScene = () => {
     SoundManager.playClick();
   };
 
-  const onSelect = ({ key, value }: { key: KanaSoundType; value: string[] }) =>
-    setTarget({ [key]: value });
+  const onSelect: OnSelectRows = ({ key, value }) => setTarget({ [key]: value });
 
   const onStartCharacterQuiz = () => startQuiz(kanaType, 'character');
 

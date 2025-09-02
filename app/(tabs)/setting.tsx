@@ -5,10 +5,11 @@ import { Colors } from '@/constants/Colors';
 import useHaptics from '@/hooks/useHaptic';
 import SoundManager from '@/managers/SoundManager';
 import { useDialogActions } from '@/stores/useDialogStore';
-import { MateType, useMateActions, useMateContext } from '@/stores/useMateStore';
+import { useMateActions, useMateContext } from '@/stores/useMateStore';
 import { useMistakeActions, useMistakeContext } from '@/stores/useMistakeStore';
 import { useSettingActions, useSettingContext } from '@/stores/useSettingStore';
 import { useStatsActions, useStatsContext } from '@/stores/useStatsStore';
+import { MateType } from '@/types/mate';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {
   Dimensions,

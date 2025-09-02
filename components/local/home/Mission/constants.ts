@@ -1,6 +1,6 @@
 import { MissionDescriptionMap, MissionTitleMap } from '@/components/local/home/Mission/types';
-import { QuizType } from '@/stores/useQuizStore';
-import { PracticeType } from '@/stores/useStatsStore';
+import { PracticeType } from '@/types/practice';
+import { QuizType } from '@/types/quiz';
 
 export const PRACTICE_MISSION_TITLE_MAP: MissionTitleMap<PracticeType> = {
   reading: goal => `글자 ${goal}개 읽기 연습`,

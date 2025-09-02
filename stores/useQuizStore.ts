@@ -1,42 +1,7 @@
 import { KANA_TABS } from '@/constants/KanaTabs';
 import { KANA_TO_ROMAJI } from '@/constants/KanaToRomaji';
-import { KanaSoundType, KanaType } from '@/types/kana';
+import { KanaQuiz, QuizStore } from '@/types/quiz';
 import { create } from 'zustand';
-
-type KanaQuiz = Record<KanaSoundType, string[]>;
-export type QuizType = 'character' | 'pronunciation';
-
-export type Progress = {
-  answer: string;
-  character: string;
-  pronunciation: string;
-};
-
-export interface Question extends Progress {
-  answers: string[];
-}
-
-interface QuizContext {
-  type: QuizType | null;
-  target: KanaQuiz;
-  progress: Progress[];
-  question: Question | null;
-}
-
-interface QuizActions {
-  startQuiz: (kanaType: KanaType, type: QuizType) => void;
-  setTarget: (target: Partial<KanaQuiz>) => void;
-  resetTarget: () => void;
-  initProgress: (kanaType: KanaType) => Progress[];
-  setProgress: (progress: Progress[]) => void;
-  initQuestion: (kanaType: KanaType, progress: Progress[]) => Question | null;
-  setQuestion: (kanaType: KanaType) => void;
-}
-
-interface QuizStore {
-  context: QuizContext;
-  actions: QuizActions;
-}
 
 const defaultKanaQuiz: KanaQuiz = {
   seion: [],

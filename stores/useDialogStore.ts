@@ -1,34 +1,5 @@
-import { Status } from '@/types/status';
+import { DialogStore } from '@/types/dialog';
 import { create } from 'zustand';
-
-interface Dialog {
-  visible: boolean;
-  variant: Status;
-  title: string;
-  contents: string[];
-  cancel?: {
-    label?: string;
-    onPress?: () => void;
-  };
-  confirm?: {
-    label?: string;
-    onPress?: () => void;
-  };
-}
-
-interface DialogContext {
-  dialog: Dialog | null;
-}
-
-interface DialogActions {
-  openDialog: (dialog: Omit<Dialog, 'visible'>) => void;
-  closeDialog: () => void;
-}
-
-interface DialogStore {
-  context: DialogContext;
-  actions: DialogActions;
-}
 
 const useDialogStore = create<DialogStore>(set => ({
   context: {

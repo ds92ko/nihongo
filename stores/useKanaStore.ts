@@ -1,22 +1,5 @@
-import { KanaType } from '@/types/kana';
+import { KanaStore } from '@/types/kana';
 import { create } from 'zustand';
-
-interface KanaContext {
-  kanaType: KanaType;
-  isVisibleGrid: boolean;
-  isAutoDelete: boolean;
-}
-
-interface KanaActions {
-  setKanaType: () => void;
-  setIsVisibleGrid: () => void;
-  setIsAutoDelete: (isAutoDelete: boolean) => void;
-}
-
-interface KanaStore {
-  context: KanaContext;
-  actions: KanaActions;
-}
 
 const useKanaStore = create<KanaStore>(set => ({
   context: {

@@ -1,33 +1,5 @@
-import { KanaType } from '@/types/kana';
+import { MistakeContext, MistakeStore } from '@/types/mistake';
 import { create } from 'zustand';
-
-export type MistakeMode = 'both' | 'character' | 'pronunciation';
-
-export interface Mistake {
-  character: string;
-  pronunciation: string;
-  mode: MistakeMode;
-  count: number;
-}
-
-interface MistakeContext {
-  mistakes: {
-    [key in KanaType]: Mistake[];
-  };
-}
-
-interface MistakeActions {
-  addMistake: (kanaType: KanaType, mistake: Omit<Mistake, 'mode' | 'count'>) => void;
-  removeMistake: (kanaType: KanaType, character: string) => void;
-  setMistake: (kanaType: KanaType, mistake: Mistake) => void;
-  setMistakeModes: (kanaType: KanaType, mode: MistakeMode) => void;
-  resetMistakes: () => void;
-}
-
-interface MistakeStore {
-  context: MistakeContext;
-  actions: MistakeActions;
-}
 
 const DEFAULT_MISTAKE_CONTEXT: MistakeContext = {
   mistakes: {

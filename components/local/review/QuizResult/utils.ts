@@ -1,5 +1,5 @@
 import { mateImageMap } from '@/assets/images/mates';
-import { MateType } from '@/stores/useMateStore';
+import { MateType } from '@/types/mate';
 
 const getFeedbackImageName = (accuracy: number) => {
   if (accuracy === 100) return 'excited';
