@@ -3,7 +3,7 @@ import { KanaType } from '@/types/kana';
 import dayjs from 'dayjs';
 import { create } from 'zustand';
 
-type PracticeType = 'reading' | 'writing' | 'listening' | 'speaking';
+export type PracticeType = 'reading' | 'writing' | 'listening' | 'speaking';
 
 interface PracticeStat {
   type: KanaType;
